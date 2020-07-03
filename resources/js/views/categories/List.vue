@@ -4,11 +4,11 @@
     <!-- Action Buttons -->
     <div class="filter-container">
       <el-button
+        v-permission="['manage category']"
         class="filter-item"
         type="primary"
         icon="el-icon-plus"
         @click="handleCreate"
-        v-permission="['manage category']"
       >{{ $t('table.add') }}</el-button>
     </div>
     <!-- Table -->
@@ -37,28 +37,37 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="Actions" width="350" v-permission="['view category','manage category']">
+      <el-table-column
+        v-permission="['view category','manage category']"
+        align="center"
+        label="Actions"
+        width="350"
+      >
         <template slot-scope="scope">
           <el-button
+            v-permission="['manage category']"
             type="primary"
             size="small"
             icon="el-icon-edit"
             @click="handleEditForm(scope.row.id, scope.row.name);"
-            v-permission="['manage category']"
           >Edit</el-button>
           <el-button
+            v-permission="['manage category']"
             type="danger"
             size="small"
             icon="el-icon-delete"
             @click="handleDelete(scope.row.id, scope.row.name);"
-            v-permission="['manage category']"
           >Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- Dialog -->
-    <el-dialog :title="formTitle" :visible.sync="categoryFormVisible" v-permission="['view category','manage category']">
+    <el-dialog
+      v-permission="['view category','manage category']"
+      :title="formTitle"
+      :visible.sync="categoryFormVisible"
+    >
       <div class="form-container">
         <el-form
           ref="categoryForm"
