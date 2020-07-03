@@ -140,6 +140,7 @@ export default {
           })
           .finally(() => {
             this.categoryFormVisible = false;
+            this.submitted = false;
           });
       } else {
         categoryResource
@@ -157,11 +158,14 @@ export default {
               name: '',
               description: '',
             };
-            this.categoryFormVisible = false;
             this.getList();
           })
           .catch(error => {
             console.log(error);
+          })
+          .finally(() => {
+            this.categoryFormVisible = false;
+            this.submitted = false;
           });
       }
     },
