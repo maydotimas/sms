@@ -85,7 +85,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="categoryFormVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="handleSubmit" :disabled="submitted">Confirm</el-button>
+          <el-button type="primary" :disabled="submitted" @click="handleSubmit">Confirm</el-button>
         </div>
       </div>
     </el-dialog>
