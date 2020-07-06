@@ -61,6 +61,17 @@ const adminRoutes = {
       name: 'CategoryList',
       meta: { title: 'categoryList', icon: 'list', permissions: ['view category', 'manage category'] },
     },
+    /** Departments  */
+    {
+      path: '/departments',
+      component: () => import('@/views/departments/List.vue'),
+      name: 'departmentList',
+      meta: {
+        title: 'departmentList',
+        icon: 'education',
+        permissions: ['view department', 'manage department'],
+      },
+    },
   ],
 };
 

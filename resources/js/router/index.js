@@ -13,7 +13,7 @@ Vue.use(Router);
 import Layout from '@/layout';
 
 /* Router for modules */
-import elementUiRoutes from './modules/element-ui';
+// import elementUiRoutes from './modules/element-ui';
 import componentRoutes from './modules/components';
 import chartsRoutes from './modules/charts';
 import tableRoutes from './modules/table';
@@ -92,19 +92,19 @@ export const constantRoutes = [
       },
     ],
   },
-  {
-    path: '/documentation',
-    component: Layout,
-    redirect: '/documentation/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/documentation/index'),
-        name: 'Documentation',
-        meta: { title: 'documentation', icon: 'documentation', noCache: true },
-      },
-    ],
-  },
+  // {
+  //   path: '/documentation',
+  //   component: Layout,
+  //   redirect: '/documentation/index',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/documentation/index'),
+  //       name: 'Documentation',
+  //       meta: { title: 'documentation', icon: 'documentation', noCache: true },
+  //     },
+  //   ],
+  // },
   {
     path: '/profile',
     component: Layout,
@@ -118,53 +118,53 @@ export const constantRoutes = [
       },
     ],
   },
-  {
-    path: '/guide',
-    component: Layout,
-    redirect: '/guide/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/guide/index'),
-        name: 'Guide',
-        meta: { title: 'guide', icon: 'guide', noCache: true },
-      },
-    ],
-  },
-  elementUiRoutes,
+  // {
+  //   path: '/guide',
+  //   component: Layout,
+  //   redirect: '/guide/index',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/guide/index'),
+  //       name: 'Guide',
+  //       meta: { title: 'guide', icon: 'guide', noCache: true },
+  //     },
+  //   ],
+  // },
+  // elementUiRoutes,
   // Test Route
-  {
-    path: '/foo',
-    component: Layout,
-    redirect: '/foo/index',
-    meta: {
-      title: 'foo', // This title will show on the breadcrumb before submenu's title
-      icon: 'star', // Use star icon
-    },
-    children: [
-      {
-        path: 'index', // When clicking this submenu, it will redirect to /#/foo/index
-        component: () => import('@/views/foo/Foo.vue'),
-        name: 'foo',
-        meta: { title: 'foo' }, // foo submenu
-      },
-      {
-        path: 'bar', // When clicking this submenu, it will redirect to /#/foo/bar
-        component: () => import('@/views/foo/Bar.vue'),
-        name: 'bar',
-        meta: { title: 'bar' }, // bar submenu
-      },
-    ],
-  },
+  // {
+  //   path: '/foo',
+  //   component: Layout,
+  //   redirect: '/foo/index',
+  //   meta: {
+  //     title: 'foo', // This title will show on the breadcrumb before submenu's title
+  //     icon: 'star', // Use star icon
+  //   },
+  //   children: [
+  //     {
+  //       path: 'index', // When clicking this submenu, it will redirect to /#/foo/index
+  //       component: () => import('@/views/foo/Foo.vue'),
+  //       name: 'foo',
+  //       meta: { title: 'foo' }, // foo submenu
+  //     },
+  //     {
+  //       path: 'bar', // When clicking this submenu, it will redirect to /#/foo/bar
+  //       component: () => import('@/views/foo/Bar.vue'),
+  //       name: 'bar',
+  //       meta: { title: 'bar' }, // bar submenu
+  //     },
+  //   ],
+  // },
 ];
 
 export const asyncRoutes = [
+  adminRoutes,
   permissionRoutes,
   componentRoutes,
   chartsRoutes,
   nestedRoutes,
   tableRoutes,
-  adminRoutes,
   {
     path: '/theme',
     component: Layout,
