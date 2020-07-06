@@ -72,7 +72,8 @@ export default {
     userProfile: 'User Profile',
     foo: 'Foo',
     bar: 'Bar EN',
-    categoryList: 'Category List',
+    categoryList: 'Categories',
+    departmentList: 'Departments',
   },
   navbar: {
     logOut: 'Log Out',

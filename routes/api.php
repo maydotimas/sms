@@ -50,6 +50,9 @@ Route::apiResource('categories', 'CategoryController')->middleware('permission:m
 // Listing category will require "view category" or "manage category"
 Route::get('categories', 'CategoryController@index')->name('categories.index')->middleware('permission:view category|manage category');
 
+Route::apiResource('departments', 'DepartmentController')->middleware('permission:manage department');
+Route::get('departments', 'DepartmentController@index')->name('departments.index')->middleware('permission:view department|manage department');
+
 // Fake APIs
 Route::get('/table/list', function () {
     $rowsNumber = mt_rand(20, 30);
