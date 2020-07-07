@@ -74,6 +74,7 @@ export default {
     bar: 'Bar EN',
     categoryList: 'Categories',
     departmentList: 'Departments',
+    gradeLevelList: 'Grade Levels',
   },
   navbar: {
     logOut: 'Log Out',
