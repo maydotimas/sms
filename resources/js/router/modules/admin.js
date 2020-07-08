@@ -72,6 +72,17 @@ const adminRoutes = {
         permissions: ['view department', 'manage department'],
       },
     },
+    /** Grade Level  */
+    {
+      path: '/grade-level',
+      component: () => import('@/views/grade-level/List.vue'),
+      name: 'gradeLevelList',
+      meta: {
+        title: 'gradeLevelList',
+        icon: 'tree',
+        permissions: ['view gradelevel', 'manage gradelevel'],
+      },
+    },
   ],
 };
 

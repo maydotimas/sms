@@ -74,6 +74,8 @@ export default {
     bar: 'Bar EN',
     categoryList: 'Categories',
     departmentList: 'Departments',
+    department: 'Department',
+    gradeLevelList: 'Grade Levels',
   },
   navbar: {
     logOut: 'Log Out',
@@ -150,6 +152,7 @@ export default {
     confirm: 'Confirm',
     keyword: 'Keyword',
     role: 'Role',
+    department: 'Department',
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',

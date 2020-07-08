@@ -4,16 +4,17 @@ namespace App\Laravue\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Department extends Model
+class GradeLevel extends Model
 {
     protected $fillable = [
         'name',
         'code',
         'description',
+        'department_id'
     ];
 
-    public function gradeLevels()
+    public function department()
     {
-        return $this->hasMany('App\Laravue\Models\GradeLevel');
+        return $this->belongsTo('App\Laravue\Models\Department');
     }
 }
