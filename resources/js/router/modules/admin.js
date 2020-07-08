@@ -80,7 +80,7 @@ const adminRoutes = {
       meta: {
         title: 'gradeLevelList',
         icon: 'tree',
-        permissions: ['view department', 'manage department'],
+        permissions: ['view gradelevel', 'manage gradelevel'],
       },
     },
   ],

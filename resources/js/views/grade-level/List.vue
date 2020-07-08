@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-button
-        v-permission="['manage department']"
+        v-permission="['manage gradelevel']"
         class="filter-item"
         type="primary"
         icon="el-icon-plus"
@@ -40,19 +40,17 @@
         </template>
       </el-table-column>
 
-      <el-table-column
-        align="center"
-        label="Actions"
-        width="200"
-      >
+      <el-table-column v-permission="['manage gradelevel']" align="center" label="Actions" width="200">
         <template slot-scope="scope">
           <el-button
+            v-permission="['manage gradelevel']"
             type="primary"
             size="small"
             icon="el-icon-edit"
             @click="handleEdit(scope.row.id, scope.row.name)"
           >Edit</el-button>
           <el-button
+            v-permission="['manage gradelevel']"
             type="danger"
             size="small"
             icon="el-icon-delete"
@@ -62,10 +60,7 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog
-      :title="formTitle"
-      :visible.sync="gradeLevelFormVisible"
-    >
+    <el-dialog v-permission="['manage gradelevel']" :title="formTitle" :visible.sync="gradeLevelFormVisible">
       <div class="form-container">
         <el-form
           ref="gradeLevelForm"
@@ -74,6 +69,20 @@
           label-width="150px"
           style="max-width: 500px"
         >
+          <el-form-item :label="$t('table.department')" prop="department_id">
+            <el-select
+              v-model="currentGradeLevel.department_id"
+              class="filter-item"
+              placeholder="Please select department"
+            >
+              <el-option
+                v-for="item in deptList"
+                :key="item.id"
+                :label="item.name | uppercaseFirst"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="Name" prop="name">
             <el-input v-model="currentGradeLevel.name" />
           </el-form-item>
@@ -206,12 +215,14 @@ export default {
       this.currentGradeLevel = this.list.find(
         gradeLevel => gradeLevel.id === id
       );
+      console.log(this.currentGradeLevel);
       this.gradeLevelFormVisible = true;
     },
     resetForm() {
       this.currentGradeLevel = {
         name: '',
         description: '',
+        department: '',
       };
     },
   },
