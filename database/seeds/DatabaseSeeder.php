@@ -52,5 +52,8 @@ class DatabaseSeeder extends Seeder
         $visitor->syncRoles($visitorRole);
         $this->call(UsersTableSeeder::class);
         $this->call(CategoriesSeeder::class);
+        $this->call(CategoryPermission::class);
+        $this->call(DepartmentPermission::class);
+        $this->call(GradeLevelPermission::class);
     }
 }
