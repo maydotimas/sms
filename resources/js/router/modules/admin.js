@@ -83,6 +83,17 @@ const adminRoutes = {
         permissions: ['view gradelevel', 'manage gradelevel'],
       },
     },
+    /** Section Level  */
+    {
+      path: '/sections',
+      component: () => import('@/views/section/List.vue'),
+      name: 'sectionList',
+      meta: {
+        title: 'sectionList',
+        icon: 'star',
+        permissions: ['view section', 'manage section'],
+      },
+    },
   ],
 };
 
