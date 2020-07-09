@@ -55,5 +55,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CategoryPermission::class);
         $this->call(DepartmentPermission::class);
         $this->call(GradeLevelPermission::class);
+        $this->call(SectionPermission::class);
     }
 }

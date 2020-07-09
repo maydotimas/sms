@@ -76,6 +76,7 @@ export default {
     departmentList: 'Departments',
     department: 'Department',
     gradeLevelList: 'Grade Levels',
+    sectionList: 'Sections',
   },
   navbar: {
     logOut: 'Log Out',
@@ -153,6 +154,7 @@ export default {
     keyword: 'Keyword',
     role: 'Role',
     department: 'Department',
+    gradeLevel: 'Grade Level',
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',
