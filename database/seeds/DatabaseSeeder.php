@@ -45,6 +45,12 @@ class DatabaseSeeder extends Seeder
         $editorRole = Role::findByName(\App\Laravue\Acl::ROLE_EDITOR);
         $userRole = Role::findByName(\App\Laravue\Acl::ROLE_USER);
         $visitorRole = Role::findByName(\App\Laravue\Acl::ROLE_VISITOR);
+
+        $this->call(CategoryPermission::class);
+        $this->call(DepartmentPermission::class);
+        $this->call(GradeLevelPermission::class);
+        $this->call(SectionPermission::class);
+
         $admin->syncRoles($adminRole);
         $manager->syncRoles($managerRole);
         $editor->syncRoles($editorRole);
@@ -52,9 +58,6 @@ class DatabaseSeeder extends Seeder
         $visitor->syncRoles($visitorRole);
         $this->call(UsersTableSeeder::class);
         $this->call(CategoriesSeeder::class);
-        $this->call(CategoryPermission::class);
-        $this->call(DepartmentPermission::class);
-        $this->call(GradeLevelPermission::class);
-        $this->call(SectionPermission::class);
+
     }
 }

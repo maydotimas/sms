@@ -14,9 +14,9 @@ class DepartmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return DepartmentResource::collection(Department::all());
+        return DepartmentResource::collection(['data'=>Department::paginate($request->limit)]);
     }
 
     /**

@@ -59,6 +59,14 @@
       </el-table-column>
     </el-table>
 
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getList"
+    />
+
     <el-dialog
       v-permission="['manage department']"
       :title="formTitle"
@@ -91,14 +99,22 @@
 <script>
 import Resource from '@/api/resource';
 import permission from '@/directive/permission';
+import Pagination from '@/components/Pagination'; // Secondary package based on el-pagination
+
 const departmentResource = new Resource('departments');
 
 export default {
   name: 'DepartmentList',
+  components: { Pagination },
   directives: { permission },
   data() {
     return {
       list: [],
+      listQuery: {
+        page: 1,
+        limit: 20,
+      },
+      total: 0,
       loading: true,
       departmentFormVisible: false,
       currentDepartment: {},
@@ -112,8 +128,11 @@ export default {
   methods: {
     async getList() {
       this.loading = true;
-      const { data } = await departmentResource.list({});
-      this.list = data;
+      const { data } = await departmentResource.list(this.listQuery);
+      console.log(data);
+      this.list = data.data;
+      this.total = data.total;
+      console.log(this.total)
       this.loading = false;
     },
     handleCreate() {
