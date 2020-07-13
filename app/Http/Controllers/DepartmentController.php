@@ -16,7 +16,14 @@ class DepartmentController extends Controller
      */
     public function index(Request $request)
     {
-        return DepartmentResource::collection(['data'=>Department::paginate($request->limit)]);
+        if ($request->has('title') && $request->input('title') != '') {
+            $data = Department::search($request->title)
+                ->paginate($request->limit);
+        } else {
+            $data = Department::paginate($request->limit);
+        }
+
+        return DepartmentResource::collection(['data' =>$data]);
     }
 
     /**
@@ -32,7 +39,7 @@ class DepartmentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -61,7 +68,7 @@ class DepartmentController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Laravue\Models\Department  $department
+     * @param \App\Laravue\Models\Department $department
      * @return \Illuminate\Http\Response
      */
     public function show(Department $department)
@@ -72,7 +79,7 @@ class DepartmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Laravue\Models\Department  $department
+     * @param \App\Laravue\Models\Department $department
      * @return \Illuminate\Http\Response
      */
     public function edit(Department $department)
@@ -83,8 +90,8 @@ class DepartmentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Laravue\Models\Department  $department
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Laravue\Models\Department $department
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Department $department)
@@ -115,7 +122,7 @@ class DepartmentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Laravue\Models\Department  $department
+     * @param \App\Laravue\Models\Department $department
      * @return \Illuminate\Http\Response
      */
     public function destroy(Department $department)
