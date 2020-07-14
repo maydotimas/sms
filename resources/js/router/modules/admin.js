@@ -54,7 +54,6 @@ const adminRoutes = {
       name: 'ArticleList',
       meta: { title: 'articleList', icon: 'list', permissions: ['manage article'] },
     },
-    
     /** Departments  */
     {
       path: '/departments',
