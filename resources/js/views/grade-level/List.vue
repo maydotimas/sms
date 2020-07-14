@@ -1,6 +1,19 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+      <el-input
+        v-model="listQuery.title"
+        :placeholder="$t('table.search')"
+        style="width: 200px;"
+        class="filter-item"
+        @keyup.enter.native="getList"
+      />
+      <el-button
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="getList"
+      >{{ $t('table.search') }}</el-button>
       <el-button
         v-permission="['manage gradelevel']"
         class="filter-item"
@@ -9,6 +22,7 @@
         @click="handleCreate"
       >{{ $t('table.add') }}</el-button>
     </div>
+
     <el-table v-loading="loading" :data="list" border fit highlight-current-row>
       <el-table-column align="center" label="ID" width="80">
         <template slot-scope="scope">
@@ -40,7 +54,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column v-permission="['manage gradelevel']" align="center" label="Actions" width="200">
+      <el-table-column
+        v-permission="['manage gradelevel']"
+        align="center"
+        label="Actions"
+        width="200"
+      >
         <template slot-scope="scope">
           <el-button
             v-permission="['manage gradelevel']"
@@ -60,7 +79,19 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog v-permission="['manage gradelevel']" :title="formTitle" :visible.sync="gradeLevelFormVisible">
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getList"
+    />
+
+    <el-dialog
+      v-permission="['manage gradelevel']"
+      :title="formTitle"
+      :visible.sync="gradeLevelFormVisible"
+    >
       <div class="form-container">
         <el-form
           ref="gradeLevelForm"
@@ -102,15 +133,24 @@
 <script>
 import Resource from '@/api/resource';
 import permission from '@/directive/permission';
+import Pagination from '@/components/Pagination'; // Secondary package based on el-
+
 const gradeLevelResource = new Resource('gradeLevels');
 const departmentResource = new Resource('departments');
 
 export default {
   name: 'GradeLevelList',
+  components: { Pagination },
   directives: { permission },
   data() {
     return {
       list: [],
+      listQuery: {
+        page: 1,
+        limit: 20,
+        title: '',
+      },
+      total: 0,
       deptList: [],
       loading: true,
       gradeLevelFormVisible: false,
@@ -126,14 +166,15 @@ export default {
   methods: {
     async getList() {
       this.loading = true;
-      const { data } = await gradeLevelResource.list({});
-      this.list = data;
+      const { data } = await gradeLevelResource.list(this.listQuery);
+      this.list = data.data;
+      this.total = data.total;
       this.loading = false;
     },
     async getDeptList() {
       this.loading = true;
       const { data } = await departmentResource.list({});
-      this.deptList = data;
+      this.deptList = data.data;
       this.loading = false;
     },
     handleCreate() {
@@ -222,7 +263,7 @@ export default {
       this.currentGradeLevel = {
         name: '',
         description: '',
-        department: '',
+        department_id: '',
       };
     },
   },

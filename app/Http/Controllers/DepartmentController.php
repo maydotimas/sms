@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\DepartmentResource;
 use App\Laravue\Models\Department;
+use App\Laravue\Models\GradeLevel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,7 +24,7 @@ class DepartmentController extends Controller
             $data = Department::paginate($request->limit);
         }
 
-        return DepartmentResource::collection(['data' =>$data]);
+        return DepartmentResource::collection(['data' => $data]);
     }
 
     /**
