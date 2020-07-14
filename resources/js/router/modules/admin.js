@@ -54,13 +54,7 @@ const adminRoutes = {
       name: 'ArticleList',
       meta: { title: 'articleList', icon: 'list', permissions: ['manage article'] },
     },
-    /** Categories */
-    {
-      path: 'categories',
-      component: () => import('@/views/categories/List'),
-      name: 'CategoryList',
-      meta: { title: 'categoryList', icon: 'list', permissions: ['view category', 'manage category'] },
-    },
+    
     /** Departments  */
     {
       path: '/departments',
@@ -68,7 +62,7 @@ const adminRoutes = {
       name: 'departmentList',
       meta: {
         title: 'departmentList',
-        icon: 'education',
+        icon: 'example',
         permissions: ['view department', 'manage department'],
       },
     },
@@ -93,6 +87,13 @@ const adminRoutes = {
         icon: 'star',
         permissions: ['view section', 'manage section'],
       },
+    },
+    /** Subject Categories */
+    {
+      path: 'subject-categories',
+      component: () => import('@/views/categories/List'),
+      name: 'CategoryList',
+      meta: { title: 'categoryList', icon: 'education', permissions: ['view category', 'manage category'] },
     },
   ],
 };
