@@ -21,7 +21,7 @@ class SectionController extends Controller
     {
         if ($request->has('title') && $request->input('title') != '') {
             $data = Section::search($request->title)
-                ->with('department')
+                ->with('grade_level')
                 ->paginate($request->limit);
         } else {
             $data = Section::with('grade_level')
