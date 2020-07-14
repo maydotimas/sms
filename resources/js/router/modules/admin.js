@@ -54,12 +54,46 @@ const adminRoutes = {
       name: 'ArticleList',
       meta: { title: 'articleList', icon: 'list', permissions: ['manage article'] },
     },
-    /** Categories */
+    
+    /** Departments  */
     {
-      path: 'categories',
+      path: '/departments',
+      component: () => import('@/views/departments/List.vue'),
+      name: 'departmentList',
+      meta: {
+        title: 'departmentList',
+        icon: 'example',
+        permissions: ['view department', 'manage department'],
+      },
+    },
+    /** Grade Level  */
+    {
+      path: '/grade-level',
+      component: () => import('@/views/grade-level/List.vue'),
+      name: 'gradeLevelList',
+      meta: {
+        title: 'gradeLevelList',
+        icon: 'tree',
+        permissions: ['view gradelevel', 'manage gradelevel'],
+      },
+    },
+    /** Section Level  */
+    {
+      path: '/sections',
+      component: () => import('@/views/section/List.vue'),
+      name: 'sectionList',
+      meta: {
+        title: 'sectionList',
+        icon: 'star',
+        permissions: ['view section', 'manage section'],
+      },
+    },
+    /** Subject Categories */
+    {
+      path: 'subject-categories',
       component: () => import('@/views/categories/List'),
       name: 'CategoryList',
-      meta: { title: 'categoryList', icon: 'list', permissions: ['view category', 'manage category'] },
+      meta: { title: 'categoryList', icon: 'education', permissions: ['view category', 'manage category'] },
     },
   ],
 };

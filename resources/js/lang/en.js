@@ -72,7 +72,11 @@ export default {
     userProfile: 'User Profile',
     foo: 'Foo',
     bar: 'Bar EN',
-    categoryList: 'Category List',
+    categoryList: 'Subject Categories',
+    departmentList: 'Departments',
+    department: 'Department',
+    gradeLevelList: 'Grade Levels',
+    sectionList: 'Sections',
   },
   navbar: {
     logOut: 'Log Out',
@@ -149,6 +153,8 @@ export default {
     confirm: 'Confirm',
     keyword: 'Keyword',
     role: 'Role',
+    department: 'Department',
+    gradeLevel: 'Grade Level',
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',
