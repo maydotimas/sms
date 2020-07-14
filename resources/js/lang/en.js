@@ -72,7 +72,7 @@ export default {
     userProfile: 'User Profile',
     foo: 'Foo',
     bar: 'Bar EN',
-    categoryList: 'Categories',
+    categoryList: 'Subject Categories',
     departmentList: 'Departments',
     department: 'Department',
     gradeLevelList: 'Grade Levels',
