@@ -16,9 +16,17 @@ class GradeLevelController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return GradeLevelResource::collection(GradeLevel::with('department')->get());
+        if ($request->has('title') && $request->input('title') != '') {
+            $data = GradeLevel::search($request->title)
+                ->with('department')
+                ->paginate($request->limit);
+        } else {
+            $data = GradeLevel::with('department')
+            ->paginate($request->limit);
+        }
+        return GradeLevelResource::collection(['data' => $data]);
     }
 
     /**

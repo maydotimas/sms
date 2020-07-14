@@ -1,6 +1,19 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+      <el-input
+        v-model="listQuery.title"
+        :placeholder="$t('table.search')"
+        style="width: 200px;"
+        class="filter-item"
+        @keyup.enter.native="getList"
+      />
+      <el-button
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="getList"
+      >{{ $t('table.search') }}</el-button>
       <el-button
         v-permission="['manage section']"
         class="filter-item"
@@ -106,15 +119,23 @@
 <script>
 import Resource from '@/api/resource';
 import permission from '@/directive/permission';
+import Pagination from '@/components/Pagination'; // Secondary package based on el-
+
 const gradeLevelResource = new Resource('gradeLevels');
 const sectionResource = new Resource('sections');
 
 export default {
   name: 'SectionList',
+  components: { Pagination },
   directives: { permission },
   data() {
     return {
       list: [],
+      listQuery: {
+        page: 1,
+        limit: 20,
+        title: '',
+      },
       gradeLevelList: [],
       loading: true,
       sectionFormVisible: false,
@@ -130,15 +151,15 @@ export default {
   methods: {
     async getList() {
       this.loading = true;
-      const { data } = await sectionResource.list({});
-      console.log(data);
-      this.list = data;
+      const { data } = await sectionResource.list(this.listQuery);
+      this.list = data.data;
+      this.total = data.total;
       this.loading = false;
     },
     async getGradeLevelList() {
       this.loading = true;
       const { data } = await gradeLevelResource.list({});
-      this.gradeLevelList = data;
+      this.gradeLevelList = data.data;
       this.loading = false;
     },
     handleCreate() {

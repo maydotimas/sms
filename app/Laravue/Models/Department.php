@@ -12,6 +12,10 @@ class Department extends Model
         'description',
     ];
 
+    public function scopeSearch($query,$keyword){
+        return $query->where('name','like','%'.$keyword.'%')
+            ->orWhere('description','like','%'.$keyword.'%');
+    }
     public function gradeLevels()
     {
         return $this->hasMany('App\Laravue\Models\GradeLevel');

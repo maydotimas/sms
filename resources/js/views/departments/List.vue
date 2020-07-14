@@ -1,6 +1,20 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+      <el-input
+        v-model="listQuery.title"
+        :placeholder="$t('table.search')"
+        style="width: 200px;"
+        class="filter-item"
+        @keyup.enter.native="getList"
+      />
+      <el-button
+        v-waves
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="getList"
+      >{{ $t('table.search') }}</el-button>
       <el-button
         v-permission="['manage department']"
         class="filter-item"
@@ -113,6 +127,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
+        title: '',
       },
       total: 0,
       loading: true,
@@ -132,7 +147,7 @@ export default {
       console.log(data);
       this.list = data.data;
       this.total = data.total;
-      console.log(this.total)
+      console.log(this.total);
       this.loading = false;
     },
     handleCreate() {

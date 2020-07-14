@@ -14,11 +14,20 @@ class SectionController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return SectionResource::collection(Section::with('grade_level')->get());
+        if ($request->has('title') && $request->input('title') != '') {
+            $data = Section::search($request->title)
+                ->with('grade_level')
+                ->paginate($request->limit);
+        } else {
+            $data = Section::with('grade_level')
+                ->paginate($request->limit);
+        }
+        return SectionResource::collection(['data' => $data]);
     }
 
     /**
