@@ -59,6 +59,8 @@ Route::get('gradeLevels', 'GradeLevelController@index')->name('gradeLevels.index
 Route::apiResource('sections', 'SectionController');
 Route::get('sections', 'SectionController@index')->name('sections.index')->middleware('permission:view section|manage section');
 
+Route::apiResource('subjects', 'SubjectController');
+Route::get('subjects', 'SubjectController@index')->name('subjects.index');
 
 // Fake APIs
 Route::get('/table/list', function () {

@@ -77,6 +77,7 @@ export default {
     department: 'Department',
     gradeLevelList: 'Grade Levels',
     sectionList: 'Sections',
+    subjectList: 'Subjects',
   },
   navbar: {
     logOut: 'Log Out',
