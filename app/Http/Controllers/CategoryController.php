@@ -12,11 +12,19 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return CategoryResource::collection(Category::all());
+        if ($request->has('title') && $request->input('title') != '') {
+            $data = Category::search($request->title)
+                ->paginate($request->limit);
+        } else {
+            $data = Category::paginate($request->limit);
+        }
+
+        return CategoryResource::collection(['data' => $data]);
     }
 
     /**
