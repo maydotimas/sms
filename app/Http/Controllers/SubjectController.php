@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\DepartmentResource;
-use App\Laravue\Models\Department;
-use App\Laravue\Models\GradeLevel;
+use App\Http\Resources\SubjectResource;
+use App\Laravue\Models\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class DepartmentController extends Controller
+class SubjectController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,13 +18,13 @@ class DepartmentController extends Controller
     public function index(Request $request)
     {
         if ($request->has('title') && $request->input('title') != '') {
-            $data = Department::search($request->title)
+            $data = Subject::search($request->title)
                 ->paginate($request->limit);
         } else {
-            $data = Department::paginate($request->limit);
+            $data = Subject::paginate($request->limit);
         }
 
-        return DepartmentResource::collection(['data' => $data]);
+        return SubjectResource::collection(['data' => $data]);
     }
 
     /**
@@ -41,7 +40,7 @@ class DepartmentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -57,23 +56,23 @@ class DepartmentController extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
-            $category = Department::create([
+            $record = Subject::create([
                 'name' => $params['name'],
                 'code' => strtolower($params['name']) . time(), // Just to make sure this value is unique
                 'description' => $params['description'],
             ]);
 
-            return new DepartmentResource($category);
+            return new SubjectResource($record);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param \App\Laravue\Models\Department $department
+     * @param  \App\Laravue\Models\Subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function show(Department $department)
+    public function show(Subject $subject)
     {
         //
     }
@@ -81,10 +80,10 @@ class DepartmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Laravue\Models\Department $department
+     * @param  \App\Laravue\Models\Subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function edit(Department $department)
+    public function edit(Subject $subject)
     {
         //
     }
@@ -92,14 +91,14 @@ class DepartmentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Laravue\Models\Department $department
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Laravue\Models\Subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Department $department)
+    public function update(Request $request, Subject $subject)
     {
-        if ($department === null) {
-            return response()->json(['error' => 'Department not found'], 404);
+        if ($subject === null) {
+            return response()->json(['error' => 'Subject not found'], 404);
         }
 
         $validator = Validator::make(
@@ -113,28 +112,28 @@ class DepartmentController extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
-            $department->name = $params['name'];
-            $department->description = $params['description'];
-            $department->save();
+            $subject->name = $params['name'];
+            $subject->description = $params['description'];
+            $subject->save();
         }
 
-        return new DepartmentResource($department);
+        return new SubjectResource($subject);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Laravue\Models\Department $department
+     * @param  \App\Laravue\Models\Subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Department $department)
+    public function destroy(Subject $subject)
     {
         try {
-            $department->delete();
+            $subject->delete();
         } catch (\Exception $ex) {
             response()->json(['error' => $ex->getMessage()], 403);
         }
 
-        return response()->json(null, 204);
+        return response()->json('', 204);
     }
 }

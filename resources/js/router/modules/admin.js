@@ -94,6 +94,13 @@ const adminRoutes = {
       name: 'CategoryList',
       meta: { title: 'categoryList', icon: 'education', permissions: ['view category', 'manage category'] },
     },
+    /** Subject Categories */
+    {
+      path: 'subjects',
+      component: () => import('@/views/subjects/List'),
+      name: 'subjectList',
+      meta: { title: 'subjectList', icon: 'edit', permissions: ['view subject', 'manage subject'] },
+    },
   ],
 };
 

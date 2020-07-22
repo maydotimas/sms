@@ -18,7 +18,7 @@
         @click="getList"
       >{{ $t('table.search') }}</el-button>
       <el-button
-        v-permission="['manage category']"
+        v-permission="['manage subject']"
         class="filter-item"
         type="primary"
         icon="el-icon-plus"
@@ -51,22 +51,28 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" label="Category">
+        <template slot-scope="scope">
+          <span>{{ scope.row.categories }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column
-        v-permission="['view category','manage category']"
+        v-permission="['view subject','manage subject']"
         align="center"
         label="Actions"
         width="350"
       >
         <template slot-scope="scope">
           <el-button
-            v-permission="['manage category']"
+            v-permission="['manage subject']"
             type="primary"
             size="small"
             icon="el-icon-edit"
             @click="handleEditForm(scope.row.id, scope.row.name);"
           >Edit</el-button>
           <el-button
-            v-permission="['manage category']"
+            v-permission="['manage subject']"
             type="danger"
             size="small"
             icon="el-icon-delete"
@@ -87,27 +93,27 @@
 
     <!-- Dialog -->
     <el-dialog
-      v-permission="['view category','manage category']"
+      v-permission="['view subject','manage subject']"
       :title="formTitle"
-      :visible.sync="categoryFormVisible"
+      :visible.sync="subjectFormVisible"
     >
       <div class="form-container">
         <el-form
-          ref="categoryForm"
-          :model="currentCategory"
+          ref="subjectForm"
+          :model="currentSubject"
           label-position="left"
           label-width="150px"
           style="max-width: 500px;"
         >
           <el-form-item label="Name" prop="name">
-            <el-input v-model="currentCategory.name" />
+            <el-input v-model="currentSubject.name" />
           </el-form-item>
           <el-form-item label="Description" prop="description">
-            <el-input v-model="currentCategory.description" type="textarea" />
+            <el-input v-model="currentSubject.description" type="textarea" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="categoryFormVisible = false">Cancel</el-button>
+          <el-button @click="subjectFormVisible = false">Cancel</el-button>
           <el-button type="primary" :disabled="submitted" @click="handleSubmit">Confirm</el-button>
         </div>
       </div>
@@ -117,17 +123,21 @@
 
 <script>
 import Resource from '@/api/resource';
-const categoryResource = new Resource('categories');
 import permission from '@/directive/permission'; // Import permission directive
+import waves from '@/directive/waves'; // Import permission directive
 import Pagination from '@/components/Pagination'; // Secondary package based on el-pagination
 
+const subjectResource = new Resource('subjects');
+const subjectCategoryResource = new Resource('categories');
+
 export default {
-  name: 'CategoryList',
-  directives: { permission }, // use permission directive
+  name: 'SubjectList',
+  directives: { permission, waves }, // use permission directive
   components: { Pagination }, // use permission directive
   data() {
     return {
       list: [],
+      subjectList: [],
       listQuery: {
         page: 1,
         limit: 20,
@@ -135,8 +145,8 @@ export default {
       },
       total: 0,
       loading: true,
-      categoryFormVisible: false,
-      currentCategory: {},
+      subjectFormVisible: false,
+      currentSubject: {},
       submitted: false,
       formTitle: '',
     };
@@ -148,21 +158,28 @@ export default {
     /* Get List (ASYNC KASE NEED YUNG RETURN NG Category resource before magreturn ng data) */
     async getList() {
       this.loading = true;
-      const { data } = await categoryResource.list(this.listQuery);
+      const { data } = await subjectResource.list(this.listQuery);
       this.list = data.data;
       this.total = data.total;
+      this.loading = false;
+    },
+    async getCategoryList() {
+      this.loading = true;
+      const { data } = await subjectCategoryResource.list(this.listQuery);
+      this.subjectList = data.data;
       this.loading = false;
     },
     /* Submit Store */
     handleSubmit() {
       this.submitted = true;
-      if (this.currentCategory.id !== undefined) {
-        categoryResource
-          .update(this.currentCategory.id, this.currentCategory)
+      if (this.currentSubject.id !== undefined) {
+        alert();
+        subjectResource
+          .update(this.currentSubject.id, this.currentSubject)
           .then(response => {
             this.$message({
               type: 'success',
-              message: 'Category info has been updated successfully',
+              message: 'Subject info has been updated successfully',
               duration: 5 * 1000,
             });
             this.getList();
@@ -171,22 +188,22 @@ export default {
             console.log(error);
           })
           .finally(() => {
-            this.categoryFormVisible = false;
+            this.subjectFormVisible = false;
             this.submitted = false;
           });
       } else {
-        categoryResource
-          .store(this.currentCategory)
+        subjectResource
+          .store(this.currentSubject)
           .then(response => {
             this.$message({
               message:
-                'New category ' +
-                this.currentCategory.name +
+                'New subject ' +
+                this.currentSubject.name +
                 ' has been created successfully.',
               type: 'success',
               duration: 5 * 1000,
             });
-            this.currentCategory = {
+            this.currentSubject = {
               name: '',
               description: '',
             };
@@ -196,16 +213,16 @@ export default {
             console.log(error);
           })
           .finally(() => {
-            this.categoryFormVisible = false;
+            this.subjectFormVisible = false;
             this.submitted = false;
           });
       }
     },
     /* Show Dialog */
     handleCreate() {
-      this.formTitle = 'Create new category';
-      this.categoryFormVisible = true;
-      this.currentCategory = {
+      this.formTitle = 'Create new subject';
+      this.subjectFormVisible = true;
+      this.currentSubject = {
         name: '',
         description: '',
       };
@@ -213,7 +230,7 @@ export default {
     /* Delete  */
     handleDelete(id, name) {
       this.$confirm(
-        'This will permanently delete category ' + name + '. Continue?',
+        'This will permanently delete subject ' + name + '. Continue?',
         'Warning',
         {
           confirmButtonText: 'OK',
@@ -222,7 +239,7 @@ export default {
         }
       )
         .then(() => {
-          categoryResource
+          subjectResource
             .destroy(id)
             .then(response => {
               this.$message({
@@ -230,6 +247,7 @@ export default {
                 message: 'Delete completed',
               });
               this.getList();
+              console.log(response.data);
             })
             .catch(error => {
               console.log(error);
@@ -244,9 +262,10 @@ export default {
     },
     /* Edit */
     handleEditForm(id) {
-      this.formTitle = 'Edit category';
-      this.currentCategory = this.list.find(category => category.id === id);
-      this.categoryFormVisible = true;
+      this.formTitle = 'Edit subject';
+      this.currentSubject = this.list.find(subject => subject.id === id);
+      console.log(this.currentSubject);
+      this.subjectFormVisible = true;
     },
   },
 };
