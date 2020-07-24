@@ -53,7 +53,7 @@
 
       <el-table-column align="center" label="Category">
         <template slot-scope="scope">
-          <span>{{ scope.row.categories }}</span>
+          <span>{{ scope.row.category.name }}</span>
         </template>
       </el-table-column>
 
@@ -105,6 +105,20 @@
           label-width="150px"
           style="max-width: 500px;"
         >
+          <el-form-item :label="$t('table.department')" prop="category_id">
+            <el-select
+              v-model="currentSubject.category_id"
+              class="filter-item"
+              placeholder="Please select category"
+            >
+              <el-option
+                v-for="item in categoryList"
+                :key="item.id"
+                :label="item.name | uppercaseFirst"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="Name" prop="name">
             <el-input v-model="currentSubject.name" />
           </el-form-item>
@@ -137,7 +151,7 @@ export default {
   data() {
     return {
       list: [],
-      subjectList: [],
+      categoryList: [],
       listQuery: {
         page: 1,
         limit: 20,
@@ -153,6 +167,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getCategoryList();
   },
   methods: {
     /* Get List (ASYNC KASE NEED YUNG RETURN NG Category resource before magreturn ng data) */
@@ -165,8 +180,8 @@ export default {
     },
     async getCategoryList() {
       this.loading = true;
-      const { data } = await subjectCategoryResource.list(this.listQuery);
-      this.subjectList = data.data;
+      const { data } = await subjectCategoryResource.list({});
+      this.categoryList = data.data;
       this.loading = false;
     },
     /* Submit Store */

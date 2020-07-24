@@ -13,16 +13,10 @@ class CreateSubjectCategoryFk extends Migration
      */
     public function up()
     {
-        Schema::create('subject_category', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->foreignId('subject_id')
-                ->constrained('subjects')
-                ->onDelete('cascade');
+        Schema::table('subjects', function (Blueprint $table) {
             $table->foreignId('category_id')
                 ->constrained('categories')
                 ->onDelete('cascade');
-            $table->timestamp('created_at')->nullable();
-            $table->timestamp('updated_at')->useCurrent();
         });
     }
 
@@ -33,6 +27,8 @@ class CreateSubjectCategoryFk extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('subject_category');
+        Schema::table('subjects', function (Blueprint $table) {
+            $table->dropForeign(['category_id']);
+        });
     }
 }
