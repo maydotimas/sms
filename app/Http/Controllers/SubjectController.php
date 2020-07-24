@@ -19,9 +19,10 @@ class SubjectController extends Controller
     {
         if ($request->has('title') && $request->input('title') != '') {
             $data = Subject::search($request->title)
+                ->with('category')
                 ->paginate($request->limit);
         } else {
-            $data = Subject::paginate($request->limit);
+            $data = Subject::with('category')->paginate($request->limit);
         }
 
         return SubjectResource::collection(['data' => $data]);
@@ -40,7 +41,7 @@ class SubjectController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -60,6 +61,7 @@ class SubjectController extends Controller
                 'name' => $params['name'],
                 'code' => strtolower($params['name']) . time(), // Just to make sure this value is unique
                 'description' => $params['description'],
+                'category_id' => $params['category_id'],
             ]);
 
             return new SubjectResource($record);
@@ -69,7 +71,7 @@ class SubjectController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Laravue\Models\Subject  $subject
+     * @param \App\Laravue\Models\Subject $subject
      * @return \Illuminate\Http\Response
      */
     public function show(Subject $subject)
@@ -80,7 +82,7 @@ class SubjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Laravue\Models\Subject  $subject
+     * @param \App\Laravue\Models\Subject $subject
      * @return \Illuminate\Http\Response
      */
     public function edit(Subject $subject)
@@ -91,8 +93,8 @@ class SubjectController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Laravue\Models\Subject  $subject
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Laravue\Models\Subject $subject
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Subject $subject)
@@ -114,6 +116,7 @@ class SubjectController extends Controller
             $params = $request->all();
             $subject->name = $params['name'];
             $subject->description = $params['description'];
+            $subject->category_id = $params['category_id'];
             $subject->save();
         }
 
@@ -123,7 +126,7 @@ class SubjectController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Laravue\Models\Subject  $subject
+     * @param \App\Laravue\Models\Subject $subject
      * @return \Illuminate\Http\Response
      */
     public function destroy(Subject $subject)

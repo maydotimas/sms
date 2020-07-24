@@ -11,7 +11,7 @@ class CategoriesSeeder extends Seeder
      */
     public function run()
     {
-        for ($ctr = 0; $ctr < 100; $ctr++) {
+        for ($ctr = 0; $ctr < 20; $ctr++) {
             DB::table('categories')->insert([
                 'name' => Str::random(10),
                 'code' => Str::random(10),
@@ -26,6 +26,7 @@ class CategoriesSeeder extends Seeder
                 'name' => 'subject: '.Str::random(10),
                 'code' => Str::random(10),
                 'description' => Str::random(10),
+                'category_id' => 1,
             ]);
         }
 
