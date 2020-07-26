@@ -51,6 +51,8 @@ class DatabaseSeeder extends Seeder
         $this->call(GradeLevelPermission::class);
         $this->call(SectionPermission::class);
         $this->call(SubjectPermission::class);
+        $this->call(FeePermission::class);
+        $this->call(SubFeePermission::class);
 
         $admin->syncRoles($adminRole);
         $manager->syncRoles($managerRole);

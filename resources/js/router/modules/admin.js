@@ -101,6 +101,28 @@ const adminRoutes = {
       name: 'subjectList',
       meta: { title: 'subjectList', icon: 'edit', permissions: ['view subject', 'manage subject'] },
     },
+    /* Fees */
+    {
+      path: 'fees/create',
+      component: () => import('@/views/articles/Create'),
+      name: 'CreateFee',
+      meta: { title: 'createFee', icon: 'edit', permissions: ['manage fee'] },
+      hidden: true,
+    },
+    {
+      path: 'fees/edit/:id(\\d+)',
+      component: () => import('@/views/fees/SubFeeList'),
+      name: 'EditFee',
+      meta: { title: 'editFee', noCache: true, permissions: ['manage fee'] },
+      hidden: true,
+      props: true,
+    },
+    {
+      path: 'fees',
+      component: () => import('@/views/fees/List'),
+      name: 'FeeList',
+      meta: { title: 'feeList', icon: 'tab', permissions: ['manage fee'] },
+    },
   ],
 };
 
