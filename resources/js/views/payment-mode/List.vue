@@ -16,7 +16,7 @@
         @click="getList"
       >{{ $t('table.search') }}</el-button>
       <el-button
-        v-permission="['manage fee']"
+        v-permission="['manage paymentmode']"
         class="filter-item"
         type="primary"
         icon="el-icon-plus"
@@ -48,20 +48,20 @@
         </template>
       </el-table-column>
 
-      <el-table-column v-permission="['manage fee']" align="center" label="Actions" width="350">
+      <el-table-column v-permission="['manage paymentmode']" align="center" label="Actions" width="350">
         <template slot-scope="scope">
           <el-button
-            v-permission="['manage fee']"
+            v-permission="['manage paymentmode']"
             type="primary"
             size="small"
             icon="el-icon-edit"
             @click="handleEdit(scope.row.id, scope.row.name)"
           >Edit</el-button>
-          <router-link :to="'/administrator/fees/edit/'+scope.row.id">
-            <el-button type="success" size="small" icon="el-icon-menu">Manage Fees</el-button>
+          <router-link :to="'/administrator/payment_mode/edit/'+scope.row.id">
+            <el-button type="success" size="small" icon="el-icon-menu">Manage Types</el-button>
           </router-link>
           <el-button
-            v-permission="['manage fee']"
+            v-permission="['manage paymentmode']"
             type="danger"
             size="small"
             icon="el-icon-delete"
@@ -79,30 +79,24 @@
       @pagination="getList"
     />
 
-    <el-dialog v-permission="['manage fee']" :title="formTitle" :visible.sync="feeFormVisible">
+    <el-dialog v-permission="['manage paymentmode']" :title="formTitle" :visible.sync="paymentModeFormVisible">
       <div class="form-container">
         <el-form
           ref="feeForm"
-          :model="currentFee"
+          :model="currentPaymentMode"
           label-position="left"
           label-width="150px"
           style="max-width: 500px"
         >
           <el-form-item label="Name" prop="name">
-            <el-input v-model="currentFee.name" />
+            <el-input v-model="currentPaymentMode.name" />
           </el-form-item>
           <el-form-item label="Description" prop="description">
-            <el-input v-model="currentFee.description" />
-          </el-form-item>
-          <el-form-item label="Tuition" prop="tuition">
-            <el-input v-model="currentFee.tuition" type="number" />
-          </el-form-item>
-          <el-form-item label="Miscellaneous" prop="misc">
-            <el-input v-model="currentFee.misc" type="number" />
+            <el-input v-model="currentPaymentMode.description" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="feeFormVisible = false">Cancel</el-button>
+          <el-button @click="paymentModeFormVisible = false">Cancel</el-button>
           <el-button :disabled="submitted" type="primary" @click="handleSubmit">Confirm</el-button>
         </div>
       </div>
@@ -116,10 +110,10 @@ import permission from '@/directive/permission';
 import waves from '@/directive/waves';
 import Pagination from '@/components/Pagination'; // Secondary package based on el-pagination
 
-const feeResource = new Resource('fees');
+const paymentModeResource = new Resource('payment_modes');
 
 export default {
-  name: 'FeeList',
+  name: 'PaymentModeList',
   components: { Pagination },
   directives: { permission, waves },
   data() {
@@ -132,8 +126,8 @@ export default {
       },
       total: 0,
       loading: true,
-      feeFormVisible: false,
-      currentFee: {},
+      paymentModeFormVisible: false,
+      currentPaymentMode: {},
       submitted: false,
       formTitle: '',
     };
@@ -144,7 +138,7 @@ export default {
   methods: {
     async getList() {
       this.loading = true;
-      const { data } = await feeResource.list(this.listQuery);
+      const { data } = await paymentModeResource.list(this.listQuery);
       console.log(data);
       this.list = data.data;
       this.total = data.total;
@@ -152,19 +146,19 @@ export default {
       this.loading = false;
     },
     handleCreate() {
-      this.feeFormVisible = true;
+      this.paymentModeFormVisible = true;
       this.resetForm();
-      this.formTitle = 'Create New Fee';
+      this.formTitle = 'Create New Payment Mode';
     },
     handleSubmit() {
       this.submitted = true;
-      if (this.currentFee.id !== undefined) {
-        feeResource
-          .update(this.currentFee.id, this.currentFee)
+      if (this.currentPaymentMode.id !== undefined) {
+        paymentModeResource
+          .update(this.currentPaymentMode.id, this.currentPaymentMode)
           .then((response) => {
             this.$message({
               type: 'success',
-              message: 'Fee info has been updated successfully',
+              message: 'Payment Mode info has been updated successfully',
               duration: 5 * 1000,
             });
             this.getList();
@@ -174,23 +168,23 @@ export default {
             console.log(error);
           })
           .finally(() => {
-            this.feeFormVisible = false;
+            this.paymentModeFormVisible = false;
             this.submitted = false;
           });
       } else {
-        feeResource
-          .store(this.currentFee)
+        paymentModeResource
+          .store(this.currentPaymentMode)
           .then((response) => {
             this.$message({
               message:
-                'New Fee ' +
-                this.currentFee.name +
+                'New Payment Mode ' +
+                this.currentPaymentMode.name +
                 ' has been created successfully.',
               type: 'success',
               duration: 5 * 1000,
             });
             this.resetForm();
-            this.feeFormVisible = false;
+            this.paymentModeFormVisible = false;
             this.submitted = false;
             this.getList();
           })
@@ -201,7 +195,7 @@ export default {
     },
     handleDelete(id, name) {
       this.$confirm(
-        'This will permanently delete fee ' + name + '. Continue?',
+        'This will permanently delete payment mode ' + name + '. Continue?',
         'Warning',
         {
           confirmButtonText: 'OK',
@@ -210,7 +204,7 @@ export default {
         }
       )
         .then(() => {
-          feeResource.destroy(id).then((response) => {
+          paymentModeResource.destroy(id).then((response) => {
             this.$message({
               type: 'success',
               message: 'Delete completed',
@@ -227,17 +221,15 @@ export default {
     },
 
     handleEdit(id, name) {
-      this.formTitle = 'Edit Fee ' + name;
-      this.currentFee = this.list.find((fee) => fee.id === id);
-      this.feeFormVisible = true;
+      this.formTitle = 'Edit Payment Mode ' + name;
+      this.currentPaymentMode = this.list.find((payment_mode) => payment_mode.id === id);
+      this.paymentModeFormVisible = true;
     },
 
     resetForm() {
-      this.currentFee = {
+      this.currentPaymentMode = {
         name: '',
         description: '',
-        tuition: '0',
-        misc: '0',
       };
     },
   },

@@ -68,6 +68,13 @@ Route::get('fees', 'FeeController@index')->name('fees.index')->middleware('permi
 Route::apiResource('subFees', 'SubFeeController')->middleware('permission:manage subfee');
 Route::get('subFees', 'SubFeeController@index')->name('subfees.index')->middleware('permission:view fee|permission:manage subfee');
 
+Route::apiResource('payment_modes', 'PaymentModeController')->middleware('permission:manage paymentmode');
+Route::get('payment_modes', 'PaymentModeController@index')->name('paymentMode.index')->middleware('permission:view paymentmode|permission:manage paymentmode');
+
+Route::apiResource('payment_mode_types', 'PaymentModeTypeController')->middleware('permission:manage paymentmodetype');
+Route::get('payment_mode_types', 'PaymentModeTypeController@index')->name('paymentModeType.index')->middleware('permission:view paymentmodetype|permission:manage paymentmodetype');
+
+
 
 
 // Fake APIs

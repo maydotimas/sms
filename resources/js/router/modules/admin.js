@@ -103,17 +103,10 @@ const adminRoutes = {
     },
     /* Fees */
     {
-      path: 'fees/create',
-      component: () => import('@/views/articles/Create'),
-      name: 'CreateFee',
-      meta: { title: 'createFee', icon: 'edit', permissions: ['manage fee'] },
-      hidden: true,
-    },
-    {
       path: 'fees/edit/:id(\\d+)',
       component: () => import('@/views/fees/SubFeeList'),
-      name: 'EditFee',
-      meta: { title: 'editFee', noCache: true, permissions: ['manage fee'] },
+      name: 'ManageFee',
+      meta: { title: 'manageFee', noCache: true, permissions: ['manage fee'] },
       hidden: true,
       props: true,
     },
@@ -122,6 +115,21 @@ const adminRoutes = {
       component: () => import('@/views/fees/List'),
       name: 'FeeList',
       meta: { title: 'feeList', icon: 'tab', permissions: ['manage fee'] },
+    },
+    /* Payment Mode */
+    {
+      path: 'payment_mode/edit/:id(\\d+)',
+      component: () => import('@/views/payment-mode/PaymentModeType'),
+      name: 'ManagePaymentModes',
+      meta: { title: 'managePaymentModes', noCache: true, permissions: ['manage fee'] },
+      hidden: true,
+      props: true,
+    },
+    {
+      path: 'payment_mode',
+      component: () => import('@/views/payment-mode/List'),
+      name: 'PaymentModeList',
+      meta: { title: 'paymentModeList', icon: 'nested', permissions: ['manage fee'] },
     },
   ],
 };

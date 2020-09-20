@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSubFeesTable extends Migration
+class CreatePaymentModeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,12 @@ class CreateSubFeesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sub_fees', function (Blueprint $table) {
+        Schema::dropIfExists('payment_modes');
+        Schema::create('payment_modes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('code')->unique();
             $table->string('description');
-            $table->enum('type',['REGULAR','SIBLING','SCHOLAR','DISCOUNT']);
-            $table->string('misc')->default(0);
-            $table->string('tuition')->default(0);
-            $table->string('discount')->default(0);
-            $table->foreignId('fee_id')
-                ->constrained('fees')
-                ->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -36,6 +30,6 @@ class CreateSubFeesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sub_fees');
+        Schema::dropIfExists('payment_modes');
     }
 }

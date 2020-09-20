@@ -66,6 +66,8 @@ class SubFeeController extends Controller
                 'name' => $params['name'],
                 'code' => strtolower($params['name']) . time(), // Just to make sure this value is unique
                 'description' => $params['description'],
+                'type' => $params['type'],
+                'discount' => $params['discount'],
                 'fee_id' => 1
             ]);
 
@@ -120,8 +122,18 @@ class SubFeeController extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
-            $subFee->name = $params['name'];
-            $subFee->description = $params['description'];
+            if($params['type']==='REGULAR'){
+                $subFee->name = $params['name'];
+                $subFee->description = $params['description'];
+                $subFee->tuition = $params['tuition'];
+                $subFee->misc = $params['misc'];
+            }else{
+                $subFee->name = $params['name'];
+                $subFee->description = $params['description'];
+                $subFee->type = $params['type'];
+                $subFee->discount = $params['discount'];
+            }
+
             $subFee->save();
         }
 

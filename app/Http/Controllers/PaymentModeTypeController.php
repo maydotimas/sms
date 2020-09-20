@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\FeeResource;
-use App\Laravue\Models\Fee;
-use App\Laravue\Models\SubFee;
+use App\Http\Resources\PaymentModeTypeResource;
+use App\Laravue\Models\PaymentModeType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class FeeController extends Controller
+class PaymentModeTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,13 +18,16 @@ class FeeController extends Controller
     public function index(Request $request)
     {
         if ($request->has('title') && $request->input('title') != '') {
-            $data = Fee::search($request->title)
+            $data = PaymentModeType::search($request->title)
+                ->paymentMode($request->payment_mode_id)
+                ->with('fee')
                 ->paginate($request->limit);
         } else {
-            $data = Fee::paginate($request->limit);
+            $data = PaymentModeType::with('paymentMode')
+                ->paymentMode($request->payment_mode_id)
+                ->paginate($request->limit);
         }
-
-        return FeeResource::collection(['data' => $data]);
+        return PaymentModeTypeResource::collection(['data' => $data]);
     }
 
     /**
@@ -41,7 +43,7 @@ class FeeController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -49,9 +51,7 @@ class FeeController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'name' => ['required'],
-                'tuition' => ['required'],
-                'misc' => ['required']
+                'name' => ['required']
             ]
         );
 
@@ -59,33 +59,27 @@ class FeeController extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
-            $fee = Fee::create([
+            $fee = PaymentModeType::create([
                 'name' => $params['name'],
                 'code' => strtolower($params['name']) . time(), // Just to make sure this value is unique
                 'description' => $params['description'],
+                'percentage' => $params['percentage'],
+                'payable_in' => $params['payable_in'],
+                'payment_mode_id' => $params['payment_mode_id'],
             ]);
 
-            SubFee::create([
-                'name' => 'Regular',
-                'code' => $fee->code,
-                'type' => 'Regular',
-                'tuition' => $params['tuition'],
-                'misc' => $params['misc'],
-                'description' => 'Regular fee for '. $params['tuition'],
-                'fee_id' => $fee->id
-            ]);
 
-            return new FeeResource($fee);
+            return new PaymentModeTypeResource($fee);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Laravue\Models\Fee  $fee
+     * @param \App\Laravue\Models\PaymentModeType $paymentModeType
      * @return \Illuminate\Http\Response
      */
-    public function show(Fee $fee)
+    public function show(PaymentModeType $paymentModeType)
     {
         //
     }
@@ -93,10 +87,10 @@ class FeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Laravue\Models\Fee  $fee
+     * @param \App\Laravue\Models\PaymentModeType $paymentModeType
      * @return \Illuminate\Http\Response
      */
-    public function edit(Fee $fee)
+    public function edit(PaymentModeType $paymentModeType)
     {
         //
     }
@@ -104,13 +98,13 @@ class FeeController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Laravue\Models\Fee  $fee
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Laravue\Models\PaymentModeType $paymentModeType
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Fee $fee)
+    public function update(Request $request, PaymentModeType $paymentModeType)
     {
-        if ($fee === null) {
+        if ($paymentModeType === null) {
             return response()->json(['error' => 'Department not found'], 404);
         }
 
@@ -125,24 +119,26 @@ class FeeController extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
-            $fee->name = $params['name'];
-            $fee->description = $params['description'];
-            $fee->save();
+            $paymentModeType->name = $params['name'];
+            $paymentModeType->description = $params['description'];
+            $paymentModeType->percentage = $params['percentage'];
+            $paymentModeType->payable_in = $params['payable_in'];
+            $paymentModeType->save();
         }
 
-        return new FeeResource($fee);
+        return new PaymentModeTypeResource($paymentModeType);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Laravue\Models\Fee  $fee
+     * @param \App\Laravue\Models\PaymentModeType $paymentModeType
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Fee $fee)
+    public function destroy(PaymentModeType $paymentModeType)
     {
         try {
-            $fee->delete();
+            $paymentModeType->delete();
         } catch (\Exception $ex) {
             response()->json(['error' => $ex->getMessage()], 403);
         }

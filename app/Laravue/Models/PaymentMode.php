@@ -4,7 +4,7 @@ namespace App\Laravue\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Fee extends Model
+class PaymentMode extends Model
 {
     protected $fillable = [
         'name',
@@ -17,8 +17,8 @@ class Fee extends Model
             ->orWhere('description','like','%'.$keyword.'%');
     }
 
-    public function subFee()
+    public function type()
     {
-        return $this->hasMany('App\Laravue\Models\SubFee');
+        return $this->hasMany('App\Laravue\Models\PaymentModeType');
     }
 }

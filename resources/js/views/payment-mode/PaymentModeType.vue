@@ -3,7 +3,7 @@
     <el-row>
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span>Manage Fees for {{ feeTitle }}</span>
+          <span>Manage Payment Mode Types for {{ paymentModeTypeTitle }}</span>
         </div>
         <div class="filter-container">
           <el-input
@@ -21,7 +21,7 @@
             @click="getList"
           >{{ $t('table.search') }}</el-button>
           <el-button
-            v-permission="['manage fee']"
+            v-permission="['manage paymentmodetype']"
             class="filter-item"
             type="primary"
             icon="el-icon-plus"
@@ -47,30 +47,29 @@
             </template>
           </el-table-column>
 
-          <el-table-column align="center" label="Type">
+          <el-table-column align="center" label="Percentage">
             <template slot-scope="scope">
-              <span>{{ scope.row.type.toUpperCase() }}</span>
+              <span>{{ scope.row.percentage.toUpperCase() }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column align="center" label="Amount">
+          <el-table-column align="center" label="Payable in">
             <template slot-scope="scope">
-              <span v-if="scope.row.type==='REGULAR'">{{ (parseInt(scope.row.tuition) + parseInt(scope.row.misc)) }}</span>
-              <span v-if="scope.row.type!=='REGULAR'">{{ scope.row.discount + '%' }}</span>
+              <span>{{ scope.row.payable_in.toUpperCase() }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column v-permission="['manage fee']" align="center" label="Actions" width="350">
+          <el-table-column v-permission="['manage paymentmodetype']" align="center" label="Actions" width="350">
             <template slot-scope="scope">
               <el-button
-                v-permission="['manage fee']"
+                v-permission="['manage paymentmodetype']"
                 type="primary"
                 size="small"
                 icon="el-icon-edit"
                 @click="handleEdit(scope.row.id, scope.row.name)"
               >Edit</el-button>
               <el-button
-                v-permission="['manage fee']"
+                v-permission="['manage paymentmodetype']"
                 type="danger"
                 size="small"
                 icon="el-icon-delete"
@@ -90,73 +89,37 @@
       </el-card>
     </el-row>
 
-    <el-dialog v-permission="['manage fee']" :title="formTitle" :visible.sync="feeFormVisible">
+    <el-dialog
+      v-permission="['manage paymentmodetype']"
+      :title="formTitle"
+      :visible.sync="paymentModeTypeFormVisible"
+    >
       <div class="form-container">
         <el-form
           ref="feeForm"
-          :model="currentSubFee"
+          :model="currentPaymentModeType"
           label-position="left"
           label-width="150px"
           style="max-width: 500px"
         >
-          <el-form-item label="Type" prop="type">
-            <el-select
-              v-if="isDiscount()"
-              v-model="currentSubFee.type"
-              class="filter-item"
-              placeholder="Please select type"
-            >
-              <el-option
-                v-for="item in feeType"
-                :key="item"
-                :label="item | uppercaseFirst"
-                :value="item"
-              />
-            </el-select>
-            <el-input v-if="isRegular()" v-model="currentSubFee.type" :readonly="true" />
-          </el-form-item>
-
           <el-form-item label="Name" prop="name">
-            <el-input v-model="currentSubFee.name" />
+            <el-input v-model="currentPaymentModeType.name" />
           </el-form-item>
 
           <el-form-item label="Description" prop="description">
-            <el-input v-model="currentSubFee.description" />
+            <el-input v-model="currentPaymentModeType.description" />
           </el-form-item>
 
-          <!-- Regular -->
-          <el-form-item v-if="isRegular()" label="Tuition" prop="tuition">
-            <el-input v-model="currentSubFee.tuition" />
+          <el-form-item label="Percentage" prop="percentage">
+            <el-input v-model="currentPaymentModeType.percentage" type="number" min="1" max="10" />
           </el-form-item>
 
-          <el-form-item v-if="isRegular()" label="Miscellaneous" prop="misc">
-            <el-input v-model="currentSubFee.misc" />
-          </el-form-item>
-
-          <!-- Discount -->
-
-          <el-form-item v-if="isDiscount()" label="Discount (%)" prop="discount">
-            <el-input
-              v-model="currentSubFee.discount"
-              type="number"
-              value="10"
-              min="1"
-              max="100"
-              @change="computeDiscount"
-              @keyup="computeDiscount"
-            />
-          </el-form-item>
-
-          <el-form-item v-if="isDiscount()" label="Regular Tuition" prop="regular_tuition">
-            <el-input v-model="fee.tuition" :readonly="true" />
-          </el-form-item>
-
-          <el-form-item v-if="isDiscount()" label="Discounted Tuition" prop="discounted_tuition">
-            <el-input v-model="discounted_tuition" :readonly="true" />
+          <el-form-item label="Payable in" prop="payable_in">
+            <el-input v-model="currentPaymentModeType.payable_in" type="number" min="1" max="10" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="feeFormVisible = false">Cancel</el-button>
+          <el-button @click="paymentModeTypeFormVisible = false">Cancel</el-button>
           <el-button :disabled="submitted" type="primary" @click="handleSubmit">Confirm</el-button>
         </div>
       </div>
@@ -170,9 +133,11 @@ import permission from '@/directive/permission';
 import waves from '@/directive/waves';
 import Pagination from '@/components/Pagination'; // Secondary package based on el-pagination
 
-const subFeeResource = new Resource('subFees');
+const paymentModeTypeResource = new Resource('payment_mode_types');
+const paymentModeResource = new Resource('payment_modes');
+
 export default {
-  name: 'SubFeeList',
+  name: 'ManagePaymentModes',
   components: { Pagination },
   directives: { permission, waves },
   props: {
@@ -188,51 +153,57 @@ export default {
       form: [],
       list: [],
       listQuery: {
-        fee_id: this.id,
+        id: this.id,
+        payment_mode_id: this.id,
         page: 1,
         limit: 20,
         title: '',
       },
       total: 0,
       loading: true,
-      feeFormVisible: false,
-      feeType: ['REGULAR', 'SIBLING', 'SCHOLAR', 'DISCOUNT'],
-      currentSubFee: {},
+      paymentModeTypeFormVisible: false,
+      currentPaymentModeType: {
+        payment_mode_id: this.id,
+      },
       submitted: false,
       formTitle: '',
-      feeTitle: '',
-      listFee: [],
+      paymentModeTypeTitle: '',
       listLoading: false,
-      hasRegular: false,
-      fee: [],
-      discounted_tuition: 0,
+      paymentmode: [],
       mode: 'create',
     };
   },
   created() {
     this.getList();
+    this.getPageDetail();
   },
   methods: {
     async getList() {
       this.loading = true;
-      const { data } = await subFeeResource.list(this.listQuery);
-      this.fee = data.data[0];
-      this.feeTitle = this.fee.name;
+      const { data } = await paymentModeTypeResource.list(this.listQuery);
       this.list = data.data;
       this.total = data.total;
       this.loading = false;
     },
+    async getPageDetail() {
+      this.loading = true;
+      const { data } = await paymentModeResource.list(this.listQuery);
+      this.paymentmode = data.data[0];
+      console.log(this.paymentmode);
+      alert();
+      this.paymentModeTypeTitle = this.paymentmode.name;
+      this.loading = false;
+    },
     handleCreate() {
-      this.feeFormVisible = true;
-      this.formTitle = 'Create New Fee';
-      this.feeType = ['SIBLING', 'SCHOLAR', 'DISCOUNT'];
+      this.paymentModeTypeFormVisible = true;
+      this.formTitle = 'Create New Payment Mode Type';
       this.resetForm();
     },
     handleSubmit() {
       this.submitted = true;
-      if (this.currentSubFee.id !== undefined) {
-        subFeeResource
-          .update(this.currentSubFee.id, this.currentSubFee)
+      if (this.currentPaymentModeType.id !== undefined) {
+        paymentModeTypeResource
+          .update(this.currentPaymentModeType.id, this.currentPaymentModeType)
           .then((response) => {
             this.$message({
               type: 'success',
@@ -247,23 +218,25 @@ export default {
             console.log(error);
           })
           .finally(() => {
-            this.feeFormVisible = false;
+            this.paymentModeTypeFormVisible = false;
             this.submitted = false;
           });
       } else {
-        subFeeResource
-          .store(this.currentSubFee)
+        this.currentPaymentModeType.payment_mode_id = this.id;
+        console.log(this.currentPaymentModeType);
+        paymentModeTypeResource
+          .store(this.currentPaymentModeType)
           .then((response) => {
             this.$message({
               message:
                 'New Fee ' +
-                this.currentSubFee.name +
+                this.currentPaymentModeType.name +
                 ' has been created successfully.',
               type: 'success',
               duration: 5 * 1000,
             });
             this.resetForm();
-            this.feeFormVisible = false;
+            this.paymentModeTypeFormVisible = false;
             this.submitted = false;
             this.getList();
           })
@@ -275,7 +248,7 @@ export default {
     },
     handleDelete(id, name) {
       this.$confirm(
-        'This will permanently delete fee ' + name + '. Continue?',
+        'This will permanently delete paymentmode ' + name + '. Continue?',
         'Warning',
         {
           confirmButtonText: 'OK',
@@ -284,7 +257,7 @@ export default {
         }
       )
         .then(() => {
-          subFeeResource.destroy(id).then((response) => {
+          paymentModeTypeResource.destroy(id).then((response) => {
             this.$message({
               type: 'success',
               message: 'Delete completed',
@@ -301,44 +274,18 @@ export default {
     },
     handleEdit(id, name) {
       this.formTitle = 'Edit Fee ' + name;
-      this.currentSubFee = this.list.find((fee) => fee.id === id);
-      this.feeFormVisible = true;
-      this.feeType = ['REGULAR', 'SIBLING', 'SCHOLAR', 'DISCOUNT'];
+      this.currentPaymentModeType = this.list.find((paymentmode) => paymentmode.id === id);
+      this.paymentModeTypeFormVisible = true;
       this.computeDiscount();
     },
     resetForm() {
-      this.currentSubFee = {
+      this.currentPaymentModeType = {
+        payment_mode_id: '',
         name: '',
         description: '',
-        type: '',
-        discount: '',
+        percentage: '',
+        payable_in: '',
       };
-    },
-    cancelEdit(row) {
-      row.title = row.originalTitle;
-      row.edit = false;
-      this.$message({
-        message: 'The title has been restored to the original value',
-        type: 'warning',
-      });
-    },
-    confirmEdit(row) {
-      row.edit = false;
-      row.originalTitle = row.title;
-      this.$message({
-        message: 'The title has been edited',
-        type: 'success',
-      });
-    },
-    isRegular() {
-      return this.currentSubFee.type === 'REGULAR';
-    },
-    isDiscount() {
-      return this.currentSubFee.type !== 'REGULAR';
-    },
-    computeDiscount() {
-      this.discounted_tuition =
-        this.fee.tuition * (this.currentSubFee.discount / 100);
     },
   },
 };

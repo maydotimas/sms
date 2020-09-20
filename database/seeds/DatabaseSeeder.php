@@ -53,6 +53,8 @@ class DatabaseSeeder extends Seeder
         $this->call(SubjectPermission::class);
         $this->call(FeePermission::class);
         $this->call(SubFeePermission::class);
+        $this->call(PaymentModePermission::class);
+        $this->call(PaymentModeTypePermission::class);
 
         $admin->syncRoles($adminRole);
         $manager->syncRoles($managerRole);
