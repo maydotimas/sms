@@ -17,12 +17,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/php', function () {
+    return phpinfo();
+});
+
 Route::group(['middleware' => 'web'], function () {
     Route::get(env('LARAVUE_PATH'), 'LaravueController@index')->where('any', '.*')->name('laravue');
 });
 
 Route::get('token', function () {
-    $key = "ExtbG0QSRP0Vexb0hYSpdFOoWCRVkVMq";
-    $secret = "bgGn9QkdLLBWVOYR8FRYNA0BNRzNLpXwRKBTgT7Ro7csSnPsA9lO1Pi2L440qATF";
+//    $key = "IUGB0JbyAoiWzHKgrcwaHw8oGYoqQdbA";
+//    $secret = "3eNCCPpJiulCNz8aX9FEe0VC7FacJwZJjzGtA0JbQ3IzeYPQJn1kJZALHy9nHJfT";
+        $key = "G71gsoLtmFdNG0INkSUA2L8JafqxMRNq";
+    $secret = "9zoX8HoFo9iXo07A";
     echo base64_encode("{$key}:{$secret}");
 });

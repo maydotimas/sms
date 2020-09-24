@@ -101,6 +101,36 @@ const adminRoutes = {
       name: 'subjectList',
       meta: { title: 'subjectList', icon: 'edit', permissions: ['view subject', 'manage subject'] },
     },
+    /* Fees */
+    {
+      path: 'fees/edit/:id(\\d+)',
+      component: () => import('@/views/fees/SubFeeList'),
+      name: 'ManageFee',
+      meta: { title: 'manageFee', noCache: true, permissions: ['manage fee'] },
+      hidden: true,
+      props: true,
+    },
+    {
+      path: 'fees',
+      component: () => import('@/views/fees/List'),
+      name: 'FeeList',
+      meta: { title: 'feeList', icon: 'tab', permissions: ['manage fee'] },
+    },
+    /* Payment Mode */
+    {
+      path: 'payment_mode/edit/:id(\\d+)',
+      component: () => import('@/views/payment-mode/PaymentModeType'),
+      name: 'ManagePaymentModes',
+      meta: { title: 'managePaymentModes', noCache: true, permissions: ['manage fee'] },
+      hidden: true,
+      props: true,
+    },
+    {
+      path: 'payment_mode',
+      component: () => import('@/views/payment-mode/List'),
+      name: 'PaymentModeList',
+      meta: { title: 'paymentModeList', icon: 'nested', permissions: ['manage fee'] },
+    },
   ],
 };
 

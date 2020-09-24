@@ -18,6 +18,8 @@ import Layout from '@/layout';
 // import chartsRoutes from './modules/charts';
 // import tableRoutes from './modules/table';
 import adminRoutes from './modules/admin';
+import studentRoutes from './modules/student';
+import parentRoutes from './modules/parent';
 // import nestedRoutes from './modules/nested';
 import errorRoutes from './modules/error';
 // import excelRoutes from './modules/excel';
@@ -160,6 +162,8 @@ export const constantRoutes = [
 
 export const asyncRoutes = [
   adminRoutes,
+  studentRoutes,
+  parentRoutes,
   // permissionRoutes,
   // componentRoutes,
   // chartsRoutes,
