@@ -4,13 +4,15 @@ namespace App\Laravue\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Subject extends Model
+class PaymentModeType extends Model
 {
     protected $fillable = [
         'name',
         'code',
         'description',
-        'category_id'
+        'payment_mode_id',
+        'percentage',
+        'payable_in',
     ];
 
     public function scopeSearch($query,$keyword){
@@ -18,8 +20,12 @@ class Subject extends Model
             ->orWhere('description','like','%'.$keyword.'%');
     }
 
-    public function category()
+    public function scopePaymentMode($query,$keyword){
+        return $query->where('payment_mode_id','=',$keyword);
+    }
+
+    public function paymentMode()
     {
-        return $this->belongsTo('App\Laravue\Models\Category');
+        return $this->belongsTo('App\Laravue\Models\PaymentMode');
     }
 }

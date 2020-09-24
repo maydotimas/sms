@@ -4,13 +4,12 @@ namespace App\Laravue\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Subject extends Model
+class Fee extends Model
 {
     protected $fillable = [
         'name',
         'code',
-        'description',
-        'category_id'
+        'description'
     ];
 
     public function scopeSearch($query,$keyword){
@@ -18,8 +17,8 @@ class Subject extends Model
             ->orWhere('description','like','%'.$keyword.'%');
     }
 
-    public function category()
+    public function subFee()
     {
-        return $this->belongsTo('App\Laravue\Models\Category');
+        return $this->hasMany('App\Laravue\Models\SubFee');
     }
 }

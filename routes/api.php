@@ -53,14 +53,32 @@ Route::get('categories', 'CategoryController@index')->name('categories.index')->
 Route::apiResource('departments', 'DepartmentController')->middleware('permission:manage department');
 Route::get('departments', 'DepartmentController@index')->name('departments.index')->middleware('permission:view department|manage department');
 
-Route::apiResource('gradeLevels', 'GradeLevelController');
+Route::apiResource('gradeLevels', 'GradeLevelController')->middleware('permission:manage gradelevel');
 Route::get('gradeLevels', 'GradeLevelController@index')->name('gradeLevels.index')->middleware('permission:view gradelevel|manage gradelevel');
 
-Route::apiResource('sections', 'SectionController');
+Route::apiResource('sections', 'SectionController')->middleware('permission:manage section');
 Route::get('sections', 'SectionController@index')->name('sections.index')->middleware('permission:view section|manage section');
 
-Route::apiResource('subjects', 'SubjectController');
-Route::get('subjects', 'SubjectController@index')->name('subjects.index');
+Route::apiResource('subjects', 'SubjectController')->middleware('permission:manage subject');
+Route::get('subjects', 'SubjectController@index')->name('subjects.index')->middleware('permission:view subject|permission:manage subject');
+
+Route::apiResource('fees', 'FeeController')->middleware('permission:manage fee');
+Route::get('fees', 'FeeController@index')->name('fees.index')->middleware('permission:view fee|permission:manage fee');
+
+Route::apiResource('subFees', 'SubFeeController')->middleware('permission:manage subfee');
+Route::get('subFees', 'SubFeeController@index')->name('subfees.index')->middleware('permission:view fee|permission:manage subfee');
+
+Route::apiResource('payment_modes', 'PaymentModeController')->middleware('permission:manage paymentmode');
+Route::get('payment_modes', 'PaymentModeController@index')->name('paymentMode.index')->middleware('permission:view paymentmode|permission:manage paymentmode');
+
+Route::apiResource('payment_mode_types', 'PaymentModeTypeController')->middleware('permission:manage paymentmodetype');
+Route::get('payment_mode_types', 'PaymentModeTypeController@index')->name('paymentModeType.index')->middleware('permission:view paymentmodetype|permission:manage paymentmodetype');
+
+Route::apiResource('students', 'StudentController')->middleware('permission:manage students');
+Route::get('students', 'StudentController@index')->name('students.index')->middleware('permission:view students|permission:manage students');
+
+Route::apiResource('parents', 'StudentParentController')->middleware('permission:manage parents');
+Route::get('parents', 'StudentParentController@index')->name('parents.index')->middleware('permission:view parents|permission:manage parents');
 
 // Fake APIs
 Route::get('/table/list', function () {

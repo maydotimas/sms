@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\SubjectResource;
-use App\Laravue\Models\Subject;
+use App\Http\Resources\FeeResource;
+use App\Http\Resources\PaymentModeResource;
+use App\Laravue\Models\Fee;
+use App\Laravue\Models\PaymentMode;
+use App\Laravue\Models\PaymentModeType;
+use App\Laravue\Models\SubFee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class SubjectController extends Controller
+class PaymentModeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,14 +22,13 @@ class SubjectController extends Controller
     public function index(Request $request)
     {
         if ($request->has('title') && $request->input('title') != '') {
-            $data = Subject::search($request->title)
-                ->with('category')
+            $data = PaymentMode::search($request->title)
                 ->paginate($request->limit);
         } else {
-            $data = Subject::with('category')->paginate($request->limit);
+            $data = PaymentMode::paginate($request->limit);
         }
 
-        return SubjectResource::collection(['data' => $data]);
+        return PaymentModeResource::collection(['data' => $data]);
     }
 
     /**
@@ -41,7 +44,7 @@ class SubjectController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -49,7 +52,7 @@ class SubjectController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'name' => ['required']
+                'name' => ['required'],
             ]
         );
 
@@ -57,24 +60,32 @@ class SubjectController extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
-            $record = Subject::create([
+            $payment_mode = PaymentMode::create([
                 'name' => $params['name'],
                 'code' => strtolower($params['name']) . time(), // Just to make sure this value is unique
                 'description' => $params['description'],
-                'category_id' => $params['category_id'],
             ]);
 
-            return new SubjectResource($record);
+            PaymentModeType::create([
+                'name' => 'Annual',
+                'code' => $params['name']. ' Annual' . time(), // Just to make sure this value is unique
+                'description' => $params['description'],
+                'percentage' => '0',
+                'payable_in' => 1,
+                'payment_mode_id' => $payment_mode->id,
+            ]);
+
+            return new PaymentModeResource($payment_mode);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param \App\Laravue\Models\Subject $subject
+     * @param  \App\Laravue\Models\PaymentMode  $paymentMode
      * @return \Illuminate\Http\Response
      */
-    public function show(Subject $subject)
+    public function show(PaymentMode $paymentMode)
     {
         //
     }
@@ -82,10 +93,10 @@ class SubjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Laravue\Models\Subject $subject
+     * @param  \App\Laravue\Models\PaymentMode  $paymentMode
      * @return \Illuminate\Http\Response
      */
-    public function edit(Subject $subject)
+    public function edit(PaymentMode $paymentMode)
     {
         //
     }
@@ -93,14 +104,14 @@ class SubjectController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Laravue\Models\Subject $subject
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Laravue\Models\PaymentMode  $paymentMode
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Subject $subject)
+    public function update(Request $request, PaymentMode $paymentMode)
     {
-        if ($subject === null) {
-            return response()->json(['error' => 'Subject not found'], 404);
+        if ($paymentMode === null) {
+            return response()->json(['error' => 'Payment Mode not found'], 404);
         }
 
         $validator = Validator::make(
@@ -114,29 +125,28 @@ class SubjectController extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
-            $subject->name = $params['name'];
-            $subject->description = $params['description'];
-            $subject->category_id = $params['category_id'];
-            $subject->save();
+            $paymentMode->name = $params['name'];
+            $paymentMode->description = $params['description'];
+            $paymentMode->save();
         }
 
-        return new SubjectResource($subject);
+        return new PaymentModeResource($paymentMode);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Laravue\Models\Subject $subject
+     * @param  \App\Laravue\Models\PaymentMode  $paymentMode
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Subject $subject)
+    public function destroy(PaymentMode $paymentMode)
     {
         try {
-            $subject->delete();
+            $paymentMode->delete();
         } catch (\Exception $ex) {
             response()->json(['error' => $ex->getMessage()], 403);
         }
 
-        return response()->json('', 204);
+        return response()->json(null, 204);
     }
 }

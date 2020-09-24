@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\SubjectResource;
-use App\Laravue\Models\Subject;
+use App\Http\Resources\FeeResource;
+use App\Http\Resources\SubFeeResource;
+use App\Laravue\Models\Fee;
+use App\Laravue\Models\SubFee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class SubjectController extends Controller
+class SubFeeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,14 +20,17 @@ class SubjectController extends Controller
     public function index(Request $request)
     {
         if ($request->has('title') && $request->input('title') != '') {
-            $data = Subject::search($request->title)
-                ->with('category')
+            $data = SubFee::search($request->title)
+                ->fee($request->fee_id)
+                ->with('fee')
                 ->paginate($request->limit);
         } else {
-            $data = Subject::with('category')->paginate($request->limit);
+            $data = SubFee::with('fee')
+                ->fee($request->fee_id)
+                ->paginate($request->limit);
         }
 
-        return SubjectResource::collection(['data' => $data]);
+        return SubFeeResource::collection(['data' => $data]);
     }
 
     /**
@@ -57,24 +62,27 @@ class SubjectController extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
-            $record = Subject::create([
+            $fee = SubFee::create([
                 'name' => $params['name'],
                 'code' => strtolower($params['name']) . time(), // Just to make sure this value is unique
                 'description' => $params['description'],
-                'category_id' => $params['category_id'],
+                'type' => $params['type'],
+                'discount' => $params['discount'],
+                'fee_id' => 1
             ]);
 
-            return new SubjectResource($record);
+
+            return new SubFeeResource($fee);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param \App\Laravue\Models\Subject $subject
+     * @param \App\Laravue\Models\SubFee $subFee
      * @return \Illuminate\Http\Response
      */
-    public function show(Subject $subject)
+    public function show(SubFee $subFee)
     {
         //
     }
@@ -82,10 +90,10 @@ class SubjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Laravue\Models\Subject $subject
+     * @param \App\Laravue\Models\SubFee $subFee
      * @return \Illuminate\Http\Response
      */
-    public function edit(Subject $subject)
+    public function edit(SubFee $subFee)
     {
         //
     }
@@ -94,13 +102,13 @@ class SubjectController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Laravue\Models\Subject $subject
+     * @param \App\Laravue\Models\SubFee $subFee
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Subject $subject)
+    public function update(Request $request, SubFee $subFee)
     {
-        if ($subject === null) {
-            return response()->json(['error' => 'Subject not found'], 404);
+        if ($subFee === null) {
+            return response()->json(['error' => 'Department not found'], 404);
         }
 
         $validator = Validator::make(
@@ -114,29 +122,38 @@ class SubjectController extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
-            $subject->name = $params['name'];
-            $subject->description = $params['description'];
-            $subject->category_id = $params['category_id'];
-            $subject->save();
+            if($params['type']==='REGULAR'){
+                $subFee->name = $params['name'];
+                $subFee->description = $params['description'];
+                $subFee->tuition = $params['tuition'];
+                $subFee->misc = $params['misc'];
+            }else{
+                $subFee->name = $params['name'];
+                $subFee->description = $params['description'];
+                $subFee->type = $params['type'];
+                $subFee->discount = $params['discount'];
+            }
+
+            $subFee->save();
         }
 
-        return new SubjectResource($subject);
+        return new SubFeeResource($subFee);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Laravue\Models\Subject $subject
+     * @param \App\Laravue\Models\SubFee $subFee
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Subject $subject)
+    public function destroy(SubFee $subFee)
     {
         try {
-            $subject->delete();
+            $subFee->delete();
         } catch (\Exception $ex) {
             response()->json(['error' => $ex->getMessage()], 403);
         }
 
-        return response()->json('', 204);
+        return response()->json(null, 204);
     }
 }

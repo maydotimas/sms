@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\SubjectResource;
-use App\Laravue\Models\Subject;
+use App\Http\Resources\PaymentModeTypeResource;
+use App\Laravue\Models\PaymentModeType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class SubjectController extends Controller
+class PaymentModeTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,14 +18,16 @@ class SubjectController extends Controller
     public function index(Request $request)
     {
         if ($request->has('title') && $request->input('title') != '') {
-            $data = Subject::search($request->title)
-                ->with('category')
+            $data = PaymentModeType::search($request->title)
+                ->paymentMode($request->payment_mode_id)
+                ->with('fee')
                 ->paginate($request->limit);
         } else {
-            $data = Subject::with('category')->paginate($request->limit);
+            $data = PaymentModeType::with('paymentMode')
+                ->paymentMode($request->payment_mode_id)
+                ->paginate($request->limit);
         }
-
-        return SubjectResource::collection(['data' => $data]);
+        return PaymentModeTypeResource::collection(['data' => $data]);
     }
 
     /**
@@ -57,24 +59,27 @@ class SubjectController extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
-            $record = Subject::create([
+            $fee = PaymentModeType::create([
                 'name' => $params['name'],
                 'code' => strtolower($params['name']) . time(), // Just to make sure this value is unique
                 'description' => $params['description'],
-                'category_id' => $params['category_id'],
+                'percentage' => $params['percentage'],
+                'payable_in' => $params['payable_in'],
+                'payment_mode_id' => $params['payment_mode_id'],
             ]);
 
-            return new SubjectResource($record);
+
+            return new PaymentModeTypeResource($fee);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param \App\Laravue\Models\Subject $subject
+     * @param \App\Laravue\Models\PaymentModeType $paymentModeType
      * @return \Illuminate\Http\Response
      */
-    public function show(Subject $subject)
+    public function show(PaymentModeType $paymentModeType)
     {
         //
     }
@@ -82,10 +87,10 @@ class SubjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Laravue\Models\Subject $subject
+     * @param \App\Laravue\Models\PaymentModeType $paymentModeType
      * @return \Illuminate\Http\Response
      */
-    public function edit(Subject $subject)
+    public function edit(PaymentModeType $paymentModeType)
     {
         //
     }
@@ -94,13 +99,13 @@ class SubjectController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Laravue\Models\Subject $subject
+     * @param \App\Laravue\Models\PaymentModeType $paymentModeType
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Subject $subject)
+    public function update(Request $request, PaymentModeType $paymentModeType)
     {
-        if ($subject === null) {
-            return response()->json(['error' => 'Subject not found'], 404);
+        if ($paymentModeType === null) {
+            return response()->json(['error' => 'Department not found'], 404);
         }
 
         $validator = Validator::make(
@@ -114,29 +119,30 @@ class SubjectController extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
-            $subject->name = $params['name'];
-            $subject->description = $params['description'];
-            $subject->category_id = $params['category_id'];
-            $subject->save();
+            $paymentModeType->name = $params['name'];
+            $paymentModeType->description = $params['description'];
+            $paymentModeType->percentage = $params['percentage'];
+            $paymentModeType->payable_in = $params['payable_in'];
+            $paymentModeType->save();
         }
 
-        return new SubjectResource($subject);
+        return new PaymentModeTypeResource($paymentModeType);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Laravue\Models\Subject $subject
+     * @param \App\Laravue\Models\PaymentModeType $paymentModeType
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Subject $subject)
+    public function destroy(PaymentModeType $paymentModeType)
     {
         try {
-            $subject->delete();
+            $paymentModeType->delete();
         } catch (\Exception $ex) {
             response()->json(['error' => $ex->getMessage()], 403);
         }
 
-        return response()->json('', 204);
+        return response()->json(null, 204);
     }
 }

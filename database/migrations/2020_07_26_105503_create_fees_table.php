@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSubjectCategoryFk extends Migration
+class CreateFeesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateSubjectCategoryFk extends Migration
      */
     public function up()
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->foreignId('category_id')
-                ->constrained('categories')
-                ->onDelete('cascade');
+        Schema::create('fees', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('code')->unique();
+            $table->string('description');
+            $table->timestamps();
         });
     }
 
@@ -27,8 +29,6 @@ class CreateSubjectCategoryFk extends Migration
      */
     public function down()
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->dropForeign(['category_id']);
-        });
+        Schema::dropIfExists('fees');
     }
 }
