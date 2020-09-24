@@ -74,8 +74,11 @@ Route::get('payment_modes', 'PaymentModeController@index')->name('paymentMode.in
 Route::apiResource('payment_mode_types', 'PaymentModeTypeController')->middleware('permission:manage paymentmodetype');
 Route::get('payment_mode_types', 'PaymentModeTypeController@index')->name('paymentModeType.index')->middleware('permission:view paymentmodetype|permission:manage paymentmodetype');
 
+Route::apiResource('students', 'StudentController')->middleware('permission:manage students');
+Route::get('students', 'StudentController@index')->name('students.index')->middleware('permission:view students|permission:manage students');
 
-
+Route::apiResource('parents', 'StudentParentController')->middleware('permission:manage parents');
+Route::get('parents', 'StudentParentController@index')->name('parents.index')->middleware('permission:view parents|permission:manage parents');
 
 // Fake APIs
 Route::get('/table/list', function () {

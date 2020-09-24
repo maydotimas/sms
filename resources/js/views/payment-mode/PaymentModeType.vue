@@ -190,7 +190,6 @@ export default {
       const { data } = await paymentModeResource.list(this.listQuery);
       this.paymentmode = data.data[0];
       console.log(this.paymentmode);
-      alert();
       this.paymentModeTypeTitle = this.paymentmode.name;
       this.loading = false;
     },
