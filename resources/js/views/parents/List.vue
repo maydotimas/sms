@@ -50,7 +50,7 @@
       </el-table-column>
       <el-table-column align="center" label="Address">
         <template slot-scope="scope">
-          <span>{{ scope.row.town }}</span>
+          <span>{{ scope.row.office_address }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="Email">

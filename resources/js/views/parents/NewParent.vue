@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
-    <el-form :model="student">
+    <el-form :model="parent">
       <el-row :gutter="20">
         <el-col :span="6">
-          <parent-card :student="student" />
+          <parent-card :parent="parent" />
           <!-- <student-bio  :student="student"/> -->
         </el-col>
         <el-col :span="18">
@@ -25,22 +25,18 @@ export default {
   components: { ParentCard, ParentActivity },
   data() {
     return {
-      student: {
+      parent: {
         first_name: '',
         middle_name: '',
         last_name: '',
         suffix: '',
-        nickname: '',
-        handedness: '',
-        religion: '',
+        occupation: '',
         street: '',
         brgy: '',
         town: '',
         province: '',
         mobile: '',
         email: '',
-        avatar: '',
-        roles: [],
       },
     };
   },

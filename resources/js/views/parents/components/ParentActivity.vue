@@ -3,15 +3,29 @@
     <el-tabs v-model="activeActivity" @tab-click="handleClick">
       <el-tab-pane label="Parent Information" name="first">
         <div>
-          <el-form ref="form" :model="parent" label-width="120px">
-            <el-form-item label="Last Name">
-              <el-input v-model="parent.last_name" aria-placeholder="Last Name" />
+          <el-form
+            ref="form"
+            :rules="rules"
+            :model="parent"
+            label-width="120px"
+          >
+            <el-form-item label="Last Name" prop="last_name">
+              <el-input
+                v-model="parent.last_name"
+                aria-placeholder="Last Name"
+              />
             </el-form-item>
-            <el-form-item label="First Name">
-              <el-input v-model="parent.first_name" aria-placeholder="First Name" />
+            <el-form-item label="First Name" prop="first_name">
+              <el-input
+                v-model="parent.first_name"
+                aria-placeholder="First Name"
+              />
             </el-form-item>
             <el-form-item label="Middle Name">
-              <el-input v-model="parent.middle_name" aria-placeholder="Middle Name" />
+              <el-input
+                v-model="parent.middle_name"
+                aria-placeholder="Middle Name"
+              />
             </el-form-item>
             <el-form-item label="Suffix">
               <el-select v-model="parent.suffix" placeholder="Suffix">
@@ -28,33 +42,55 @@
                 <el-option label="X" value="X" />
               </el-select>
             </el-form-item>
-            <el-form-item label="Relationship">
-              <el-select v-model="parent.type" placeholder="Select Relationship to Student">
+            <el-form-item label="Relationship" prop="type">
+              <el-select
+                v-model="parent.type"
+                placeholder="Select Relationship to Student"
+              >
                 <el-option label="Father" value="Father" />
                 <el-option label="Mother" value="Mother" />
                 <el-option label="Guardian" value="Guardian" />
               </el-select>
             </el-form-item>
-            <el-form-item label="Education">
-              <el-select v-model="parent.education" placeholder="Educational Attainment">
+            <el-form-item label="Education" prop="education">
+              <el-select
+                v-model="parent.education"
+                placeholder="Educational Attainment"
+              >
                 <el-option label="N/A" value />
                 <el-option label="Vocational" value="Vocational" />
-                <el-option label="High School Graduate" value="High School Graduate" />
-                <el-option label="College Undergrad" value="College Undergrad" />
+                <el-option
+                  label="High School Graduate"
+                  value="High School Graduate"
+                />
+                <el-option
+                  label="College Undergrad"
+                  value="College Undergrad"
+                />
                 <el-option label="College Graduate" value="College Graduate" />
                 <el-option label="Post Graduate" value="Post Graduate" />
               </el-select>
             </el-form-item>
-            <el-form-item label="Email Address">
-              <el-input v-model="parent.email" type="email" aria-placeholder="E-Mail Address" />
+            <el-form-item label="Email Address" prop="email">
+              <el-input
+                v-model="parent.email"
+                type="email"
+                aria-placeholder="E-Mail Address"
+              />
             </el-form-item>
-            <el-form-item label="Mobile Number">
-              <el-input v-model="parent.mobile" aria-placeholder="Mobile Number" />
+            <el-form-item label="Mobile Number" prop="mobile">
+              <el-input
+                v-model="parent.mobile"
+                aria-placeholder="Mobile Number"
+              />
             </el-form-item>
-            <el-form-item label="Occupation">
-              <el-input v-model="parent.occupation" aria-placeholder="Father's Occupation" />
+            <el-form-item label="Occupation" prop="occupation">
+              <el-input
+                v-model="parent.occupation"
+                aria-placeholder="Father's Occupation"
+              />
             </el-form-item>
-            <el-form-item label="Office Address">
+            <el-form-item label="Office Address" prop="office_address">
               <el-input
                 v-model="parent.office_address"
                 type="textarea"
@@ -103,6 +139,88 @@ export default {
       updating: false,
       links: [],
       provinceArr: [],
+      rules: {
+        last_name: [
+          {
+            required: true,
+            message: 'Please input Last Name',
+            trigger: 'blur',
+          },
+          {
+            min: 3,
+            max: 40,
+            message: 'Length should be 3 to 5',
+            trigger: 'blur',
+          },
+        ],
+        first_name: [
+          {
+            required: true,
+            message: 'Please input First Name',
+            trigger: 'blur',
+          },
+          {
+            min: 3,
+            max: 40,
+            message: 'Length should be 3 to 5',
+            trigger: 'blur',
+          },
+        ],
+        relationship: [
+          {
+            required: true,
+            message: 'Please input Parent/Guardian Relationship to Student',
+            trigger: 'blur',
+          },
+        ],
+        type: [
+          {
+            required: true,
+            message: 'Please input Education',
+            trigger: 'blur',
+          },
+        ],
+        email: [
+          {
+            required: true,
+            message: 'Please input Email',
+            trigger: 'blur',
+          },
+        ],
+        mobile: [
+          {
+            required: true,
+            message: 'Please input Mobile Number',
+            trigger: 'blur',
+          },
+        ],
+        occupation: [
+          {
+            required: true,
+            message: 'Please input Occupation',
+            trigger: 'blur',
+          },
+          {
+            min: 3,
+            max: 50,
+            message: 'Length should be 3 to 5',
+            trigger: 'blur',
+          },
+        ],
+        office_address: [
+          {
+            required: true,
+            message: 'Please input Office Address',
+            trigger: 'blur',
+          },
+          {
+            min: 3,
+            max: 500,
+            message: 'Length should be 3 to 5',
+            trigger: 'blur',
+          },
+        ],
+      },
     };
   },
   mounted() {
@@ -113,26 +231,33 @@ export default {
       console.log('Switching tab ');
     },
     onSubmit() {
-      this.updating = true;
-      parentResource
-        .store(this.parent)
-        .then((response) => {
-          this.$message({
-            message:
-              'New Parent ' +
-              this.parent.first_name +
-              ' ' +
-              this.parent.last_name +
-              ' has been created successfully.',
-            type: 'success',
-            duration: 5 * 1000,
-          });
-          this.updating = false;
-          this.$router.push({ name: 'ParentList' })
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          this.updating = true;
+          parentResource
+            .store(this.parent)
+            .then((response) => {
+              this.$message({
+                message:
+                  'New Parent ' +
+                  this.parent.first_name +
+                  ' ' +
+                  this.parent.last_name +
+                  ' has been created successfully.',
+                type: 'success',
+                duration: 5 * 1000,
+              });
+              this.updating = false;
+              this.$router.push({ name: 'ParentList' });
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
     },
     onCancel() {
       return false;
