@@ -14,13 +14,13 @@ const studentRoutes = {
   },
   children: [
     /** User managements */
-    /* {
+    {
       path: 'edit/:id(\\d+)',
-      component: () => import('@/views/parents/StudentProfile'),
-      name: 'StudentProfile',
-      meta: { title: 'studentProfile', noCache: true, permissions: ['manage parent'] },
+      component: () => import('@/views/parents/EditParent'),
+      name: 'EditParent',
+      meta: { title: 'editParent', noCache: true, permissions: ['manage parent'] },
       hidden: true,
-    }, */
+    },
     {
       path: 'new/',
       component: () => import('@/views/parents/NewParent'),

@@ -77,6 +77,7 @@ class StudentParentController extends Controller
                 'email' => $params['email'],
                 'mobile' => $params['mobile'],
                 'type' => $params['type'],
+                'avatar' => 'uploads\default.png',
             ]);
 
             return new StudentParentResource($fee);
@@ -87,12 +88,13 @@ class StudentParentController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Laravue\Models\StudentParent  $studentParent
+     * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(StudentParent $studentParent)
+    public function show($id)
     {
-        //
+        $studentParent = StudentParent::find($id);
+        return new StudentParentResource($studentParent);
     }
 
     /**
@@ -140,13 +142,12 @@ class StudentParentController extends Controller
             $studentParent->last_name = $params['last_name'];
             $studentParent->suffix = $params['suffix'];
             $studentParent->occupation = $params['occupation'];
-            $studentParent->street = $params['street'];
-            $studentParent->town = $params['town'];
-            $studentParent->province = $params['province'];
+            $studentParent->office_address = $params['office_address'];
             $studentParent->email = $params['email'];
             $studentParent->mobile = $params['mobile'];
             $studentParent->type = $params['type'];
             $studentParent->save();
+
         }
 
         return new StudentParentResource($studentParent);
@@ -167,5 +168,22 @@ class StudentParentController extends Controller
         }
 
         return response()->json(null, 204);
+    }
+
+    public function avatar(Request $request)
+    {
+        /*Get parent Record*/
+        $parent = StudentParent::find($request->input('id'));
+
+        /* Upload */
+        $file = $request->file('img');
+        $destinationPath = 'uploads';
+        $file->move($destinationPath,$parent->parent_no.'.'.$file->getClientOriginalExtension());
+
+        /* Upload */
+        $parent->avatar = 'uploads\\'.$parent->parent_no.'.'.$file->getClientOriginalExtension();
+        $parent->save();
+
+        return new StudentParentResource($parent);
     }
 }

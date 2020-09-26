@@ -118,6 +118,7 @@ export default {
       type: Object,
       default: () => {
         return {
+          id: '',
           first_name: '',
           middle_name: '',
           last_name: '',
@@ -137,8 +138,6 @@ export default {
     return {
       activeActivity: 'first',
       updating: false,
-      links: [],
-      provinceArr: [],
       rules: {
         last_name: [
           {
@@ -223,9 +222,6 @@ export default {
       },
     };
   },
-  mounted() {
-    this.links = this.loadAll();
-  },
   methods: {
     handleClick(tab, event) {
       console.log('Switching tab ');
@@ -234,25 +230,44 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.updating = true;
-          parentResource
-            .store(this.parent)
-            .then((response) => {
-              this.$message({
-                message:
-                  'New Parent ' +
-                  this.parent.first_name +
-                  ' ' +
-                  this.parent.last_name +
-                  ' has been created successfully.',
-                type: 'success',
-                duration: 5 * 1000,
+          if (this.parent.id !== undefined && this.parent.id !== '') {
+            parentResource
+              .update(this.parent.id, this.parent)
+              .then((response) => {
+                this.$message({
+                  type: 'success',
+                  message: 'Parent info has been updated successfully',
+                  duration: 5 * 1000,
+                });
+                this.submitted = false;
+              })
+              .catch((error) => {
+                console.log(error);
+              })
+              .finally(() => {
+                this.updating = false;
               });
-              this.updating = false;
-              this.$router.push({ name: 'ParentList' });
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          } else {
+            parentResource
+              .store(this.parent)
+              .then((response) => {
+                this.$message({
+                  message:
+                    'New Parent ' +
+                    this.parent.first_name +
+                    ' ' +
+                    this.parent.last_name +
+                    ' has been created successfully.',
+                  type: 'success',
+                  duration: 5 * 1000,
+                });
+                this.updating = false;
+                this.$router.push({ name: 'ParentList' });
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
         } else {
           console.log('error submit!!');
           return false;

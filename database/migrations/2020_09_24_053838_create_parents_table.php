@@ -25,6 +25,7 @@ class CreateParentsTable extends Migration
             $table->string('office_address')->nullable();
             $table->string('email');
             $table->string('mobile');
+            $table->string('avatar')->nullable();
             $table->enum('type',['Father','Mother','Guardian']);
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->useCurrent();

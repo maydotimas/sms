@@ -80,6 +80,8 @@ Route::get('students', 'StudentController@index')->name('students.index')->middl
 Route::apiResource('parents', 'StudentParentController')->middleware('permission:manage parents');
 Route::get('parents', 'StudentParentController@index')->name('parents.index')->middleware('permission:view parents|permission:manage parents');
 
+Route::post('parents/upload-avatar', 'StudentParentController@avatar')->name('parents.avatar')->middleware('permission:view parents|permission:manage parents');
+
 // Fake APIs
 Route::get('/table/list', function () {
     $rowsNumber = mt_rand(20, 30);

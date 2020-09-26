@@ -4,33 +4,21 @@
       <el-input
         v-model="listQuery.title"
         :placeholder="$t('table.search')"
-        style="width: 200px;"
+        style="width: 200px"
         class="filter-item"
         @keyup.enter.native="getList"
       />
-      <el-button
-        v-waves
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        @click="getList"
-      >{{ $t('table.search') }}</el-button>
+      <el-button waves class="filter-item" type="primary" icon="el-icon-search" @click="getList">
+        {{ $t('table.search') }}
+      </el-button>
       <router-link :to="'new/'">
-        <el-button
-          v-permission="['manage parents']"
-          class="filter-item"
-          type="primary"
-          icon="el-icon-plus"
-        >{{ $t('table.add') }}</el-button>
+        <el-button v-permission="['manage parents']" class="filter-item" type="primary" icon="el-icon-plus">
+          {{ $t('table.add') }}
+        </el-button>
       </router-link>
-      <el-button
-        v-waves
-        :loading="downloading"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-upload2"
-        @click="handleDownload"
-      >{{ $t('table.import') }}</el-button>
+      <el-button v-waves :loading="downloading" class="filter-item" type="primary" icon="el-icon-upload2" @click="handleDownload">
+        {{ $t('table.import') }}
+      </el-button>
     </div>
     <el-table v-loading="loading" :data="list" border fit highlight-current-row>
       <el-table-column align="center" label="ID" width="80">
@@ -40,12 +28,14 @@
       </el-table-column>
       <el-table-column align="center" label="Parent No">
         <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
+          <span>{{ scope.row.parent_no }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="Name">
         <template slot-scope="scope">
-          <span>{{ scope.row.last_name }}, {{ scope.row.first_name }} {{ scope.row.suffix }}</span>
+          <span>
+            {{ scope.row.last_name }}, {{ scope.row.first_name }} {{ scope.row.suffix }}
+          </span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="Address">
@@ -76,9 +66,9 @@
             size="small"
             icon="el-icon-view"
             title="View"
-            @click="handleDelete(scope.row.id, scope.row.name);"
+            @click="handleView(scope.row.id, scope.row.parent_no)"
           />
-          <router-link :to="'edit/'+scope.row.id">
+          <router-link :to="'edit/' + scope.row.id">
             <el-button
               v-permission="['manage parents']"
               type="primary"
@@ -93,14 +83,14 @@
             size="small"
             icon="el-icon-delete"
             title="Delete"
-            @click="handleDelete(scope.row.id, scope.row.name);"
+            @click="handleDelete(scope.row.id, scope.row.parent_no)"
           />
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
@@ -115,7 +105,7 @@ import permission from '@/directive/permission';
 import waves from '@/directive/waves';
 import Pagination from '@/components/Pagination'; // Secondary package based on el-pagination
 
-const studentResource = new Resource('parents');
+const parentResource = new Resource('parents');
 
 export default {
   name: 'MasterList',
@@ -148,7 +138,7 @@ export default {
     async getList() {
       const { limit, page } = this.listQuery;
       this.loading = true;
-      const { data } = await studentResource.list(this.listQuery);
+      const { data } = await parentResource.list(this.listQuery);
       this.list = data.data;
       this.list.forEach((element, index) => {
         element['index'] = (page - 1) * limit + index + 1;
@@ -157,15 +147,10 @@ export default {
       console.log(this.total);
       this.loading = false;
     },
-    handleCreate() {
-      this.feeFormVisible = true;
-      this.resetForm();
-      this.formTitle = 'Create New Student';
-    },
     handleSubmit() {
       this.submitted = true;
       if (this.currentStudent.id !== undefined) {
-        studentResource
+        parentResource
           .update(this.currentStudent.id, this.currentStudent)
           .then((response) => {
             this.$message({
@@ -184,7 +169,7 @@ export default {
             this.submitted = false;
           });
       } else {
-        studentResource
+        parentResource
           .store(this.currentStudent)
           .then((response) => {
             this.$message({
@@ -207,7 +192,7 @@ export default {
     },
     handleDelete(id, name) {
       this.$confirm(
-        'This will permanently delete fee ' + name + '. Continue?',
+        'This will permanently delete parent ' + name + '. Continue?',
         'Warning',
         {
           confirmButtonText: 'OK',
@@ -216,7 +201,7 @@ export default {
         }
       )
         .then(() => {
-          studentResource.destroy(id).then((response) => {
+          parentResource.destroy(id).then((response) => {
             this.$message({
               type: 'success',
               message: 'Delete completed',
@@ -234,7 +219,7 @@ export default {
 
     handleEdit(id, name) {
       this.formTitle = 'Edit Student ' + name;
-      this.currentStudent = this.list.find((fee) => fee.id === id);
+      this.currentStudent = this.list.find((parent) => parent.id === id);
       this.feeFormVisible = true;
     },
     handleDownload() {
@@ -250,6 +235,9 @@ export default {
         });
         this.downloading = false;
       });
+    },
+    handleView() {
+      console.log('view parent details');
     },
     resetForm() {
       this.currentStudent = {

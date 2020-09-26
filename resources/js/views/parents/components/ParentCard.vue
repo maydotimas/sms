@@ -1,76 +1,98 @@
 <template>
   <el-card>
-    <div class="student-profile">
-      <div class="student-avatar box-center">
-        <pan-thumb :image="student.avatar" :height="'100px'" :width="'100px'" :hoverable="false" />
+    <div class="parent-profile">
+      <div class="parent-avatar box-center">
+        <pan-thumb
+          :image="parent.avatar"
+          :height="'100px'"
+          :width="'100px'"
+          :hoverable="false"
+        />
       </div>
       <div class="box-center">
-        <div class="student-name text-center">{{ student.first_name }} {{ student.last_name }}</div>
-        <div class="student-role text-center text-muted">{{ getRole() }}</div>
+        <div class="parent-name text-center">
+          {{ parent.first_name }} {{ parent.last_name }}
+        </div>
       </div>
-      <div class="student-follow">
-        <el-button type="primary" style="width: 100%;">Upload Photo</el-button>
+      <div class="parent-follow">
+        <el-button
+          type="primary"
+          style="width: 100%"
+          @click="imagecropperShow = true"
+        >
+          Upload Photo
+        </el-button>
       </div>
     </div>
+    <image-cropper
+      v-show="imagecropperShow"
+      :key="imagecropperKey"
+      field="img"
+      :params="parent"
+      :width="300"
+      :height="300"
+      url="/parents/upload-avatar"
+      lang-type="en"
+      @close="close"
+      @crop-upload-success="cropSuccess"
+    />
   </el-card>
 </template>
 
 <script>
 import PanThumb from '@/components/PanThumb';
+import ImageCropper from '@/components/ImageCropper';
+import Resource from '@/api/resource';
+
+const parentResource = new Resource('parents');
 
 export default {
-  components: { PanThumb },
+  components: { PanThumb, ImageCropper },
   props: {
-    student: {
+    propParent: {
       type: Object,
       default: () => {
         return {
-          name: '',
-          email: '',
+          id: '',
           avatar: '',
-          roles: [],
         };
       },
     },
   },
   data() {
     return {
-      social: [
-        {
-          name: 'Followers',
-          count: 1235,
-        },
-        {
-          name: 'Following',
-          count: 23512,
-        },
-        {
-          name: 'Friends',
-          count: 7242,
-        },
-      ],
+      imagecropperShow: false,
+      imagecropperKey: 0,
+      parent: this.propParent,
     };
   },
   methods: {
-    getRole() {
-      const roles = this.student.roles.map((value) =>
-        this.$options.filters.uppercaseFirst(value)
-      );
-      return roles.join(' | ');
+    cropSuccess(resData) {
+      // this.imagecropperShow = false;
+      // this.imagecropperKey = this.imagecropperKey + 1;
+      // this.image = resData.files.img;
+    },
+    close() {
+      this.imagecropperShow = false;
+      this.updateAvatar();
+    },
+    async updateAvatar() {
+      const { data } = await parentResource.get(this.propParent.id);
+      this.$emit('update-parent', data);
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.student-profile {
-  .student-name {
+.parent-profile {
+  .parent-name {
     font-weight: bold;
   }
   .box-center {
     padding-top: 10px;
   }
-  .student-role {
+  .parent-role {
     padding-top: 10px;
     font-weight: 400;
     font-size: 14px;
@@ -81,7 +103,7 @@ export default {
       border-top: 1px solid #dfe6ec;
     }
   }
-  .student-follow {
+  .parent-follow {
     padding-top: 20px;
   }
 }
