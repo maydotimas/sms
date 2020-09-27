@@ -191,6 +191,7 @@ export default {
       }
     },
     handleDelete(id, name) {
+      alert(id);
       this.$confirm(
         'This will permanently delete parent ' + name + '. Continue?',
         'Warning',

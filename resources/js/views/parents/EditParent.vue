@@ -3,7 +3,7 @@
     <el-form :model="parent">
       <el-row :gutter="20">
         <el-col :span="6">
-          <parent-card :propParent="parent" @update-parent="onUpdateParent" />
+          <parent-card :parent="parent" :parent-id="parent_id" />
           <!-- <student-bio  :student="student"/> -->
         </el-col>
         <el-col :span="18">
@@ -41,18 +41,20 @@ export default {
         email: '',
         avatar: '',
       },
+      parent_id: '',
     };
+  },
+  watch: {
+    '$route': 'getParent',
   },
   created() {
     const id = this.$route.params && this.$route.params.id;
+    this.parent_id = id;
     this.getParent(id);
   },
   methods: {
     async getParent(id) {
       const { data } = await parentResource.get(id);
-      this.parent = data;
-    },
-    onUpdateParent(data){
       this.parent = data;
     },
   },

@@ -3,7 +3,8 @@
     <div class="parent-profile">
       <div class="parent-avatar box-center">
         <pan-thumb
-          :image="parent.avatar"
+          v-if="parent.avatar"
+          :image="image"
           :height="'100px'"
           :width="'100px'"
           :hoverable="false"
@@ -49,7 +50,7 @@ const parentResource = new Resource('parents');
 export default {
   components: { PanThumb, ImageCropper },
   props: {
-    propParent: {
+    parent: {
       type: Object,
       default: () => {
         return {
@@ -58,27 +59,33 @@ export default {
         };
       },
     },
+    parentId: {
+      type: String,
+      default: '0',
+    },
   },
   data() {
     return {
       imagecropperShow: false,
       imagecropperKey: 0,
-      parent: this.propParent,
+      image: '',
     };
+  },
+  created() {
+    this.updateAvatar();
   },
   methods: {
     cropSuccess(resData) {
-      // this.imagecropperShow = false;
-      // this.imagecropperKey = this.imagecropperKey + 1;
-      // this.image = resData.files.img;
+      this.imagecropperShow = false;
+      this.imagecropperKey = this.imagecropperKey + 1;
+      this.image = resData.avatar;
     },
     close() {
       this.imagecropperShow = false;
-      this.updateAvatar();
     },
     async updateAvatar() {
-      const { data } = await parentResource.get(this.propParent.id);
-      this.$emit('update-parent', data);
+      const { data } = await parentResource.get(this.parentId);
+      this.image = data.avatar;
     },
   },
 };
