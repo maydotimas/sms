@@ -16,9 +16,6 @@
           {{ $t('table.add') }}
         </el-button>
       </router-link>
-      <el-button v-waves :loading="downloading" class="filter-item" type="primary" icon="el-icon-upload2" @click="handleDownload">
-        {{ $t('table.import') }}
-      </el-button>
     </div>
     <el-table v-loading="loading" :data="list" border fit highlight-current-row>
       <el-table-column align="center" label="ID" width="80">

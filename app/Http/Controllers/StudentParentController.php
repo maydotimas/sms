@@ -6,6 +6,7 @@ use App\Http\Resources\StudentParentResource;
 use App\Laravue\Models\Student;
 use App\Laravue\Models\StudentParent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class StudentParentController extends Controller
@@ -41,7 +42,7 @@ class StudentParentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -63,8 +64,8 @@ class StudentParentController extends Controller
         } else {
             $params = $request->all();
             $parents = StudentParent::all();
-            $parent_count = $parents->count()+1;
-            $parent_no = 'PN-'.str_pad($parent_count,4,'0',STR_PAD_LEFT);
+            $parent_count = $parents->count() + 1;
+            $parent_no = 'PN-' . str_pad($parent_count, 4, '0', STR_PAD_LEFT);
 
             $fee = StudentParent::create([
                 'parent_no' => $parent_no,
@@ -100,7 +101,7 @@ class StudentParentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Laravue\Models\StudentParent  $studentParent
+     * @param \App\Laravue\Models\StudentParent $studentParent
      * @return \Illuminate\Http\Response
      */
     public function edit(StudentParent $studentParent)
@@ -111,8 +112,8 @@ class StudentParentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Laravue\Models\StudentParent  $studentParent
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Laravue\Models\StudentParent $studentParent
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, StudentParent $studentParent)
@@ -157,8 +158,8 @@ class StudentParentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Laravue\Models\StudentParent  $studentParent
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Laravue\Models\StudentParent $studentParent
      * @return \Illuminate\Http\Response
      */
     public function destroy($id, StudentParent $studentParent)
@@ -173,6 +174,12 @@ class StudentParentController extends Controller
         return response()->json(null, 204);
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function avatar(Request $request)
     {
         /*Get parent Record*/
@@ -181,13 +188,53 @@ class StudentParentController extends Controller
         /* Upload */
         $file = $request->file('img');
         $destinationPath = 'uploads';
-        $avatar_name = $parent->parent_no.date('YmdHis').'.'.$file->getClientOriginalExtension();
-        $file->move($destinationPath,$avatar_name);
+        $avatar_name = $parent->parent_no . date('YmdHis') . '.' . $file->getClientOriginalExtension();
+        $file->move($destinationPath, $avatar_name);
 
         /* Upload */
-        $parent->avatar = 'uploads\\'.$avatar_name;
+        $parent->avatar = 'uploads\\' . $avatar_name;
         $parent->save();
 
         return new StudentParentResource($parent);
+    }
+
+
+    public function autocomplete(Request $request)
+    {
+        if ($request->has('type') && $request->input('type') != 'all') {
+            if ($request->has('title') && $request->input('title') != '') {
+                $data = StudentParent::select('id as link', DB::raw('CONCAT(last_name,", ",first_name," ",middle_name, " ", IFNULL(suffix,"")) as value, type as type'))
+                    ->search($request->title)
+                    ->where('type', $request->type)
+                    ->orderBy('last_name', 'ASC')
+                    ->orderBy('first_name', 'ASC')
+                    ->orderBy('middle_name', 'ASC')
+                    ->paginate($request->limit);
+            } else {
+                $data = StudentParent::select('id as link', DB::raw('CONCAT(last_name,", ",first_name," ",middle_name, " ", IFNULL(suffix,"")) as value, type as type'))
+                    ->where('type', $request->type)
+                    ->orderBy('last_name', 'ASC')
+                    ->orderBy('first_name', 'ASC')
+                    ->orderBy('middle_name', 'ASC')
+                    ->paginate($request->limit);
+            }
+        } else {
+            if ($request->has('title') && $request->input('title') != '') {
+                $data = StudentParent::select('id as link', DB::raw('CONCAT(last_name,", ",first_name," ",middle_name, " ", IFNULL(suffix,"")) as value, type as type'))
+                    ->search($request->title)
+                    ->orderBy('last_name', 'ASC')
+                    ->orderBy('first_name', 'ASC')
+                    ->orderBy('middle_name', 'ASC')
+                    ->paginate($request->limit);
+            } else {
+                $data = StudentParent::select('id as link', DB::raw('CONCAT(last_name,", ",first_name," ",middle_name, " ", IFNULL(suffix,"")) as value, type as type'))
+                    ->orderBy('last_name', 'ASC')
+                    ->orderBy('first_name', 'ASC')
+                    ->orderBy('middle_name', 'ASC')
+                    ->paginate($request->limit);
+            }
+        }
+
+        return StudentParentResource::collection(['data' => $data]);
     }
 }

@@ -5,10 +5,10 @@ const adminRoutes = {
   path: '/administrator',
   component: Layout,
   redirect: '/administrator/users',
-  name: 'Administrator',
+  name: 'Configurations',
   alwaysShow: true,
   meta: {
-    title: 'administrator',
+    title: 'configuration',
     icon: 'admin',
     permissions: ['view menu administrator'],
   },

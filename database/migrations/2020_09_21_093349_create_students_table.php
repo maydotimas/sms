@@ -31,6 +31,7 @@ class CreateStudentsTable extends Migration
             $table->string('province');
             $table->string('email');
             $table->string('mobile');
+            $table->string('avatar')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->useCurrent();
         });

@@ -22,4 +22,10 @@ class StudentParent extends Model
         'avatar',
 
     ];
+
+    public function scopeSearch($query,$keyword){
+        return $query->where('first_name','like',$keyword.'%')
+            ->orWhere('last_name','like',$keyword.'%');
+    }
+
 }

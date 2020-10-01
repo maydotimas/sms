@@ -7,6 +7,13 @@ class Resource {
   constructor(uri) {
     this.uri = uri;
   }
+  ask(query) {
+    return request({
+      url: '/' + this.uri + '/autocomplete',
+      method: 'post',
+      params: query,
+    });
+  }
   list(query) {
     return request({
       url: '/' + this.uri,

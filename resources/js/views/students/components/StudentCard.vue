@@ -2,61 +2,95 @@
   <el-card>
     <div class="student-profile">
       <div class="student-avatar box-center">
-        <pan-thumb :image="student.avatar" :height="'100px'" :width="'100px'" :hoverable="false" />
+        <pan-thumb
+          :image="image"
+          :height="'100px'"
+          :width="'100px'"
+          :hoverable="false"
+        />
       </div>
       <div class="box-center">
-        <div class="student-name text-center">{{ student.first_name }} {{ student.last_name }}</div>
-        <div class="student-role text-center text-muted">{{ getRole() }}</div>
+        <div class="student-name text-center">
+          {{ student.first_name }} {{ student.last_name }}
+        </div>
       </div>
       <div class="student-follow">
-        <el-button type="primary" style="width: 100%;">Follow</el-button>
+        <el-button
+          type="primary"
+          style="width: 100%"
+          @click="imagecropperShow = true"
+        >
+          Upload Photo
+        </el-button>
       </div>
     </div>
+    <image-cropper
+      v-show="imagecropperShow"
+      :key="imagecropperKey"
+      field="img"
+      :params="student"
+      :width="300"
+      :height="300"
+      url="/students/upload-avatar"
+      lang-type="en"
+      @close="close"
+      @crop-upload-success="cropSuccess"
+    />
   </el-card>
 </template>
 
 <script>
 import PanThumb from '@/components/PanThumb';
+import ImageCropper from '@/components/ImageCropper';
+import Resource from '@/api/resource';
+
+const studentResource = new Resource('students');
 
 export default {
-  components: { PanThumb },
+  components: { PanThumb, ImageCropper },
   props: {
     student: {
       type: Object,
       default: () => {
         return {
-          name: '',
-          email: '',
+          id: '',
           avatar: '',
-          roles: [],
         };
       },
+    },
+    studentId: {
+      type: String,
+      default: '0',
     },
   },
   data() {
     return {
-      social: [
-        {
-          name: 'Followers',
-          count: 1235,
-        },
-        {
-          name: 'Following',
-          count: 23512,
-        },
-        {
-          name: 'Friends',
-          count: 7242,
-        },
-      ],
+      imagecropperShow: false,
+      imagecropperKey: 0,
+      image: 'uploads/default.png',
+      isSaved: false,
+      studentData: [],
     };
   },
+  created() {
+    this.updateAvatar();
+  },
   methods: {
-    getRole() {
-      const roles = this.student.roles.map((value) =>
-        this.$options.filters.uppercaseFirst(value)
-      );
-      return roles.join(' | ');
+    cropSuccess(resData) {
+      this.imagecropperShow = false;
+      this.imagecropperKey = this.imagecropperKey + 1;
+      this.image = resData.avatar;
+    },
+    close() {
+      this.imagecropperShow = false;
+    },
+    async updateAvatar() {
+      if (this.studentId === '0') {
+        this.image = 'uploads/default.png';
+      } else {
+        const { data } = await studentResource.get(this.studentId);
+        this.studentData = data.avatar;
+      }
     },
   },
 };

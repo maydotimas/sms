@@ -14,13 +14,6 @@ const studentRoutes = {
   },
   children: [
     /** User managements */
-    /* {
-      path: 'edit/:id(\\d+)',
-      component: () => import('@/views/students/StudentProfile'),
-      name: 'StudentProfile',
-      meta: { title: 'studentProfile', noCache: true, permissions: ['manage student'] },
-      hidden: true,
-    }, */
     {
       path: 'new/',
       component: () => import('@/views/students/NewStudent'),
@@ -33,6 +26,18 @@ const studentRoutes = {
       component: () => import('@/views/students/List'),
       name: 'MasterList',
       meta: { title: 'students', icon: 'user', permissions: ['manage student'] },
+    },
+    {
+      path: 'list',
+      component: () => import('@/views/students/List'),
+      name: 'StudentReservation',
+      meta: { title: 'studentReservation', icon: 'form', permissions: ['manage student'] },
+    },
+    {
+      path: 'list',
+      component: () => import('@/views/students/List'),
+      name: 'StudentEnrollment',
+      meta: { title: 'studentEnrollment', icon: 'skill', permissions: ['manage student'] },
     },
   ],
 };

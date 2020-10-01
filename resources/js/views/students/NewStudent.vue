@@ -2,12 +2,11 @@
   <div class="app-container">
     <el-form :model="student">
       <el-row :gutter="20">
+        <el-col :span="18">
+          <student-activity @save-student="savestudentdetails" />
+        </el-col>
         <el-col :span="6">
           <student-card :student="student" />
-          <!-- <student-bio  :student="student"/> -->
-        </el-col>
-        <el-col :span="18">
-          <student-activity />
         </el-col>
       </el-row>
     </el-form>
@@ -26,6 +25,9 @@ export default {
   data() {
     return {
       student: {
+        type: 1,
+        lrn: '',
+        student_no: '',
         first_name: '',
         middle_name: '',
         last_name: '',
@@ -39,6 +41,10 @@ export default {
         province: '',
         mobile: '',
         email: '',
+        father: '',
+        mother: '',
+        guardian: '',
+        emergency_contact: '',
         avatar: '',
         roles: [],
       },
@@ -48,6 +54,9 @@ export default {
     async getUser(id) {
       const { data } = await studentResource.get(id);
       this.student = data;
+    },
+    savestudentdetails(data) {
+      alert('emitted' + data);
     },
   },
 };

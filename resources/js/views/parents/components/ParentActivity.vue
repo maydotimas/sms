@@ -229,10 +229,8 @@ export default {
     onSubmit() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          alert(this.parent.id);
           this.updating = true;
-          if (this.parent.id !== undefined || this.parent.id !== '') {
-            alert('upate');
+          if (this.parent.id !== undefined && this.parent.id !== '') {
             parentResource
               .update(this.parent.id, this.parent)
               .then((response) => {
@@ -250,7 +248,6 @@ export default {
                 this.updating = false;
               });
           } else {
-            alert('store');
             parentResource
               .store(this.parent)
               .then((response) => {

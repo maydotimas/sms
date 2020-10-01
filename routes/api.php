@@ -76,11 +76,21 @@ Route::get('payment_mode_types', 'PaymentModeTypeController@index')->name('payme
 
 Route::apiResource('students', 'StudentController')->middleware('permission:manage students');
 Route::get('students', 'StudentController@index')->name('students.index')->middleware('permission:view students|permission:manage students');
+Route::post('students/upload-avatar', 'StudentController@avatar')->name('students.avatar')->middleware('permission:view students|permission:manage students');
 
 Route::apiResource('parents', 'StudentParentController')->middleware('permission:manage parents');
 Route::get('parents', 'StudentParentController@index')->name('parents.index')->middleware('permission:view parents|permission:manage parents');
 
 Route::post('parents/upload-avatar', 'StudentParentController@avatar')->name('parents.avatar')->middleware('permission:view parents|permission:manage parents');
+Route::post('parents/autocomplete', 'StudentParentController@autocomplete')->name('parents.autocomplete')->middleware('permission:view parents|permission:manage parents');
+
+Route::get('province', 'StudentParentController@index')->name('parents.index')->middleware('permission:view parents|permission:manage parents');
+Route::get('city', 'StudentParentController@index')->name('parents.index')->middleware('permission:view parents|permission:manage parents');
+Route::get('brgy', 'StudentParentController@index')->name('parents.index')->middleware('permission:view parents|permission:manage parents');
+
+Route::post('province/autocomplete', 'ProvinceController@index');
+Route::post('city/autocomplete', 'CityyController@index');
+Route::post('barangay/autocomplete', 'BarangayController@index');
 
 // Fake APIs
 Route::get('/table/list', function () {

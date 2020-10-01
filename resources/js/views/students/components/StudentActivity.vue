@@ -3,22 +3,51 @@
     <el-tabs v-model="activeActivity" @tab-click="handleClick">
       <el-tab-pane label="Personal Information" name="first">
         <div>
-          <el-form ref="form" :model="student" label-width="120px">
+          <el-form
+            ref="form1"
+            :rules="rule1"
+            :model="student"
+            label-width="120px"
+          >
+            <el-form-item label="Student Type">
+              <el-radio-group v-model="student.type">
+                <el-radio :label="0">Old Student</el-radio>
+                <el-radio :label="1">New Student</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item v-if="student.type === 0" label="Student No">
+              <el-input
+                v-model="student.student_no"
+                aria-placeholder="LRN (Learners Reference Number)"
+              />
+            </el-form-item>
             <el-form-item label="LRN">
-              <el-input v-model="student.lrn" aria-placeholder="LRN (Learners Reference Number)" />
+              <el-input
+                v-model="student.lrn"
+                aria-placeholder="LRN (Learners Reference Number)"
+              />
             </el-form-item>
-            <el-form-item label="Last Name">
-              <el-input v-model="student.last_name" aria-placeholder="Last Name" />
+            <el-form-item label="Last Name" prop="last_name">
+              <el-input
+                v-model="student.last_name"
+                aria-placeholder="Last Name"
+              />
             </el-form-item>
-            <el-form-item label="First Name">
-              <el-input v-model="student.first_name" aria-placeholder="First Name" />
+            <el-form-item label="First Name" prop="first_name">
+              <el-input
+                v-model="student.first_name"
+                aria-placeholder="First Name"
+              />
             </el-form-item>
-            <el-form-item label="Middle Name">
-              <el-input v-model="student.middle_name" aria-placeholder="Middle Name" />
+            <el-form-item label="Middle Name" prop="middle_name">
+              <el-input
+                v-model="student.middle_name"
+                aria-placeholder="Middle Name"
+              />
             </el-form-item>
-            <el-form-item label="Suffix">
+            <el-form-item label="Suffix" prop="suffix">
               <el-select v-model="student.suffix" placeholder="Suffix">
-                <el-option label="N/A" value />
+                <el-option label="N/A" value="" />
                 <el-option label="JR" value="JR" />
                 <el-option label="II" value="II" />
                 <el-option label="III" value="III" />
@@ -31,31 +60,37 @@
                 <el-option label="X" value="X" />
               </el-select>
             </el-form-item>
-            <el-form-item label="Nick Name">
-              <el-input v-model="student.nickname" aria-placeholder="Nickname" />
+            <el-form-item label="Nick Name" prop="nick_name">
+              <el-input
+                v-model="student.nickname"
+                aria-placeholder="Nickname"
+              />
             </el-form-item>
-            <el-form-item label="Gender">
-              <el-select v-model="student.region" placeholder="Select Gender">
+            <el-form-item label="Gender" prop="gender">
+              <el-select v-model="student.gender" placeholder="Select Gender">
                 <el-option label="Male" value="Male" />
                 <el-option label="Female" value="Female" />
               </el-select>
             </el-form-item>
-            <el-form-item label="Birthdate">
+            <el-form-item label="Birthdate" prop="birthdate">
               <el-date-picker
                 v-model="student.birthdate"
                 type="date"
                 placeholder="Select Birtdate"
-                style="width: 100%;"
+                style="width: 100%"
               />
             </el-form-item>
-            <el-form-item label="Handedness">
-              <el-select v-model="student.handedness" placeholder="Select Handedness">
+            <el-form-item label="Handedness" prop="handedness">
+              <el-select
+                v-model="student.handedness"
+                placeholder="Select Handedness"
+              >
                 <el-option label="Left" value="Left" />
                 <el-option label="Right" value="Right" />
                 <el-option label="Ambidextrous" value="Ambidextrous" />
               </el-select>
             </el-form-item>
-            <el-form-item label="Religion">
+            <el-form-item label="Religion" prop="religion">
               <el-select
                 v-model="student.religion"
                 auto-complete="true"
@@ -65,13 +100,22 @@
                 <el-option label="Born Again" value="Born Again" />
                 <el-option label="Catholic" value="Catholic" />
                 <el-option label="Hindu" value="Hindu" />
-                <el-option label="Iglesia ni Cristo" value="Iglesia ni Cristo" />
+                <el-option
+                  label="Iglesia ni Cristo"
+                  value="Iglesia ni Cristo"
+                />
                 <el-option label="Islam" value="Islam" />
                 <el-option label="Jewish" value="Jewish" />
-                <el-option label="Jehovah's Witness" value="Jehovah's Witness" />
+                <el-option
+                  label="Jehovah's Witness"
+                  value="Jehovah's Witness"
+                />
                 <el-option label="Mormon" value="Mormon" />
                 <el-option label="Protestant" value="Protestant" />
-                <el-option label="Seventh Day Adventist" value="Seventh Day Adventist" />
+                <el-option
+                  label="Seventh Day Adventist"
+                  value="Seventh Day Adventist"
+                />
                 <el-option label="Others" value="Others" />
               </el-select>
             </el-form-item>
@@ -84,44 +128,69 @@
       </el-tab-pane>
       <el-tab-pane label="Contact Information" name="second">
         <div class="student-activity">
-          <el-form ref="form" :model="student" label-width="120px">
-            <el-form-item label="Email Address">
-              <el-input v-model="student.email" type="email" aria-placeholder="E-Mail Address" />
-            </el-form-item>
-            <el-form-item label="Mobile Number">
-              <el-input v-model="student.mobile" aria-placeholder="Mobile Number" />
-            </el-form-item>
-            <el-form-item label="Street">
-              <el-input v-model="student.street" type="textarea" aria-placeholder="Street" />
-            </el-form-item>
-            <el-form-item label="Province">
-              <el-autocomplete
-                v-model="student.province"
-                class="inline-input"
-                :fetch-suggestions="querySearch"
-                placeholder="Please Input Province"
-                :trigger-on-focus="true"
-                @select="handleSelect"
+          <el-form
+            ref="form2"
+            :rules="rule2"
+            :model="student"
+            label-width="120px"
+          >
+            <el-form-item label="Email Address" prop="email">
+              <el-input
+                v-model="student.email"
+                type="email"
+                aria-placeholder="E-Mail Address"
               />
             </el-form-item>
-            <el-form-item label="Municipality">
-              <el-autocomplete
-                v-model="student.town"
-                class="inline-input"
-                :fetch-suggestions="querySearch"
-                placeholder="Please Input Province"
-                :trigger-on-focus="true"
-                @select="handleSelect"
+            <el-form-item label="Mobile Number" prop="mobile">
+              <el-input
+                v-model="student.mobile"
+                aria-placeholder="Mobile Number"
               />
             </el-form-item>
-            <el-form-item label="Baranggay">
+            <el-form-item label="Street" prop="street">
+              <el-input
+                v-model="student.street"
+                type="textarea"
+                aria-placeholder="Street"
+              />
+            </el-form-item>
+            <el-form-item label="Province" prop="province">
               <el-autocomplete
-                v-model="student.brgy"
+                v-model="province"
                 class="inline-input"
-                :fetch-suggestions="querySearch"
+                :fetch-suggestions="provinceSearch"
                 placeholder="Please Input Province"
                 :trigger-on-focus="true"
-                @select="handleSelect"
+                @select="handleSelectProvince"
+              />
+            </el-form-item>
+            <el-form-item label="Municipality" prop="town">
+              <el-autocomplete
+                v-model="barangay"
+                class="inline-input"
+                :fetch-suggestions="townSearch"
+                placeholder="Please Input Municipality"
+                :trigger-on-focus="true"
+                @select="handleSelectTown"
+              />
+            </el-form-item>
+            <el-form-item label="Barangay" prop="town">
+              <el-autocomplete
+                v-model="town"
+                class="inline-input"
+                :fetch-suggestions="brgySearch"
+                placeholder="Please Input Barangay"
+                :trigger-on-focus="true"
+                @select="handleSelectBrgy"
+              />
+            </el-form-item>
+            <el-form-item label="In Case Of Emergency" prop="emergency_rule">
+              <el-autocomplete
+                v-model="emergency"
+                :fetch-suggestions="parentSearch"
+                placeholder="Please Input"
+                :trigger-on-focus="true"
+                @select="handleSelectEmergency"
               />
             </el-form-item>
             <el-form-item>
@@ -131,45 +200,36 @@
           </el-form>
         </div>
       </el-tab-pane>
-      <el-tab-pane v-loading="updating" label="Family Information" name="third">
+      <el-tab-pane label="Family Information" name="third">
         <div class="student-activity">
-          <el-form ref="form" :model="student" label-width="120px">
-            <el-form-item label="Father's Name">
-              <el-input v-model="student.father_name" aria-placeholder="Father's Name" />
-            </el-form-item>
-            <el-form-item label="Occupation">
-              <el-input v-model="student.father_occupation" aria-placeholder="Father's Occupation" />
-            </el-form-item>
-            <el-form-item label="Edducational Attainment">
-              <el-select v-model="student.father_education" placeholder="Educational Attainment">
-                <el-option label="N/A" value />
-                <el-option label="Vocational" value="Vocational" />
-                <el-option label="High School Graduate" value="High School Graduate" />
-                <el-option label="College Undergrad" value="College Undergrad" />
-                <el-option label="College Graduate" value="College Graduate" />
-                <el-option label="Post Graduate" value="Post Graduate" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="Address">
-              <el-input
-                v-model="student.father_office"
-                type="textarea"
-                aria-placeholder="Office Address"
+          <el-form ref="form3" :model="student" label-width="120px">
+            <el-form-item label="Father">
+              <el-autocomplete
+                v-model="father"
+                :fetch-suggestions="popSearch"
+                placeholder="Please Input"
+                @select="handleSelectFather"
               />
             </el-form-item>
-            <el-form-item label="Email Address">
-              <el-input
-                v-model="student.father_email"
-                type="email"
-                aria-placeholder="E-Mail Address"
+            <el-form-item label="Mother">
+              <el-autocomplete
+                v-model="mother"
+                :fetch-suggestions="momSearch"
+                placeholder="Please Input"
+                @select="handleSelectMother"
               />
             </el-form-item>
-            <el-form-item label="Mobile Number">
-              <el-input v-model="student.father_mobile" aria-placeholder="Mobile Number" />
+            <el-form-item label="Guardian">
+              <el-autocomplete
+                v-model="guardian"
+                :fetch-suggestions="guardianSearch"
+                placeholder="Please Input"
+                @select="handleSelectGuardian"
+              />
             </el-form-item>
             <el-form-item>
               <el-button @click="onCancel">Reset</el-button>
-              <el-button type="primary" @click="onNext">Next</el-button>
+              <el-button type="primary" @click="onSubmit">Submit</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -180,7 +240,11 @@
 
 <script>
 import Resource from '@/api/resource';
-const userResource = new Resource('users');
+const studentResource = new Resource('students');
+const parentResource = new Resource('parents');
+const provinceResource = new Resource('province');
+const cityResource = new Resource('city');
+const brgyResource = new Resource('barangay');
 
 export default {
   props: {
@@ -188,6 +252,9 @@ export default {
       type: Object,
       default: () => {
         return {
+          type: 1,
+          lrn: '',
+          student_no: '',
           first_name: '',
           middle_name: '',
           last_name: '',
@@ -201,6 +268,10 @@ export default {
           province: '',
           mobile: '',
           email: '',
+          father: '',
+          mother: '',
+          guardian: '',
+          emergency_contact: '',
           avatar: '',
           roles: [],
         };
@@ -209,27 +280,244 @@ export default {
   },
   data() {
     return {
+      fatherQuery: {
+        page: 1,
+        limit: 20,
+        title: this.father,
+        type: 'father',
+      },
+      motherQuery: {
+        page: 1,
+        limit: 20,
+        title: this.mother,
+        type: 'mother',
+      },
+      guardianQuery: {
+        page: 1,
+        limit: 20,
+        title: this.guardian,
+        type: 'guardian',
+      },
+      parentQuery: {
+        page: 1,
+        limit: 20,
+        title: this.parent,
+        type: 'all',
+      },
+      provinceQuery: {
+        page: 1,
+        limit: 20,
+        title: '',
+      },
+      townQuery: {
+        page: 1,
+        limit: 20,
+        title: '',
+      },
+      brgyQuery: {
+        page: 1,
+        limit: 20,
+        title: '',
+      },
+      rule1: {
+        last_name: [
+          {
+            required: true,
+            message: 'Please input Last Name',
+            trigger: 'blur',
+          },
+          {
+            min: 3,
+            max: 40,
+            message: 'Length should be 3 to 5',
+            trigger: 'blur',
+          },
+        ],
+        first_name: [
+          {
+            required: true,
+            message: 'Please input First Name',
+            trigger: 'blur',
+          },
+          {
+            min: 3,
+            max: 40,
+            message: 'Length should be 3 to 5',
+            trigger: 'blur',
+          },
+        ],
+        gender: [
+          {
+            required: true,
+            message: 'Please input Gender',
+            trigger: 'blur',
+          },
+          {
+            required: true,
+            message: 'Please input Gender',
+            trigger: 'change',
+          },
+        ],
+        birthdate: [
+          {
+            required: true,
+            message: 'Please input birthdate',
+            trigger: 'blur',
+          },
+          {
+            required: true,
+            message: 'Please input birthdate',
+            trigger: 'change',
+          },
+        ],
+        handedness: [
+          {
+            required: true,
+            message: 'Please select handedness',
+            trigger: 'blur',
+          },
+          {
+            required: true,
+            message: 'Please input handedness',
+            trigger: 'change',
+          },
+        ],
+        religion: [
+          {
+            required: true,
+            message: 'Please select religion',
+            trigger: 'blur',
+          },
+          {
+            required: true,
+            message: 'Please input religion',
+            trigger: 'change',
+          },
+        ],
+      },
+      rule2: {
+        email: [
+          {
+            required: true,
+            message: 'Please input Email Address',
+            trigger: 'blur',
+          },
+        ],
+        mobile: [
+          {
+            required: true,
+            message: 'Please input Mobile',
+            trigger: 'blur',
+          },
+          {
+            min: 3,
+            max: 40,
+            message: 'Length should be 3 to 5',
+            trigger: 'blur',
+          },
+        ],
+        street: [
+          {
+            required: true,
+            message: 'Please input Street',
+            trigger: 'blur',
+          },
+        ],
+        province: [
+          {
+            required: true,
+            message: 'Please input Province',
+            trigger: 'blur',
+          },
+          {
+            required: true,
+            message: 'Please input Province',
+            trigger: 'change',
+          },
+        ],
+        town: [
+          {
+            required: true,
+            message: 'Please select Town',
+            trigger: 'blur',
+          },
+          {
+            required: true,
+            message: 'Please input Town',
+            trigger: 'change',
+          },
+        ],
+        barangay: [
+          {
+            required: true,
+            message: 'Please select Barangay',
+            trigger: 'blur',
+          },
+          {
+            required: true,
+            message: 'Please input Barangay',
+            trigger: 'change',
+          },
+        ],
+      },
       activeActivity: 'first',
       updating: false,
       links: [],
-      provinceArr: [],
+      fathers: [],
+      mothers: [],
+      guardians: [],
+      parents: [],
+      provinces: [],
+      cities: [],
+      barangays: [],
+      father: '',
+      mother: '',
+      guardian: '',
+      emergency: '',
+      parent: '',
+      province: '',
+      town: '',
+      barangay: '',
+      form1Valid: false,
+      form2Valid: false,
+      form3Valid: false,
     };
   },
   mounted() {
-    this.links = this.loadAll();
+    alert(this.student.type);
   },
   methods: {
     handleClick(tab, event) {
+      if (tab.name === 'first') {
+        this.activeActivity = 'first';
+      } else if (tab.name === 'second') {
+        this.activeActivity = 'second';
+      } else {
+        this.activeActivity = 'third';
+      }
       console.log('Switching tab ');
     },
     onNext() {
       // validate fields
       // transfer tab
       if (this.activeActivity === 'first') {
-        this.activeActivity = 'second';
-      }
-      if (this.activeActivity === 'second') {
-        this.activeActivity = 'third';
+        this.$refs['form1'].validate((valid) => {
+          if (valid) {
+            this.form1Valid = true;
+            this.activeActivity = 'second';
+          } else {
+            this.form1Valid = false;
+          }
+        });
+      } else if (this.activeActivity === 'second') {
+        this.$refs['form2'].validate((valid) => {
+          if (valid) {
+            this.form2Valid = true;
+            this.activeActivity = 'third';
+          } else {
+            this.form2Valid = false;
+          }
+        });
       }
     },
     onPrevious() {
@@ -237,40 +525,151 @@ export default {
       // transfer tab
       if (this.activeActivity === 'second') {
         this.activeActivity = 'first';
-      }
-      if (this.activeActivity === 'third') {
+      } else if (this.activeActivity === 'third') {
         this.activeActivity = 'second';
       }
     },
     onSubmit() {
-      this.updating = true;
-      userResource
-        .update(this.student.id, this.student)
-        .then((response) => {
-          this.updating = false;
-          this.$message({
-            message: 'User information has been updated successfully',
-            type: 'success',
-            duration: 5 * 1000,
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          this.updating = false;
-        });
+      this.$refs['form3'].validate((valid) => {
+        if (this.form1Valid && this.form2Valid && valid) {
+          if (this.student.father === '' && this.student.mother === '') {
+            alert('student parent is required');
+          }
+          this.updating = true;
+          if (this.student.id !== undefined && this.student.id !== '') {
+            studentResource
+              .update(this.student.id, this.student)
+              .then((response) => {
+                this.$message({
+                  type: 'success',
+                  message: 'Student info has been updated successfully',
+                  duration: 5 * 1000,
+                });
+                this.submitted = false;
+              })
+              .catch((error) => {
+                console.log(error);
+              })
+              .finally(() => {
+                this.updating = false;
+              });
+          } else {
+            console.log(this.student);
+            studentResource
+              .store(this.student)
+              .then((response) => {
+                this.$message({
+                  message:
+                    'New Student ' +
+                    this.student.first_name +
+                    ' ' +
+                    this.student.last_name +
+                    ' has been created successfully.',
+                  type: 'success',
+                  duration: 5 * 1000,
+                });
+                this.updating = false;
+                this.$emit('save-student', this.student);
+                // this.$router.push({ name: 'ParentList' });
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+        } else {
+          this.activeActivity = 'first';
+          return false;
+        }
+      });
     },
     onCancel() {
       return false;
     },
-    querySearch(queryString, cb) {
-      var links = this.links;
+    async popSearch(queryString, cb) {
+      var results = await this.loadFather();
+      // call callback function to return suggestions
+      cb(results);
+    },
+    async momSearch(queryString, cb) {
+      var results = await this.loadMother();
+      // call callback function to return suggestions
+      cb(results);
+    },
+    async guardianSearch(queryString, cb) {
+      var results = await this.loadGuardian();
+      // call callback function to return suggestions
+      cb(results);
+    },
+    async parentSearch(queryString, cb) {
+      var results = await this.loadParents();
+      // call callback function to return suggestions
+      cb(results);
+    },
+    async provinceSearch(queryString, cb) {
+      var results = await this.loadProvince();
+      // call callback function to return suggestions
+      cb(results);
+    },
+    async townSearch(queryString, cb) {
+      var links = this.cities;
       var results = queryString
         ? links.filter(this.createFilter(queryString))
         : links;
       // call callback function to return suggestions
       cb(results);
     },
-    loadAll() {},
+    async brgySearch(queryString, cb) {
+      var links = this.barangays;
+      var results = queryString
+        ? links.filter(this.createFilter(queryString))
+        : links;
+      // call callback function to return suggestions
+      cb(results);
+    },
+
+    async loadFather() {
+      this.fatherQuery.title = this.father;
+      const { data } = await parentResource.ask(this.fatherQuery);
+      this.fathers = data.data;
+      return data.data;
+    },
+    async loadMother() {
+      this.motherQuery.title = this.mother;
+      const { data } = await parentResource.ask(this.motherQuery);
+      this.mothers = data.data;
+      return data.data;
+    },
+    async loadGuardian() {
+      this.guardianQuery.title = this.guardian;
+      const { data } = await parentResource.ask(this.guardianQuery);
+      this.guardians = data.data;
+      return data.data;
+    },
+    async loadParents() {
+      this.parentQuery.title = this.parent;
+      const { data } = await parentResource.ask(this.parentQuery);
+      this.parents = data.data;
+      return data.data;
+    },
+    async loadProvince() {
+      this.provinceQuery.title = this.province;
+      const { data } = await provinceResource.ask(this.provinceQuery);
+      this.provinces = data.data;
+      console.log(data.data);
+      return data.data;
+    },
+    async loadTown() {
+      this.townQuery.title = this.student.province;
+      const { data } = await cityResource.ask(this.townQuery);
+      this.cities = data.data;
+      return data.data;
+    },
+    async loadBrgy() {
+      this.brgyQuery.title = this.student.town;
+      const { data } = await brgyResource.ask(this.brgyQuery);
+      this.barangays = data.data;
+      return data.data;
+    },
     createFilter(queryString) {
       return (link) => {
         return (
@@ -278,8 +677,28 @@ export default {
         );
       };
     },
-    handleSelect(item) {
-      console.log(item);
+    handleSelectProvince(item) {
+      this.student.province = item.link;
+      this.loadTown();
+    },
+    handleSelectTown(item) {
+      this.student.town = item.link;
+      this.loadBrgy();
+    },
+    handleSelectBrgy(item) {
+      this.student.brgy = item.link;
+    },
+    handleSelectFather(item) {
+      this.student.father = item.link;
+    },
+    handleSelectMother(item) {
+      this.student.mother = item.link;
+    },
+    handleSelectGuardian(item) {
+      this.student.guardian = item.link;
+    },
+    handleSelectEmergency(item) {
+      this.student.emergency_contact = item.link;
     },
   },
 };

@@ -20,6 +20,7 @@ import Layout from '@/layout';
 import adminRoutes from './modules/admin';
 import studentRoutes from './modules/student';
 import parentRoutes from './modules/parent';
+// import syRoutes from './modules/school-year';
 // import nestedRoutes from './modules/nested';
 import errorRoutes from './modules/error';
 // import excelRoutes from './modules/excel';
@@ -162,6 +163,7 @@ export const constantRoutes = [
 
 export const asyncRoutes = [
   adminRoutes,
+  // syRoutes,
   studentRoutes,
   parentRoutes,
   // permissionRoutes,
