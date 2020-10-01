@@ -49,37 +49,25 @@
 
       <el-table-column align="center" label="Student No">
         <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
+          <span>{{ scope.row.student_no }}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="LRN">
         <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
+          <span>{{ scope.row.lrn }}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="Name">
         <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="Age">
-        <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="Gender">
-        <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
+          <span>{{ scope.row.last_name }},{{ scope.row.first_name }}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="Mobile No">
         <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
+          <span>{{ scope.row.mobile }}</span>
         </template>
       </el-table-column>
 

@@ -32,6 +32,7 @@ class CreateStudentsTable extends Migration
             $table->string('email');
             $table->string('mobile');
             $table->string('avatar')->nullable();
+            $table->string('emergency_contact')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->useCurrent();
         });

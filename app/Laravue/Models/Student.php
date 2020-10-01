@@ -7,20 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     protected $fillable = [
-        'parent_no',
+        'lrn',
+        'student_no',
         'first_name',
         'middle_name',
         'last_name',
         'suffix',
-        'occupation',
-        'office_address',
+        'nickname',
+        'handedness',
+        'religion',
+        'street',
+        'brgy',
+        'town',
+        'province',
         'email',
         'mobile',
-        'type',
-        'created_at',
-        'updated_at',
         'avatar',
-
     ];
 
     public function scopeSearch($query,$keyword){

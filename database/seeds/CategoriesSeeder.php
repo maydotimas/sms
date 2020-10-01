@@ -11,60 +11,61 @@ class CategoriesSeeder extends Seeder
      */
     public function run()
     {
+        $faker = \Faker\Factory::create();
         for ($ctr = 0; $ctr < 100; $ctr++) {
-            DB::table('categories')->insert([
-                'name' => Str::random(10),
-                'code' => Str::random(10),
-                'description' => Str::random(10),
-            ]);
-            DB::table('departments')->insert([
-                'name' => Str::random(10),
-                'code' => Str::random(10),
-                'description' => Str::random(10),
-            ]);
-            DB::table('subjects')->insert([
-                'name' => 'subject: ' . Str::random(10),
-                'code' => Str::random(10),
-                'description' => Str::random(10),
-                'category_id' => 1,
-            ]);
+//            DB::table('categories')->insert([
+//                'name' => $faker->name,
+//                'code' => $faker->words,
+//                'description' => $faker->words,
+//            ]);
+//            DB::table('departments')->insert([
+//                'name' => 'Department: '.$faker->word(),
+//                'code' => $faker->words,
+//                'description' =>$faker->words,
+//            ]);
+//            DB::table('subjects')->insert([
+//                'name' => 'Subject: '.$faker->word(),
+//                'code' => $faker->words,
+//                'description' => $faker->words,
+//                'category_id' => 1,
+//            ]);
 
             DB::table('student_parents')->insert([
-                'parent_no' => 'subject: ' . Str::random(10),
-                'first_name' => Str::random(10),
-                'middle_name' => Str::random(10),
-                'last_name' => Str::random(10),
+                'parent_no' => 'PN-' . Str::random(10),
+                'first_name' => $faker->name,
+                'middle_name' =>$faker->name,
+                'last_name' => $faker->name,
                 'suffix' => Str::random(10),
-                'occupation' => Str::random(10),
-                'office_address' => Str::random(10),
-                'email' => Str::random(10),
-                'mobile' => Str::random(10),
+                'occupation' => $faker->word(),
+                'office_address' => $faker->address,
+                'email' => $faker->email,
+                'mobile' =>  $faker->phoneNumber,
                 'avatar' => Str::random(10),
                 'type' => 'Father'
             ]);
             DB::table('student_parents')->insert([
-                'parent_no' => 'subject: ' . Str::random(10),
-                'first_name' => Str::random(10),
-                'middle_name' => Str::random(10),
-                'last_name' => Str::random(10),
+                'parent_no' => 'PN-' . Str::random(10),
+                'first_name' => $faker->name,
+                'middle_name' =>$faker->name,
+                'last_name' => $faker->name,
                 'suffix' => Str::random(10),
-                'occupation' => Str::random(10),
-                'office_address' => Str::random(10),
-                'email' => Str::random(10),
-                'mobile' => Str::random(10),
+                'occupation' => $faker->word(),
+                'office_address' => $faker->address,
+                'email' => $faker->email,
+                'mobile' =>  $faker->phoneNumber,
                 'avatar' => Str::random(10),
                 'type' => 'Mother'
             ]);
             DB::table('student_parents')->insert([
-                'parent_no' => 'subject: ' . Str::random(10),
-                'first_name' => Str::random(10),
-                'middle_name' => Str::random(10),
-                'last_name' => Str::random(10),
+                'parent_no' => 'PN-' . Str::random(10),
+                'first_name' => $faker->name,
+                'middle_name' =>$faker->name,
+                'last_name' => $faker->name,
                 'suffix' => Str::random(10),
-                'occupation' => Str::random(10),
-                'office_address' => Str::random(10),
-                'email' => Str::random(10),
-                'mobile' => Str::random(10),
+                'occupation' => $faker->word(),
+                'office_address' => $faker->address,
+                'email' => $faker->email,
+                'mobile' =>  $faker->phoneNumber,
                 'avatar' => Str::random(10),
                 'type' => 'Guardian'
             ]);

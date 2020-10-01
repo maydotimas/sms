@@ -56,7 +56,7 @@ export default {
       this.student = data;
     },
     savestudentdetails(data) {
-      alert('emitted' + data);
+      // alert('emitted' + data);
     },
   },
 };
