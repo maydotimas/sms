@@ -279,6 +279,20 @@ export default {
     },
   },
   data() {
+    var checkEmail = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('Please input email'));
+      }
+      if (
+        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+          value
+        )
+      ) {
+        return callback();
+      } else {
+        return callback(new Error('Invalid email format'));
+      }
+    };
     return {
       fatherQuery: {
         page: 1,
@@ -396,13 +410,7 @@ export default {
         ],
       },
       rule2: {
-        email: [
-          {
-            required: true,
-            message: 'Please input Email Address',
-            trigger: 'blur',
-          },
-        ],
+        email: [{ required: true, validator: checkEmail, trigger: 'blur' }],
         mobile: [
           {
             required: true,
@@ -483,9 +491,7 @@ export default {
       form3Valid: false,
     };
   },
-  mounted() {
-    alert(this.student.type);
-  },
+  mounted() {},
   methods: {
     handleClick(tab, event) {
       if (tab.name === 'first') {
