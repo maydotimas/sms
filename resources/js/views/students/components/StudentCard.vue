@@ -77,9 +77,11 @@ export default {
   },
   methods: {
     cropSuccess(resData) {
+      console.log(resData);
       this.imagecropperShow = false;
       this.imagecropperKey = this.imagecropperKey + 1;
       this.image = resData.avatar;
+      this.$emit('update-avatar', this.image);
     },
     close() {
       this.imagecropperShow = false;

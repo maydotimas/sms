@@ -155,17 +155,28 @@ class StudentController extends Controller
     {
         /*Get parent Record*/
         $student = Student::find($request->input('id'));
+        if($student){
+            /* Upload */
+            $file = $request->file('img');
+            $destinationPath = 'uploads';
+            $avatar_name = $student->student_no . date('YmdHis') . '.' . $file->getClientOriginalExtension();
+            $file->move($destinationPath, $avatar_name);
 
-        /* Upload */
-        $file = $request->file('img');
-        $destinationPath = 'uploads';
-        $avatar_name = $student->student_no . date('YmdHis') . '.' . $file->getClientOriginalExtension();
-        $file->move($destinationPath, $avatar_name);
+            /* Upload */
+            $student->avatar = 'uploads\\' . $avatar_name;
+            $student->save();
 
-        /* Upload */
-        $student->avatar = 'uploads\\' . $avatar_name;
-        $student->save();
+            return new StudentResource($student);
+        }else{
+            /* Upload */
+            $file = $request->file('img');
+            $destinationPath = 'uploads';
+            $avatar_name = date('YmdHis') . '.' . $file->getClientOriginalExtension();
+            $file->move($destinationPath, $avatar_name);
+            $student = new Student();
+            $student->avatar = 'uploads\\' . $avatar_name;
+            return new StudentResource($student);
+        }
 
-        return new StudentResource($student);
     }
 }

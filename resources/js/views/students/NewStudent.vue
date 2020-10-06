@@ -3,10 +3,10 @@
     <el-form :model="student">
       <el-row :gutter="20">
         <el-col :span="18">
-          <student-activity @save-student="savestudentdetails" />
+          <student-activity :student="student" @save-student="savestudentdetails" />
         </el-col>
         <el-col :span="6">
-          <student-card :student="student" />
+          <student-card :student="student" @update-avatar="updateAvatar" />
         </el-col>
       </el-row>
     </el-form>
@@ -57,6 +57,10 @@ export default {
     },
     savestudentdetails(data) {
       // alert('emitted' + data);
+    },
+    updateAvatar(data) {
+      this.student.avatar = data;
+      alert(this.student.avatar);
     },
   },
 };

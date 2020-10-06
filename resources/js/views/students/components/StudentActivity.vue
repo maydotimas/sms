@@ -279,6 +279,7 @@ export default {
     },
   },
   data() {
+    /* Custom Rules */
     var checkEmail = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('Please input email'));
@@ -294,6 +295,7 @@ export default {
       }
     };
     return {
+      /* Query data */
       fatherQuery: {
         page: 1,
         limit: 20,
@@ -333,6 +335,7 @@ export default {
         limit: 20,
         title: '',
       },
+      /* Rules */
       rule1: {
         last_name: [
           {
@@ -468,8 +471,7 @@ export default {
           },
         ],
       },
-      activeActivity: 'first',
-      updating: false,
+      /* Select dropdown values */
       links: [],
       fathers: [],
       mothers: [],
@@ -478,6 +480,9 @@ export default {
       provinces: [],
       cities: [],
       barangays: [],
+      activeActivity: 'first',
+      updating: false,
+      /* Selected value */
       father: '',
       mother: '',
       guardian: '',
@@ -486,6 +491,7 @@ export default {
       province: '',
       town: '',
       barangay: '',
+      /* Form Validation */
       form1Valid: false,
       form2Valid: false,
       form3Valid: false,
@@ -540,7 +546,9 @@ export default {
         if (this.form1Valid && this.form2Valid && valid) {
           if (this.student.father === '' && this.student.mother === '') {
             alert('student parent is required');
+            return false;
           }
+          alert(this.student.avatar);
           this.updating = true;
           if (this.student.id !== undefined && this.student.id !== '') {
             studentResource
