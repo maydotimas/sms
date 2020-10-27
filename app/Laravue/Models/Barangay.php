@@ -13,6 +13,6 @@ class Barangay extends Model
     ];
 
     public function scopeSearch($query,$keyword){
-        return $query->where('cityCode','like',$keyword.'%');
+        return $query->where('cityCode','like',$keyword.'%')->orWhere('brgyCode','like',$keyword.'%')->orWhere('brgyDesc','like',$keyword.'%');
     }
 }

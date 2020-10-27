@@ -61,9 +61,6 @@ class StudentController extends Controller
                 'town' => ['required'],
                 'brgy' => ['required'],
                 'emergency_contact' => ['required'],
-                'father' => ['required'],
-                'mother' => ['required'],
-                'guardian' => ['required'],
             ]
         );
 
@@ -114,7 +111,7 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        //
+        return new StudentResource($student);
     }
 
     /**

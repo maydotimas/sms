@@ -79,7 +79,7 @@
             size="small"
             icon="el-icon-view"
             title="View"
-            @click="handleelete(scope.row.id, scope.row.name);"
+            @click="handledelete(scope.row.id, scope.row.name);"
           />
           <router-link :to="'edit/'+scope.row.id">
             <el-button

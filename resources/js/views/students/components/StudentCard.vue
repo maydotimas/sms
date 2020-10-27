@@ -3,7 +3,7 @@
     <div class="student-profile">
       <div class="student-avatar box-center">
         <pan-thumb
-          :image="image"
+          :image="student.avatar"
           :height="'100px'"
           :width="'100px'"
           :hoverable="false"
@@ -67,7 +67,7 @@ export default {
     return {
       imagecropperShow: false,
       imagecropperKey: 0,
-      image: 'uploads/default.png',
+      image: this.student.avatar,
       isSaved: false,
       studentData: [],
     };
@@ -80,7 +80,7 @@ export default {
       console.log(resData);
       this.imagecropperShow = false;
       this.imagecropperKey = this.imagecropperKey + 1;
-      this.image = resData.avatar;
+      this.student.avatar = resData.avatar;
       this.$emit('update-avatar', this.image);
     },
     close() {

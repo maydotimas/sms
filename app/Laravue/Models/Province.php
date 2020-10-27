@@ -12,6 +12,6 @@ class Province extends Model
     ];
 
     public function scopeSearch($query,$keyword){
-        return $query->where('provDesc','like',$keyword.'%');
+        return $query->where('provDesc','like',$keyword.'%')->orWhere('provCode','like',$keyword.'%');
     }
 }

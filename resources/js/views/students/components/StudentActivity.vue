@@ -582,8 +582,9 @@ export default {
                   type: 'success',
                   duration: 5 * 1000,
                 });
+                console.log(response);
                 this.updating = false;
-                this.$emit('save-student', this.student);
+                this.$emit('save-student', response.data);
                 // this.$router.push({ name: 'ParentList' });
               })
               .catch((error) => {
@@ -666,20 +667,32 @@ export default {
       return data.data;
     },
     async loadProvince() {
-      this.provinceQuery.title = this.province;
+      if (this.province === '') {
+        this.provinceQuery.title = this.student.province;
+      } else {
+        this.provinceQuery.title = this.province;
+      }
       const { data } = await provinceResource.ask(this.provinceQuery);
       this.provinces = data.data;
       console.log(data.data);
       return data.data;
     },
     async loadTown() {
-      this.townQuery.title = this.student.province;
+      if (this.province === '') {
+        this.townQuery.title = this.student.town;
+      } else {
+        this.townQuery.title = this.province;
+      }
       const { data } = await cityResource.ask(this.townQuery);
       this.cities = data.data;
       return data.data;
     },
     async loadBrgy() {
-      this.brgyQuery.title = this.student.town;
+      if (this.province === '') {
+        this.brgyQuery.title = this.student.barangay;
+      } else {
+        this.brgyQuery.title = this.town;
+      }
       const { data } = await brgyResource.ask(this.brgyQuery);
       this.barangays = data.data;
       return data.data;

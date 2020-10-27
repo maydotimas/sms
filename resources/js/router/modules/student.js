@@ -22,19 +22,26 @@ const studentRoutes = {
       hidden: true,
     },
     {
+      path: 'edit/:id(\\d+)',
+      component: () => import('@/views/students/NewStudent'),
+      name: 'EditStudent',
+      meta: { title: 'editStudent', noCache: true, permissions: ['manage parent'] },
+      hidden: true,
+    },
+    {
       path: 'list',
       component: () => import('@/views/students/List'),
       name: 'MasterList',
       meta: { title: 'students', icon: 'user', permissions: ['manage student'] },
     },
     {
-      path: 'list',
+      path: 'reservation',
       component: () => import('@/views/students/List'),
       name: 'StudentReservation',
       meta: { title: 'studentReservation', icon: 'form', permissions: ['manage student'] },
     },
     {
-      path: 'list',
+      path: 'enrollment',
       component: () => import('@/views/students/List'),
       name: 'StudentEnrollment',
       meta: { title: 'studentEnrollment', icon: 'skill', permissions: ['manage student'] },

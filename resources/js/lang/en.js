@@ -85,6 +85,7 @@ export default {
     newStudent: 'New Student',
     newParent: 'New Parent',
     editParent: 'Edit Parent',
+    editStudent: 'Edit Student',
     parents: 'Parents',
     family: 'Parents/Guardians',
     foo: 'Foo',

@@ -23,6 +23,8 @@ class Student extends Model
         'email',
         'mobile',
         'avatar',
+        'gender',
+        'birthdate',
     ];
 
     public function scopeSearch($query,$keyword){

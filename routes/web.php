@@ -28,7 +28,7 @@ Route::group(['middleware' => 'web'], function () {
 Route::get('token', function () {
 //    $key = "IUGB0JbyAoiWzHKgrcwaHw8oGYoqQdbA";
 //    $secret = "3eNCCPpJiulCNz8aX9FEe0VC7FacJwZJjzGtA0JbQ3IzeYPQJn1kJZALHy9nHJfT";
-        $key = "G71gsoLtmFdNG0INkSUA2L8JafqxMRNq";
-    $secret = "9zoX8HoFo9iXo07A";
+        $key = "H2D5mqGenZxwcwMlfp7GGOweeiVlSVbV";
+    $secret = "AEbPwXDeoRxPsqIH3zJ6uOzhWD9gwzDdyAyKCuHINATL4MRqCwGLkx0REVsa6JNM";
     echo base64_encode("{$key}:{$secret}");
 });

@@ -3,7 +3,10 @@
     <el-form :model="student">
       <el-row :gutter="20">
         <el-col :span="18">
-          <student-activity :student="student" @save-student="savestudentdetails" />
+          <student-activity
+            :student="student"
+            @save-student="savestudentdetails"
+          />
         </el-col>
         <el-col :span="6">
           <student-card :student="student" @update-avatar="updateAvatar" />
@@ -45,18 +48,26 @@ export default {
         mother: '',
         guardian: '',
         emergency_contact: '',
-        avatar: '',
+        avatar: 'uploads/default.png',
         roles: [],
       },
     };
   },
+  created() {
+    const id = this.$route.params && this.$route.params.id;
+    if (id) {
+      this.student_id = id;
+      this.getStudent(id);
+    }
+  },
   methods: {
-    async getUser(id) {
+    async getStudent(id) {
       const { data } = await studentResource.get(id);
       this.student = data;
+      this.student.type = 0;
     },
     savestudentdetails(data) {
-      // alert('emitted' + data);
+      this.student = data;
     },
     updateAvatar(data) {
       this.student.avatar = data;

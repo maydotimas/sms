@@ -28,6 +28,8 @@ class CreateStudentsTable extends Migration
             $table->string('street');
             $table->string('brgy');
             $table->string('town');
+            $table->string('gender');
+            $table->string('birthdate');
             $table->string('province');
             $table->string('email');
             $table->string('mobile');
