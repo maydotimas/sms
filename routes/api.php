@@ -92,6 +92,10 @@ Route::post('province/autocomplete', 'ProvinceController@index');
 Route::post('city/autocomplete', 'CityyController@index');
 Route::post('barangay/autocomplete', 'BarangayController@index');
 
+Route::apiResource('schoolYear', 'SchoolYearController')->middleware('permission:manage gradelevel');
+Route::get('schoolYear', 'SchoolYearController@index')->name('schoolYears.index')->middleware('permission:view gradelevel|manage gradelevel');
+
+
 // Fake APIs
 Route::get('/table/list', function () {
     $rowsNumber = mt_rand(20, 30);

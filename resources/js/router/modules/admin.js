@@ -131,6 +131,13 @@ const adminRoutes = {
       name: 'PaymentModeList',
       meta: { title: 'paymentModeList', icon: 'nested', permissions: ['manage fee'] },
     },
+    /* School Years */
+    {
+      path: 'schoolYear',
+      component: () => import('@/views/school-year/List'),
+      name: 'SchoolYearList',
+      meta: { title: 'schoolYearList', icon: 'star', permissions: ['manage fee'] },
+    },
   ],
 };
 

@@ -8,8 +8,8 @@ class GradeLevel extends Model
 {
     protected $fillable = [
         'name',
-        'code',
-        'description',
+        'year',
+        'start_year',
         'department_id'
     ];
 
