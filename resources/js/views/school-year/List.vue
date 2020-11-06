@@ -15,14 +15,7 @@
         @click="getList"
         >{{ $t('table.search') }}</el-button
       >
-      <el-button
-        v-permission="['manage gradelevel']"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-plus"
-        @click="handleCreate"
-        >{{ $t('table.add') }}</el-button
-      >
+      <el-button v-permission="['manage gradelevel']" class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">{{ $t('table.add') }}</el-button>
     </div>
 
     <el-table v-loading="loading" :data="list" border fit highlight-current-row>
@@ -82,8 +75,9 @@
             size="small"
             icon="el-icon-delete"
             @click="handleDelete(scope.row.id, scope.row.name)"
-            >Delete</el-button
           >
+            Delete
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -178,10 +172,10 @@
               <el-option label="Active" value="1" />
             </el-select>
           </el-form-item>
-          <div v-for="item in deptList" :key="item.id">
-            <el-form-item :label="item.name" prop="department_id">
+          <div v-for="department in deptList" :key="department.id">
+            <el-form-item :label="department.name" prop="department_id">
               <el-select
-                v-model="currentSchoolYear.paymentConfig"
+                v-model="currentSchoolYear.fees[department.id]"
                 class="filter-item"
                 placeholder="Please select payment config"
               >
@@ -197,8 +191,8 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="schoolYearFormVisible = false">Cancel</el-button>
-          <el-button :disabled="submitted" type="primary" @click="handleSubmit"
-            >Confirm</el-button
+          <el-button :disabled="submitted" type="primary" @click="handleSubmit">
+            Confirm</el-button
           >
         </div>
       </div>
@@ -245,6 +239,8 @@ export default {
       ],
       deptList: [],
       feeList: [],
+      departments: [],
+      fees: [],
       loading: true,
       schoolYearFormVisible: false,
       currentSchoolYear: {},
@@ -256,6 +252,7 @@ export default {
     this.getList();
     this.getDeptList();
     this.getFeeList();
+    this.resetForm();
   },
   methods: {
     async getList() {
@@ -274,8 +271,7 @@ export default {
     async getFeeList() {
       this.loading = true;
       const { data } = await feeResource.list({});
-      this.feeList = data.data.data;
-      console.log(data.data[0].data)
+      this.feeList = data.data;
       this.loading = false;
     },
     handleCreate() {
@@ -305,6 +301,7 @@ export default {
             this.submitted = false;
           });
       } else {
+        console.log(this.currentSchoolYear);
         schoolYearResource
           .store(this.currentSchoolYear)
           .then((response) => {
@@ -367,7 +364,9 @@ export default {
         start_month: '',
         start_end: '',
         status: '',
+        fees: [],
       };
+      this.submitted = false;
     },
   },
 };

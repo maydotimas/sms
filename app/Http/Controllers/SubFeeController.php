@@ -62,13 +62,14 @@ class SubFeeController extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         } else {
             $params = $request->all();
+
             $fee = SubFee::create([
                 'name' => $params['name'],
                 'code' => strtolower($params['name']) . time(), // Just to make sure this value is unique
                 'description' => $params['description'],
                 'type' => $params['type'],
                 'discount' => $params['discount'],
-                'fee_id' => 1
+                'fee_id' => $params['fee_id'],
             ]);
 
 

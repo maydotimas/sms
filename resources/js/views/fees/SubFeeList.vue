@@ -29,13 +29,8 @@
           >{{ $t('table.add') }}</el-button>
         </div>
         <el-table v-loading="loading" :data="list" border fit highlight-current-row>
-          <el-table-column align="center" label="ID" width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.id }}</span>
-            </template>
-          </el-table-column>
 
-          <el-table-column align="center" label="Fee Name" width="200">
+          <el-table-column align="center" label="Fee Name" width="150">
             <template slot-scope="scope">
               <span>{{ scope.row.name }}</span>
             </template>
@@ -53,14 +48,28 @@
             </template>
           </el-table-column>
 
-          <el-table-column align="center" label="Amount">
+          <el-table-column align="center" label="Misc">
             <template slot-scope="scope">
-              <span v-if="scope.row.type==='REGULAR'">{{ (parseInt(scope.row.tuition) + parseInt(scope.row.misc)) }}</span>
-              <span v-if="scope.row.type!=='REGULAR'">{{ scope.row.discount + '%' }}</span>
+              <span v-if="scope.row.type==='REGULAR'">{{ (parseInt(scope.row.misc)) }}</span>
+              <span v-if="scope.row.type!=='REGULAR'">{{ regularFee[0].misc }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column v-permission="['manage fee']" align="center" label="Actions" width="350">
+          <el-table-column align="center" label="Tuition">
+            <template slot-scope="scope">
+              <span v-if="scope.row.type==='REGULAR'">{{ (parseInt(scope.row.tuition)) }}</span>
+              <span v-if="scope.row.type!=='REGULAR'">less {{ scope.row.discount }}% <br> {{ regularFee[0].tuition - (regularFee[0].tuition * scope.row.discount/100) }}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column align="center" label="Total">
+            <template slot-scope="scope">
+              <span v-if="scope.row.type==='REGULAR'">{{ (parseInt(scope.row.tuition) + parseInt(scope.row.misc)) }}</span>
+              <span v-if="scope.row.type!=='REGULAR'">{{ regularFee[0].tuition - (regularFee[0].tuition * scope.row.discount/100) + (parseInt(regularFee[0].misc)) }}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column v-permission="['manage fee']" align="center" label="Actions" width="150">
             <template slot-scope="scope">
               <el-button
                 v-permission="['manage fee']"
@@ -197,7 +206,9 @@ export default {
       loading: true,
       feeFormVisible: false,
       feeType: ['REGULAR', 'SIBLING', 'SCHOLAR', 'DISCOUNT'],
-      currentSubFee: {},
+      currentSubFee: {
+        fee_id: '',
+      },
       submitted: false,
       formTitle: '',
       feeTitle: '',
@@ -207,20 +218,28 @@ export default {
       fee: [],
       discounted_tuition: 0,
       mode: 'create',
+      regularFee: [],
     };
   },
   created() {
     this.getList();
+    this.currentSubFee.fee_id = this.id;
   },
   methods: {
     async getList() {
       this.loading = true;
       const { data } = await subFeeResource.list(this.listQuery);
       this.fee = data.data[0];
-      this.feeTitle = this.fee.name;
+      this.feeTitle = this.fee.fee.name;
       this.list = data.data;
       this.total = data.total;
       this.loading = false;
+      console.log(this.list);
+      this.regularFee = this.list.filter(this.checkRegular);
+      console.log(this.regularFee);
+    },
+    checkRegular(subfee){
+      return subfee.type === 'REGULAR';
     },
     handleCreate() {
       this.feeFormVisible = true;
@@ -251,6 +270,7 @@ export default {
             this.submitted = false;
           });
       } else {
+        this.currentSubFee.fee_id = this.id;
         subFeeResource
           .store(this.currentSubFee)
           .then((response) => {

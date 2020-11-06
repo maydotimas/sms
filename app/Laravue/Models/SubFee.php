@@ -30,4 +30,5 @@ class SubFee extends Model
     {
         return $this->belongsTo('App\Laravue\Models\Fee');
     }
+
 }

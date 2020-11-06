@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\SchoolYearResource;
 use App\Laravue\Models\SchoolYear;
+use App\Laravue\Models\SchoolYearConfig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -41,7 +42,7 @@ class SchoolYearController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -61,11 +62,22 @@ class SchoolYearController extends Controller
                 'name' => $params['name'],
                 'year' => $params['year'],
                 'start_month' => $params['start_month'],
-                'end_month' => $params['end_month']
+                'end_month' => $params['end_month'],
+                'status' => $params['status'],
             ]);
 
             // Create school year configuration
-
+            $fees = $params['fees'];
+            $keys = array_keys($fees);
+            foreach ($keys as $key) {
+                if ($fees[$key] != null) {
+                    SchoolYearConfig::create([
+                        'school_year_id' => $record->id,
+                        'department_id' => $key,
+                        'payment_mode_id' => $fees[$key],
+                    ]);
+                }
+            }
             return new SchoolYearResource($record);
         }
     }
@@ -73,7 +85,7 @@ class SchoolYearController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Laravue\Models\SchoolYear  $schoolYear
+     * @param \App\Laravue\Models\SchoolYear $schoolYear
      * @return \Illuminate\Http\Response
      */
     public function show(SchoolYear $schoolYear)
@@ -84,7 +96,7 @@ class SchoolYearController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Laravue\Models\SchoolYear  $schoolYear
+     * @param \App\Laravue\Models\SchoolYear $schoolYear
      * @return \Illuminate\Http\Response
      */
     public function edit(SchoolYear $schoolYear)
@@ -95,8 +107,8 @@ class SchoolYearController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Laravue\Models\SchoolYear  $schoolYear
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Laravue\Models\SchoolYear $schoolYear
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, SchoolYear $schoolYear)
@@ -133,7 +145,7 @@ class SchoolYearController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Laravue\Models\SchoolYear  $schoolYear
+     * @param \App\Laravue\Models\SchoolYear $schoolYear
      * @return \Illuminate\Http\Response
      */
     public function destroy(SchoolYear $schoolYear)
