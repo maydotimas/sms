@@ -81,7 +81,7 @@ export default {
     users: 'Users',
     userProfile: 'User Profile',
     students: 'Students Master List',
-    studentReservation: 'Students Reservation',
+    studentReservation: 'Student Reservation',
     studentEnrollment: 'Students Enrollment',
     studentProfile: 'Student Profile',
     newStudent: 'New Student',

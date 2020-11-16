@@ -12,10 +12,15 @@
         class="filter-item"
         type="primary"
         icon="el-icon-search"
-        @click="getList"
-        >{{ $t('table.search') }}</el-button
-      >
-      <el-button v-permission="['manage gradelevel']" class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">{{ $t('table.add') }}</el-button>
+        @click="getList">
+        {{ $t('table.search') }}
+      </el-button>
+      <el-button
+        v-permission="['manage schoolyear']"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-plus"
+        @click="handleCreate">{{ $t('table.add') }}</el-button>
     </div>
 
     <el-table v-loading="loading" :data="list" border fit highlight-current-row>
@@ -37,13 +42,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="Start Month" width="150">
+      <el-table-column align="center" label="Start Month" width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.start_month }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="End Month" width="150">
+      <el-table-column align="center" label="End Month" width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.end_month }}</span>
         </template>
@@ -55,14 +60,22 @@
       </el-table-column>
 
       <el-table-column
-        v-permission="['manage gradelevel']"
+        v-permission="['manage schoolyear']"
         align="center"
         label="Actions"
-        width="200"
+        width="300"
       >
         <template slot-scope="scope">
+          <!--  <el-button
+            v-permission="['manage schoolyear']"
+            type="success"
+            size="small"
+            icon="el-icon-view"
+            @click="handleView(scope.row.id, scope.row.name)"
+            >View</el-button
+          > -->
           <el-button
-            v-permission="['manage gradelevel']"
+            v-permission="['manage schoolyear']"
             type="primary"
             size="small"
             icon="el-icon-edit"
@@ -70,7 +83,7 @@
             >Edit</el-button
           >
           <el-button
-            v-permission="['manage gradelevel']"
+            v-permission="['manage schoolyear']"
             type="danger"
             size="small"
             icon="el-icon-delete"
@@ -89,9 +102,9 @@
       :limit.sync="listQuery.limit"
       @pagination="getList"
     />
-
+    <!--  DIALOG for Add and EDIT -->
     <el-dialog
-      v-permission="['manage gradelevel']"
+      v-permission="['manage schoolyear']"
       :title="formTitle"
       :visible.sync="schoolYearFormVisible"
     >
@@ -103,20 +116,6 @@
           label-width="150px"
           style="max-width: 500px"
         >
-          <!--  <el-form-item :label="$t('table.department')" prop="department_id">
-            <el-select
-              v-model="currentSchoolYear.department_id"
-              class="filter-item"
-              placeholder="Please select department"
-            >
-              <el-option
-                v-for="item in deptList"
-                :key="item.id"
-                :label="item.name | uppercaseFirst"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item> -->
           <el-form-item label="Name" prop="name">
             <el-input v-model="currentSchoolYear.name" />
           </el-form-item>
@@ -197,6 +196,60 @@
         </div>
       </div>
     </el-dialog>
+    <!--  DIALOG for View Details -->
+    <el-dialog
+      v-permission="['manage schoolyear']"
+      :title="formTitle"
+      :visible.sync="schoolYearDetails"
+    >
+      <div class="form-container">
+        <el-form
+          ref="schoolYearForm"
+          :model="currentSchoolYear"
+          label-position="left"
+          label-width="150px"
+          style="max-width: 500px"
+        >
+          <el-form-item label="Name" prop="name">
+            <el-input v-model="currentSchoolYear.name" />
+          </el-form-item>
+          <el-form-item label="Year" prop="year">
+            <el-input v-model="currentSchoolYear.year" />
+          </el-form-item>
+          <el-form-item label="Start Month" prop="start_month">
+            <el-input v-model="currentSchoolYear.start_month" />
+          </el-form-item>
+          <el-form-item label="End Month" prop="end_month">
+            <el-input v-model="currentSchoolYear.end_month" />
+          </el-form-item>
+          <el-form-item label="Status" prop="status">
+            <el-input :value="getStatus(currentSchoolYear.status)" />
+          </el-form-item>
+          <div v-for="department in deptList" :key="department.id">
+            <el-form-item :label="department.name + department.id" prop="department_id">
+              <el-select
+                v-model="currentSchoolYear.fees[department.id]"
+                class="filter-item"
+                placeholder="Please select payment config"
+              >
+                <el-option
+                  v-for="item in feeList"
+                  :key="item.id"
+                  :label="item.name | uppercaseFirst"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </div>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="schoolYearDetails = false">Cancel</el-button>
+          <el-button type="primary" @click="schoolYearDetails = false">
+            Confirm</el-button
+          >
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -243,9 +296,13 @@ export default {
       fees: [],
       loading: true,
       schoolYearFormVisible: false,
+      schoolYearDetails: false,
       currentSchoolYear: {},
+      currentSchoolYearView: {},
+      currentSchoolYearEdit: {},
       submitted: false,
       formTitle: '',
+      regularFee: '',
     };
   },
   created() {
@@ -273,6 +330,31 @@ export default {
       const { data } = await feeResource.list({});
       this.feeList = data.data;
       this.loading = false;
+    },
+    checkRegular(subfee){
+      return subfee.type === 'REGULAR';
+    },
+    handleView(id, name) {
+      this.schoolYearDetails = true;
+      this.formTitle = 'View Details for ' + name;
+      this.currentSchoolYearView = this.list.find(
+        (schoolYear) => schoolYear.id === id
+      );
+
+      this.resetForm();
+      this.currentSchoolYear = {
+        id: this.currentSchoolYearView.id,
+        name: this.currentSchoolYearView.name,
+        year: this.currentSchoolYearView.year,
+        start_month: this.currentSchoolYearView.start_month,
+        end_month: this.currentSchoolYearView.end_month,
+        status: this.currentSchoolYearView.status === '1' ? 'Active' : 'Inactive',
+        fees: [],
+      };
+      this.currentSchoolYearView.school_year_config.forEach(this.mapDeptFee);
+    },
+    mapDeptFee(item, index, arr){
+      this.currentSchoolYear.fees[item.department_id] = item.fees_id;
     },
     handleCreate() {
       this.schoolYearFormVisible = true;
@@ -351,22 +433,38 @@ export default {
     },
     handleEdit(id, name) {
       this.formTitle = 'Edit School Year ' + name;
-      this.currentSchoolYear = this.list.find(
+      this.currentSchoolYearEdit = this.list.find(
         (schoolYear) => schoolYear.id === id
       );
       console.log(this.currentSchoolYear);
       this.schoolYearFormVisible = true;
+
+      this.resetForm();
+      this.currentSchoolYear = {
+        id: this.currentSchoolYearEdit.id,
+        name: this.currentSchoolYearEdit.name,
+        year: this.currentSchoolYearEdit.year,
+        start_month: this.currentSchoolYearEdit.start_month,
+        end_month: this.currentSchoolYearEdit.end_month,
+        status: this.currentSchoolYearEdit.status === '1' ? 'Active' : 'Inactive',
+        fees: [],
+      };
+      this.currentSchoolYearEdit.school_year_config.forEach(this.mapDeptFee);
     },
     resetForm() {
       this.currentSchoolYear = {
+        id: '',
         name: '',
         year: '',
         start_month: '',
-        start_end: '',
+        end_month: '',
         status: '',
         fees: [],
       };
       this.submitted = false;
+    },
+    getStatus(status){
+      return status === '1' ? 'ACTIVE' : 'INACTIVE';
     },
   },
 };

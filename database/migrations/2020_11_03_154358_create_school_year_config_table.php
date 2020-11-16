@@ -22,7 +22,7 @@ class CreateSchoolYearConfigTable extends Migration
             $table->foreignId('department_id')
                 ->constrained('departments')
                 ->onDelete('cascade');
-            $table->foreignId('fees_id')
+            $table->foreignId('fee_id')
                 ->constrained('fees')
                 ->onDelete('cascade');
             $table->timestamps();

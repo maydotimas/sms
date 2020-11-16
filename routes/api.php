@@ -82,18 +82,21 @@ Route::apiResource('parents', 'StudentParentController')->middleware('permission
 Route::get('parents', 'StudentParentController@index')->name('parents.index')->middleware('permission:view parents|permission:manage parents');
 
 Route::post('parents/upload-avatar', 'StudentParentController@avatar')->name('parents.avatar')->middleware('permission:view parents|permission:manage parents');
-Route::post('parents/autocomplete', 'StudentParentController@autocomplete')->name('parents.autocomplete')->middleware('permission:view parents|permission:manage parents');
+Route::get('studentparents/autocomplete', 'StudentParentController@autocomplete')->name('parents.autocomplete')->middleware('permission:view parents|permission:manage parents');
 
 Route::get('province', 'StudentParentController@index')->name('parents.index')->middleware('permission:view parents|permission:manage parents');
 Route::get('city', 'StudentParentController@index')->name('parents.index')->middleware('permission:view parents|permission:manage parents');
 Route::get('brgy', 'StudentParentController@index')->name('parents.index')->middleware('permission:view parents|permission:manage parents');
 
-Route::post('province/autocomplete', 'ProvinceController@index');
-Route::post('city/autocomplete', 'CityyController@index');
-Route::post('barangay/autocomplete', 'BarangayController@index');
+Route::get('province/autocomplete', 'ProvinceController@index');
+Route::get('city/autocomplete', 'CityyController@index');
+Route::get('barangay/autocomplete', 'BarangayController@index');
 
-Route::apiResource('schoolYear', 'SchoolYearController')->middleware('permission:manage gradelevel');
-Route::get('schoolYear', 'SchoolYearController@index')->name('schoolYears.index')->middleware('permission:view gradelevel|manage gradelevel');
+Route::apiResource('schoolYear', 'SchoolYearController')->middleware('permission:manage schoolyear');
+Route::get('schoolYear', 'SchoolYearController@index')->name('schoolYears.index')->middleware('permission:view schoolyear|manage schoolyear');
+
+Route::apiResource('reservation', 'ReservationController')->middleware('permission:manage reservation');
+Route::get('reservation', 'ReservationController@index')->name('reservation.index')->middleware('permission:view reservation|manage reservation');
 
 
 // Fake APIs

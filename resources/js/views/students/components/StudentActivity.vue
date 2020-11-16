@@ -166,7 +166,7 @@
             </el-form-item>
             <el-form-item label="Municipality" prop="town">
               <el-autocomplete
-                v-model="barangay"
+                v-model="town"
                 class="inline-input"
                 :fetch-suggestions="townSearch"
                 placeholder="Please Input Municipality"
@@ -174,9 +174,9 @@
                 @select="handleSelectTown"
               />
             </el-form-item>
-            <el-form-item label="Barangay" prop="town">
+            <el-form-item label="Barangay" prop="emergency_rule">
               <el-autocomplete
-                v-model="town"
+                v-model="barangay"
                 class="inline-input"
                 :fetch-suggestions="brgySearch"
                 placeholder="Please Input Barangay"
@@ -241,13 +241,18 @@
 <script>
 import Resource from '@/api/resource';
 const studentResource = new Resource('students');
-const parentResource = new Resource('parents');
+// const parentResource = new Resource('parents');
 const provinceResource = new Resource('province');
 const cityResource = new Resource('city');
 const brgyResource = new Resource('barangay');
+const parentResource = new Resource('studentparents');
 
 export default {
   props: {
+    reservation: {
+      type: Boolean,
+      default: false,
+    },
     student: {
       type: Object,
       default: () => {
@@ -504,8 +509,10 @@ export default {
         this.activeActivity = 'first';
       } else if (tab.name === 'second') {
         this.activeActivity = 'second';
-      } else {
+      } else if (tab.name === 'third') {
         this.activeActivity = 'third';
+      } else {
+        this.activeActivity = 'fourth';
       }
       console.log('Switching tab ');
     },
@@ -530,6 +537,15 @@ export default {
             this.form2Valid = false;
           }
         });
+      } else if (this.activeActivity === 'third') {
+        this.$refs['form3'].validate((valid) => {
+          if (valid) {
+            this.form2Valid = true;
+            this.activeActivity = 'fourth';
+          } else {
+            this.form2Valid = false;
+          }
+        });
       }
     },
     onPrevious() {
@@ -548,7 +564,6 @@ export default {
             alert('student parent is required');
             return false;
           }
-          alert(this.student.avatar);
           this.updating = true;
           if (this.student.id !== undefined && this.student.id !== '') {
             studentResource
@@ -661,7 +676,7 @@ export default {
       return data.data;
     },
     async loadParents() {
-      this.parentQuery.title = this.parent;
+      this.parentQuery.title = this.emergency;
       const { data } = await parentResource.ask(this.parentQuery);
       this.parents = data.data;
       return data.data;
@@ -673,29 +688,23 @@ export default {
         this.provinceQuery.title = this.province;
       }
       const { data } = await provinceResource.ask(this.provinceQuery);
-      this.provinces = data.data;
-      console.log(data.data);
+      this.provinces = data;
       return data.data;
     },
     async loadTown() {
-      if (this.province === '') {
-        this.townQuery.title = this.student.town;
-      } else {
-        this.townQuery.title = this.province;
-      }
+      this.townQuery.title = this.student.province;
+      console.log(this.townQuery);
       const { data } = await cityResource.ask(this.townQuery);
-      this.cities = data.data;
-      return data.data;
+      console.log(this.cities);
+      this.cities = data;
+      return data;
     },
     async loadBrgy() {
-      if (this.province === '') {
-        this.brgyQuery.title = this.student.barangay;
-      } else {
-        this.brgyQuery.title = this.town;
-      }
+      this.brgyQuery.title = this.student.town;
       const { data } = await brgyResource.ask(this.brgyQuery);
-      this.barangays = data.data;
-      return data.data;
+      this.barangays = [];
+      this.barangays = data;
+      return data;
     },
     createFilter(queryString) {
       return (link) => {

@@ -12,6 +12,8 @@ class City extends Model
     ];
 
     public function scopeSearch($query,$keyword){
-        return $query->where('provCode','like',$keyword)->orWhere('citymunCode','like',$keyword.'%')->orWhere('citymunDesc','like',$keyword.'%');
+        return $query->where('provCode','like',$keyword)
+            ->orWhere('citymunCode','like',$keyword.'%')
+            ->orWhere('citymunDesc','like',$keyword.'%');
     }
 }

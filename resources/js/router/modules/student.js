@@ -9,7 +9,7 @@ const studentRoutes = {
   alwaysShow: true,
   meta: {
     title: 'student',
-    icon: 'theme',
+    icon: 'people',
     permissions: ['view menu administrator'],
   },
   children: [
@@ -36,9 +36,9 @@ const studentRoutes = {
     },
     {
       path: 'reservation',
-      component: () => import('@/views/students/List'),
-      name: 'StudentReservation',
-      meta: { title: 'studentReservation', icon: 'form', permissions: ['manage student'] },
+      component: () => import('@/views/reservation/List'),
+      name: 'studentReservation',
+      meta: { title: 'studentReservation', icon: 'form', permissions: ['manage reservation'] },
     },
     {
       path: 'enrollment',

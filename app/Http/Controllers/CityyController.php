@@ -20,10 +20,10 @@ class CityyController extends Controller
         if ($request->has('title') && $request->input('title') != '') {
             $data = City::select('citymunCode as link', DB::raw('citymunDesc as value'))
                 ->search($request->title)
-                ->paginate($request->limit);
+                ->get();
         } else {
             $data = City::select('citymunCode as link', DB::raw('citymunDesc as value'))
-                ->paginate($request->limit);
+                ->get();
         }
 
         return CityResource::collection(['data' => $data]);

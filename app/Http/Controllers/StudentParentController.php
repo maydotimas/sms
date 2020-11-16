@@ -235,6 +235,6 @@ class StudentParentController extends Controller
             }
         }
 
-        return StudentParentResource::collection(['data' => $data]);
+         return StudentParentResource::collection(['data' => $data]);
     }
 }

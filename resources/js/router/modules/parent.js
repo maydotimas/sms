@@ -9,7 +9,7 @@ const studentRoutes = {
   alwaysShow: true,
   meta: {
     title: 'parents',
-    icon: 'people',
+    icon: 'peoples',
     permissions: ['view menu administrator'],
   },
   children: [

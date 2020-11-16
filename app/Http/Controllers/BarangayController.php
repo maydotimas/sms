@@ -20,10 +20,10 @@ class BarangayController extends Controller
         if ($request->has('title') && $request->input('title') != '') {
             $data = Barangay::select('brgyCode as link', DB::raw('brgyDesc as value'))
                 ->search($request->title)
-                ->paginate($request->limit);
+                ->get();
         } else {
             $data = Barangay::select('brgyCode as link', DB::raw('brgyDesc as value'))
-                ->paginate($request->limit);
+                ->get();
         }
         return BarangayResource::collection(['data' => $data]);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\SchoolYearConfigResource;
 use App\Http\Resources\SchoolYearResource;
 use App\Laravue\Models\SchoolYear;
 use App\Laravue\Models\SchoolYearConfig;
@@ -69,12 +70,13 @@ class SchoolYearController extends Controller
             // Create school year configuration
             $fees = $params['fees'];
             $keys = array_keys($fees);
+
             foreach ($keys as $key) {
                 if ($fees[$key] != null) {
                     SchoolYearConfig::create([
                         'school_year_id' => $record->id,
                         'department_id' => $key,
-                        'payment_mode_id' => $fees[$key],
+                        'fees_id' => $fees[$key],
                     ]);
                 }
             }
@@ -157,5 +159,18 @@ class SchoolYearController extends Controller
         }
 
         return response()->json(null, 204);
+    }
+
+    /**
+     * Get school year config payment details
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function get_payment_details(Request $request){
+        return dd($request->all());
+        $data = SchoolYearConfig::search($request->id);
+
+        return SchoolYearConfigResource::collection(['data' => $data]);
     }
 }

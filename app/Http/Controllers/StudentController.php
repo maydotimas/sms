@@ -17,9 +17,14 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
+
         if ($request->has('title') && $request->input('title') != '') {
+
             $data = Student::search($request->title)
                 ->paginate($request->limit);
+        } else if (($request->has('id') && $request->input('id') != '') &&
+            ($request->has('birthdate') && $request->input('birthdate') != '')) {
+            $data = Student::searchStudent($request->id, $request->birthdate)->get();
         } else {
             $data = Student::paginate($request->limit);
         }
@@ -40,7 +45,7 @@ class StudentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -69,11 +74,11 @@ class StudentController extends Controller
         } else {
             $params = $request->all();
             // new student
-            if($params['type']=='1'){
+            if ($params['type'] == '1') {
                 $students = Student::all();
                 $student_count = $students->count() + 1;
-                $student_no = date('Y').'-' . str_pad($student_count, 4, '0', STR_PAD_LEFT);
-            }else{
+                $student_no = date('Y') . '-' . str_pad($student_count, 4, '0', STR_PAD_LEFT);
+            } else {
                 $student_no = $params['student_no'];
             }
 
@@ -106,7 +111,7 @@ class StudentController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Laravue\Models\Student  $student
+     * @param \App\Laravue\Models\Student $student
      * @return \Illuminate\Http\Response
      */
     public function show(Student $student)
@@ -117,7 +122,7 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Laravue\Models\Student  $student
+     * @param \App\Laravue\Models\Student $student
      * @return \Illuminate\Http\Response
      */
     public function edit(Student $student)
@@ -128,8 +133,8 @@ class StudentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Laravue\Models\Student  $student
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Laravue\Models\Student $student
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Student $student)
@@ -140,7 +145,7 @@ class StudentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Laravue\Models\Student  $student
+     * @param \App\Laravue\Models\Student $student
      * @return \Illuminate\Http\Response
      */
     public function destroy(Student $student)
@@ -152,7 +157,7 @@ class StudentController extends Controller
     {
         /*Get parent Record*/
         $student = Student::find($request->input('id'));
-        if($student){
+        if ($student) {
             /* Upload */
             $file = $request->file('img');
             $destinationPath = 'uploads';
@@ -164,7 +169,7 @@ class StudentController extends Controller
             $student->save();
 
             return new StudentResource($student);
-        }else{
+        } else {
             /* Upload */
             $file = $request->file('img');
             $destinationPath = 'uploads';
