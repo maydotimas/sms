@@ -97,7 +97,7 @@ Route::get('schoolYear', 'SchoolYearController@index')->name('schoolYears.index'
 
 Route::apiResource('reservation', 'ReservationController')->middleware('permission:manage reservation');
 Route::get('reservation', 'ReservationController@index')->name('reservation.index')->middleware('permission:view reservation|manage reservation');
-
+Route::post('reservations/upload-receipt', 'ReservationController@receipt')->name('reservation.receipt')->middleware('permission:view reservation|permission:manage reservation');
 
 // Fake APIs
 Route::get('/table/list', function () {

@@ -71,7 +71,6 @@ export default {
     },
     updateAvatar(data) {
       this.student.avatar = data;
-      alert(this.student.avatar);
     },
   },
 };

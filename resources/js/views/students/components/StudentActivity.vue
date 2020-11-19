@@ -11,7 +11,7 @@
           >
             <el-form-item label="Student Type">
               <el-radio-group v-model="student.type">
-                <el-radio :label="0">Old Student</el-radio>
+                <el-radio v-if="!reservation" :label="0">Old Student</el-radio>
                 <el-radio :label="1">New Student</el-radio>
               </el-radio-group>
             </el-form-item>

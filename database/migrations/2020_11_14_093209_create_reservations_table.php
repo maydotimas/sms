@@ -16,8 +16,6 @@ class CreateReservationsTable extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
 
-            $table->string('reservation_code');
-
             $table->foreignId('student_id')
                 ->constrained('students')
                 ->onDelete('cascade');
@@ -37,6 +35,7 @@ class CreateReservationsTable extends Migration
             $table->string('student_type');
             $table->string('reservation_amount');
             $table->string('payment_receipt');
+            $table->string('status');
 
             $table->timestamps();
         });

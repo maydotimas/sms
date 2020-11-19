@@ -71,6 +71,7 @@ class SchoolYearController extends Controller
             $fees = $params['fees'];
             $keys = array_keys($fees);
 
+
             foreach ($keys as $key) {
                 if ($fees[$key] != null) {
                     SchoolYearConfig::create([
@@ -168,7 +169,6 @@ class SchoolYearController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function get_payment_details(Request $request){
-        return dd($request->all());
         $data = SchoolYearConfig::search($request->id);
 
         return SchoolYearConfigResource::collection(['data' => $data]);

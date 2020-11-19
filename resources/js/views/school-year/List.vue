@@ -363,7 +363,7 @@ export default {
     },
     handleSubmit() {
       this.submitted = true;
-      if (this.currentSchoolYear.id !== undefined) {
+      if (this.currentSchoolYear.id !== undefined && this.currentSchoolYear.id !== '') {
         schoolYearResource
           .update(this.currentSchoolYear.id, this.currentSchoolYear)
           .then((response) => {

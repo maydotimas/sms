@@ -9,7 +9,7 @@ class SchoolYearConfig extends Model
     protected $fillable = [
         'school_year_id',
         'department_id',
-        'fee_id'
+        'fees_id'
     ];
 
     public function scopeSearch($query,$keyword){

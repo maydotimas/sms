@@ -8,8 +8,8 @@ class GradeLevel extends Model
 {
     protected $fillable = [
         'name',
-        'year',
-        'start_year',
+        'code',
+        'description',
         'department_id'
     ];
 
@@ -21,5 +21,9 @@ class GradeLevel extends Model
     public function department()
     {
         return $this->belongsTo('App\Laravue\Models\Department');
+    }
+    public function reservation()
+    {
+        return $this->hasMany('App\Laravue\Models\Reservation');
     }
 }
