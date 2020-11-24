@@ -22,6 +22,11 @@ class Reservation extends Model
         return $query->where('id','=',$keyword);
     }
 
+    public function scopeFilterSearch($query,$keyword,$sy){
+        return $query->where('id','=',$keyword)
+            ->orWhere('school_year_id','=',$sy);
+    }
+
     public function student()
     {
         return $this->belongsTo('App\Laravue\Models\Student');

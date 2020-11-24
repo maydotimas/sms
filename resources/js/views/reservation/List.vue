@@ -8,6 +8,18 @@
         class="filter-item"
         @keyup.enter.native="getList"
       />
+      <el-select
+        v-model="listQuery.school_year_id"
+        class="filter-item"
+        placeholder="Please School Year"
+      >
+        <el-option
+          v-for="item in schoolYearList"
+          :key="item.id"
+          :label="item.name | uppercaseFirst"
+          :value="item.id"
+        />
+      </el-select>
       <el-button
         class="filter-item"
         type="primary"
@@ -66,7 +78,7 @@
             type="primary"
             size="small"
             icon="el-icon-edit"
-            @click="handleEdit(scope.row.id, scope.row.name)"
+            @click="handleEdit(scope.row.id, scope.row.student.last_name + ', ' + scope.row.student.first_name)"
             >Edit</el-button
           >
           <el-button
@@ -74,7 +86,7 @@
             type="danger"
             size="small"
             icon="el-icon-delete"
-            @click="handleDelete(scope.row.id, scope.row.name)"
+            @click="handleDelete(scope.row.id, scope.row.student.last_name + ', ' + scope.row.student.first_name)"
           >
             Delete
           </el-button>
@@ -236,6 +248,7 @@ export default {
         page: 1,
         limit: 20,
         title: '',
+        school_year_id: '',
       },
       studentQuery: {
         id: '',
@@ -385,6 +398,7 @@ export default {
           return false;
         } else {
           this.submitted = true;
+          alert(this.currentReservation.id);
           if (this.currentReservation.id !== undefined) {
             reservationResource
               .update(this.currentReservation.id, this.currentReservation)
@@ -456,10 +470,23 @@ export default {
     },
     handleEdit(id, name) {
       this.formTitle = 'Edit Reservation ' + name;
-      this.currentReservation = this.list.find(
-        (schoolYear) => schoolYear.id === id
+      var data = this.list.find(
+        (reservation) => reservation.id === id
       );
+      console.log(this.currentReservation);
+      this.currentReservation.id = data.id;
+      this.currentReservation.student_id = data.student.id;
+      this.currentReservation.student_no = data.student.student_no;
+      this.currentReservation.name = data.student.first_name + ' ' + data.student.last_name;
+      this.currentReservation.student_type = data.student_type === '0' ? 'Old Student' : 'New';
+      this.currentReservation.reservation_fee = data.reservation_amount;
+      this.currentReservation.reservation_amount = data.reservation_amount;
+      this.currentReservation.school_year_id = data.school_year_id;
+      this.currentReservation.grade_level_id = data.grade_level_id;
+      this.filterSection();
+      this.currentReservation.section_id = data.section_id;
       this.reservationFormVisible = true;
+      this.studentValid = true;
     },
     resetForm() {
       this.currentReservation = {
@@ -491,7 +518,7 @@ export default {
     proceedReservation(data){
       alert();
       console.log(data);
-       if (data.length === 0){
+      if (data.length === 0){
         this.studentValid = false;
       } else {
         this.student = data;

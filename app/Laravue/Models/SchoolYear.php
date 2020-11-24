@@ -18,6 +18,11 @@ class SchoolYear extends Model
         return $query->where('name','like','%'.$keyword.'%');
     }
 
+    public function scopeTable($query,$keyword){
+        return $query->where('name','like','%'.$keyword.'%')
+            ->orWhere();
+    }
+
     public function schoolYearConfig()
     {
         return $this->hasMany('App\Laravue\Models\SchoolYearConfig');

@@ -28,6 +28,14 @@ class ReservationController extends Controller
                 ->with('gradeLevel')
                 ->with('section')
                 ->paginate($request->limit);
+        } else if (($request->has('title') && $request->input('title') != '') ||
+                   ($request->has('school_year_id') && $request->input('school_year_id') != '')){
+            $data = Reservation::filterSearch($request->title,$request->school_year_id)
+                ->with('student')
+                ->with('schoolYear')
+                ->with('gradeLevel')
+                ->with('section')
+                ->paginate($request->limit);
         } else {
             $data = Reservation::with('gradeLevel')
                 ->with('student')
@@ -131,7 +139,13 @@ class ReservationController extends Controller
      */
     public function destroy(Reservation $reservation)
     {
-        //
+        try {
+            $reservation->delete();
+        } catch (\Exception $ex) {
+            response()->json(['error' => $ex->getMessage()], 403);
+        }
+
+        return response()->json(null, 204);
     }
 
     public function receipt(Request $request)
