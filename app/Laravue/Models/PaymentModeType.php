@@ -24,7 +24,7 @@ class PaymentModeType extends Model
         return $query->where('payment_mode_id','=',$keyword);
     }
 
-    public function paymentMode()
+    public function fee()
     {
         return $this->belongsTo('App\Laravue\Models\PaymentMode');
     }

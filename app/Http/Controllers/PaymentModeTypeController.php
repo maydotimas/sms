@@ -22,9 +22,12 @@ class PaymentModeTypeController extends Controller
                 ->paymentMode($request->payment_mode_id)
                 ->with('fee')
                 ->paginate($request->limit);
-        } else {
-            $data = PaymentModeType::with('paymentMode')
+        } else if ($request->has('payment_mode_id') && $request->input('payment_mode_id') != '') {
+            $data = PaymentModeType::search($request->title)
                 ->paymentMode($request->payment_mode_id)
+                ->paginate($request->limit);
+        } else {
+            $data = PaymentModeType::with('fee')
                 ->paginate($request->limit);
         }
         return PaymentModeTypeResource::collection(['data' => $data]);

@@ -17,6 +17,9 @@ class SchoolYear extends Model
     public function scopeSearch($query,$keyword){
         return $query->where('name','like','%'.$keyword.'%');
     }
+    public function scopeActive($query){
+        return $query->where('status','=',1);
+    }
 
     public function scopeTable($query,$keyword){
         return $query->where('name','like','%'.$keyword.'%')

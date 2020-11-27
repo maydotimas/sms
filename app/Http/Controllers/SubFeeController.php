@@ -24,9 +24,12 @@ class SubFeeController extends Controller
                 ->fee($request->fee_id)
                 ->with('fee')
                 ->paginate($request->limit);
-        } else {
+        } else if ($request->has('fee_id') && $request->input('fee_id') != ''){
             $data = SubFee::with('fee')
                 ->fee($request->fee_id)
+                ->paginate($request->limit);
+        } else {
+            $data = SubFee::with('fee')
                 ->paginate($request->limit);
         }
 

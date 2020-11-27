@@ -42,7 +42,7 @@ const studentRoutes = {
     },
     {
       path: 'enrollment',
-      component: () => import('@/views/students/List'),
+      component: () => import('@/views/enrollment/List'),
       name: 'StudentEnrollment',
       meta: { title: 'studentEnrollment', icon: 'skill', permissions: ['manage student'] },
     },

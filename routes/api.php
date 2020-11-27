@@ -99,6 +99,10 @@ Route::apiResource('reservation', 'ReservationController')->middleware('permissi
 Route::get('reservation', 'ReservationController@index')->name('reservation.index')->middleware('permission:view reservation|manage reservation');
 Route::post('reservations/upload-receipt', 'ReservationController@receipt')->name('reservation.receipt')->middleware('permission:view reservation|permission:manage reservation');
 
+Route::apiResource('enrollment', 'EnrollmentController')->middleware('permission:manage enrollment');
+Route::get('enrollment', 'EnrollmentController@index')->name('enrollment.index')->middleware('permission:view enrollment|manage enrollment');
+Route::post('enrollments/upload-receipt', 'EnrollmentController@receipt')->name('enrollment.receipt')->middleware('permission:view enrollment|permission:manage enrollment');
+
 // Fake APIs
 Route::get('/table/list', function () {
     $rowsNumber = mt_rand(20, 30);

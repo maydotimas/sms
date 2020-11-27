@@ -23,6 +23,9 @@ class SectionController extends Controller
             $data = Section::search($request->title)
                 ->with('grade_level')
                 ->paginate($request->limit);
+        }else if ($request->has('active') && $request->input('active') == 'true') {
+            $data = Section::with('grade_level')
+                ->get();
         } else {
             $data = Section::with('grade_level')
                 ->paginate($request->limit);
