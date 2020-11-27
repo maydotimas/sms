@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
         $userRole = Role::findByName(\App\Laravue\Acl::ROLE_USER);
         $visitorRole = Role::findByName(\App\Laravue\Acl::ROLE_VISITOR);
 
-        $this->call(CategoryPermission::class);
+//        $this->call(CategoryPermission::class);
         $this->call(DepartmentPermission::class);
         $this->call(GradeLevelPermission::class);
         $this->call(SectionPermission::class);
