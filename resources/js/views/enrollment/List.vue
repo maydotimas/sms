@@ -24,7 +24,8 @@
         class="filter-item"
         type="primary"
         icon="el-icon-search"
-        @click="getList">
+        @click="getList"
+      >
         {{ $t('table.search') }}
       </el-button>
       <el-button
@@ -32,7 +33,9 @@
         class="filter-item"
         type="primary"
         icon="el-icon-plus"
-        @click="handleCreate">{{ $t('table.add') }}</el-button>
+        @click="handleCreate"
+        >{{ $t('table.add') }}</el-button
+      >
     </div>
 
     <el-table v-loading="loading" :data="list" border fit highlight-current-row>
@@ -44,7 +47,10 @@
 
       <el-table-column align="center" label="Name" width="200">
         <template slot-scope="scope">
-          <span>{{ scope.row.student.last_name }}, {{ scope.row.student.first_name }}</span>
+          <span
+            >{{ scope.row.student.last_name }},
+            {{ scope.row.student.first_name }}</span
+          >
         </template>
       </el-table-column>
 
@@ -78,7 +84,14 @@
             type="primary"
             size="small"
             icon="el-icon-edit"
-            @click="handleEdit(scope.row.id, scope.row.student.last_name + ', ' + scope.row.student.first_name)"
+            @click="
+              handleEdit(
+                scope.row.id,
+                scope.row.student.last_name +
+                  ', ' +
+                  scope.row.student.first_name
+              )
+            "
             >Edit</el-button
           >
           <el-button
@@ -86,7 +99,14 @@
             type="danger"
             size="small"
             icon="el-icon-delete"
-            @click="handleDelete(scope.row.id, scope.row.student.last_name + ', ' + scope.row.student.first_name)"
+            @click="
+              handleDelete(
+                scope.row.id,
+                scope.row.student.last_name +
+                  ', ' +
+                  scope.row.student.first_name
+              )
+            "
           >
             Delete
           </el-button>
@@ -105,7 +125,7 @@
     <el-dialog
       v-permission="['manage reservation']"
       :title="formTitle"
-      :visible.sync="reservationFormVisible"
+      :visible.sync="enrollmentFormVisible"
     >
       <div class="form-container">
         <el-form
@@ -122,10 +142,18 @@
               <el-radio :label="1">New Student</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item v-if="currentEnrollment.type == 0" label="Student No" prop="name">
+          <el-form-item
+            v-if="currentEnrollment.type == 0"
+            label="Student No"
+            prop="name"
+          >
             <el-input v-model="studentQuery.id" />
           </el-form-item>
-          <el-form-item v-if="currentEnrollment.type == 0" label="Birthdate" prop="birthdate">
+          <el-form-item
+            v-if="currentEnrollment.type == 0"
+            label="Birthdate"
+            prop="birthdate"
+          >
             <el-date-picker
               v-model="studentQuery.birthdate"
               type="date"
@@ -134,19 +162,23 @@
             />
           </el-form-item>
           <el-form-item v-if="currentEnrollment.type == 0">
-              <el-button @click="onCancelSearch">Reset</el-button>
-              <el-button type="primary" @click="getStudentDetails">Search Student</el-button>
-            </el-form-item>
+            <el-button @click="onCancelSearch">Reset</el-button>
+            <el-button
+              type="primary"
+              @click="getStudentDetails"
+              >Search Student</el-button
+            >
+          </el-form-item>
           <student-activity
             v-if="currentEnrollment.type == 1"
-            :reservation = true
-            @save-student = "proceedReservation"
+            :reservation="true"
+            @save-student="proceedReservation"
           />
         </el-form>
 
         <el-form
           v-if="studentValid"
-          ref="reservationForm"
+          ref="enrollmentForm"
           :rules="rule1"
           :model="currentEnrollment"
           label-position="left"
@@ -154,16 +186,28 @@
           style="max-width: 500px"
         >
           <el-form-item label="Student No" prop="student_id">
-            <el-input v-model="currentEnrollment.student_no" :readonly="studentValid" />
+            <el-input
+              v-model="currentEnrollment.student_no"
+              :readonly="studentValid"
+            />
           </el-form-item>
           <el-form-item label="Student Name" prop="name">
-            <el-input v-model="currentEnrollment.name" :readonly="studentValid" />
+            <el-input
+              v-model="currentEnrollment.name"
+              :readonly="studentValid"
+            />
           </el-form-item>
           <el-form-item label="Student Type" prop="student_type">
-            <el-input v-model="currentEnrollment.student_type" :readonly="studentValid" />
+            <el-input
+              v-model="currentEnrollment.student_type"
+              :readonly="studentValid"
+            />
           </el-form-item>
           <el-form-item label="School Year">
-            <el-input v-model="currentEnrollment.schoolYear" :readonly="studentValid" />
+            <el-input
+              v-model="currentEnrollment.schoolYear"
+              :readonly="studentValid"
+            />
           </el-form-item>
           <el-form-item label="Grade Level" prop="grade_level_id">
             <el-select
@@ -199,6 +243,7 @@
               v-model="currentEnrollment.sub_fee_id"
               class="filter-item"
               placeholder="Please Section"
+              @change="computeTuition"
             >
               <el-option
                 v-for="item in filteredTuition"
@@ -213,6 +258,7 @@
               v-model="currentEnrollment.payment_mode_type_id"
               class="filter-item"
               placeholder="Please Section"
+              @change="computeTuition"
             >
               <el-option
                 v-for="item in paymentModeTypeList"
@@ -223,17 +269,31 @@
             </el-select>
           </el-form-item>
           <el-form-item label="Enrollment Fee" prop="student_type">
-            <el-input v-model="currentEnrollment.reservation_fee" :readonly="studentValid" />
+            <el-input
+              v-model="currentEnrollment.enrollment_fee"
+              :readonly="studentValid"
+            />
           </el-form-item>
           <el-form-item label="Receipt">
-            <dropzone id="myVueDropzone" url="/api/reservations/upload-receipt" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS" />
+            <dropzone
+              id="myVueDropzone"
+              url="/api/enrollments/upload-receipt"
+              @dropzone-removedFile="dropzoneR"
+              @dropzone-success="dropzoneS"
+            />
           </el-form-item>
           <el-form-item>
-            <el-button @click="reservationFormVisible = false">Cancel</el-button>
-            <el-button :disabled="submitted" type="primary" @click="handleSubmit">
+            <el-button
+              @click="enrollmentFormVisible = false"
+              >Cancel</el-button>
+            <el-button
+              :disabled="submitted"
+              type="primary"
+              @click="handleSubmit"
+            >
               Confirm</el-button
             >
-            </el-form-item>
+          </el-form-item>
         </el-form>
       </div>
     </el-dialog>
@@ -247,6 +307,7 @@ import Pagination from '@/components/Pagination'; // Secondary package based on 
 import StudentActivity from '../students/components/StudentActivity';
 import Dropzone from '@/components/Dropzone';
 
+const enrollmentResource = new Resource('enrollment');
 const reservationResource = new Resource('reservation');
 const gradeLevelResource = new Resource('gradeLevels');
 const departmentResource = new Resource('departments');
@@ -274,6 +335,7 @@ export default {
         birthdate: '',
       },
       total: 0,
+      /* Lists */
       schoolYearList: [],
       deptList: [],
       gradeList: [],
@@ -283,9 +345,10 @@ export default {
       filteredPaymentMode: [],
       subFeeList: [],
       paymentModeTypeList: [],
+      /* Switches */
       loading: true,
-      reservationFormVisible: false,
-      reservationForm: false,
+      enrollmentFormVisible: false,
+      enrollmentForm: false,
       schoolYearDetails: false,
       currentEnrollment: {
         student_id: '',
@@ -302,6 +365,7 @@ export default {
       fees_id: '',
       regular_fee: '',
       misc_fee: '',
+      tuition_fee: '',
       submitted: false,
       studentValid: false,
       formTitle: '',
@@ -356,9 +420,10 @@ export default {
     this.resetForm();
   },
   methods: {
+    /* Get data */
     async getList() {
       this.loading = true;
-      const { data } = await reservationResource.list(this.listQuery);
+      const { data } = await enrollmentResource.list(this.listQuery);
       this.list = data.data;
       this.total = data.total;
       this.loading = false;
@@ -367,8 +432,6 @@ export default {
       this.loading = true;
       const { data } = await subFeeResource.list({});
       this.subFeeList = data.data;
-      console.log("Tuition");
-      console.log(this.subFeeList);
       this.filterTuition();
       this.loading = false;
     },
@@ -376,8 +439,6 @@ export default {
       this.loading = true;
       const { data } = await paymentModeTypeResource.list({});
       this.paymentModeTypeList = data.data;
-      console.log("Payment Mode");
-      console.log(this.paymentModeTypeList);
       this.loading = false;
     },
     async getDeptList() {
@@ -394,97 +455,122 @@ export default {
     },
     async getSectionList() {
       this.loading = true;
-      const { data } = await sectionResource.list({ 'active': 'true' });
+      const { data } = await sectionResource.list({ active: 'true' });
       this.sectionList = data;
       this.filteredSectionList = data;
       this.loading = false;
     },
     async getSchoolYearList() {
       this.loading = true;
-      const { data } = await schoolYearResource.list({ 'active': 'true' });
+      const { data } = await schoolYearResource.list({ active: 'true' });
       this.schoolYearList = data.data;
-      console.log("School Year");
-      console.log(this.schoolYearList);
       this.loading = false;
     },
-    async getStudentDetails(){
+    async getStudentDetails() {
       const { data } = await studentResource.list(this.studentQuery);
       this.student = data[0];
+      if(data.length == 0) return false;
       // student data does not exist
-      if (this.student.length === 0){
+      if (this.student.length === 0) {
         this.studentValid = false;
       } else {
         this.resetForm();
         this.studentValid = true;
-        this.formTitle = 'Create Enrollment for ' + this.student.first_name + ' ' + this.student.last_name;
+        this.formTitle =
+          'Create Enrollment for ' +
+          this.student.first_name +
+          ' ' +
+          this.student.last_name;
         this.currentEnrollment.student_id = this.student.id;
         this.currentEnrollment.student_no = this.student.student_no;
-        this.currentEnrollment.name = this.student.first_name + ' ' + this.student.last_name;
+        this.currentEnrollment.name =
+          this.student.first_name + ' ' + this.student.last_name;
         this.currentEnrollment.schoolYear = this.schoolYearList[0].name;
         this.currentEnrollment.school_year_id = this.schoolYearList[0].id;
         this.currentEnrollment.student_type = 'Old Student';
-        this.currentEnrollment.reservation_fee = 'PHP 1,000';
+        this.currentEnrollment.enrollment_fee = 'PHP 1,000';
         this.currentEnrollment.reservation_amount = '1000';
       }
     },
-    filterSection(){
+    /* Mapping and filters */
+    filterSection() {
+      /* Get department ID */
       var dept = this.gradeList.filter(this.mapGrade);
       this.dept_id = dept[0].department_id;
+      /* Get fees ID */
       var fees = this.schoolYearList[0].school_year_config.filter(this.mapFees);
       this.fees_id = fees[0].fees_id;
+      /* Get available Sections */
       this.filteredSectionList = [];
       this.filteredSectionList = this.sectionList.filter(this.mapSection);
       this.filterTuition();
     },
-    mapFees(item, index, arr){
-      if (parseInt(item.department_id) === parseInt(this.dept_id)){
+    mapFees(item, index, arr) {
+      if (parseInt(item.department_id) === parseInt(this.dept_id)) {
         return item;
       }
     },
-    mapGrade(item, index, arr){
-      if (parseInt(item.id) === parseInt(this.currentEnrollment.grade_level_id)){
+    mapGrade(item, index, arr) {
+      if (
+        parseInt(item.id) === parseInt(this.currentEnrollment.grade_level_id)
+      ) {
         return item;
       }
     },
-    mapSection(item, index, arr){
-      if (parseInt(item.grade_level_id) === parseInt(this.currentEnrollment.grade_level_id)){
+    mapSection(item, index, arr) {
+      if (
+        parseInt(item.grade_level_id) ===
+        parseInt(this.currentEnrollment.grade_level_id)
+      ) {
         return item;
       }
     },
-    filterTuition(){
+    filterTuition() {
       this.filteredTuition = [];
       this.filteredTuition = this.subFeeList.filter(this.mapTuition);
     },
-    mapTuition(item, index, arr){
-      if (parseInt(item.fee_id) === parseInt(this.fees_id)){ 
+    getTuition(item, index, arr) {
+      if (parseInt(item.id) === parseInt(this.currentEnrollment.sub_fee_id)) {
         return item;
       }
     },
-    filterPaymentMode(){
-      this.filteredPaymentMode = [];
-      this.filteredPaymentMode = this.paymentModeTypeList.filter(this.mapPaymentMode);
+    getAdditional(item, index, arr) {
+      if (parseInt(item.id) === parseInt(this.currentEnrollment.payment_mode_type_id)) {
+        return item;
+      }
     },
-    mapPaymentMode(item, index, arr){
+    mapTuition(item, index, arr) {
+      if (parseInt(item.fee_id) === parseInt(this.fees_id)) {
+        return item;
+      }
+    },
+    filterPaymentMode() {
+      this.filteredPaymentMode = [];
+      this.filteredPaymentMode = this.paymentModeTypeList.filter(
+        this.mapPaymentMode
+      );
+    },
+    mapPaymentMode(item, index, arr) {
       /* var config = this.schoolYearList[0].school_year_config;
       var fees_id = config[0].fees_id;
       if (parseInt(item.grade_level_id) === parseInt(this.currentEnrollment.grade_level_id)){ */
-        return item;
-      //}
+      return item;
+      // }
     },
+    /* Form Events */
     handleCreate() {
-      this.reservationFormVisible = true;
+      this.enrollmentFormVisible = true;
       this.resetForm();
       this.formTitle = 'Create Enrollment';
     },
     handleSubmit() {
-      this.$refs['reservationForm'].validate((valid) => {
+      this.$refs['enrollmentForm'].validate((valid) => {
         if (!valid) {
           return false;
         } else {
           this.submitted = true;
-          alert(this.currentEnrollment.id);
           if (this.currentEnrollment.id !== undefined) {
-            reservationResource
+            enrollmentResource
               .update(this.currentEnrollment.id, this.currentEnrollment)
               .then((response) => {
                 this.$message({
@@ -499,11 +585,11 @@ export default {
                 console.log(error);
               })
               .finally(() => {
-                this.reservationFormVisible = false;
+                this.enrollmentFormVisible = false;
                 this.submitted = false;
               });
           } else {
-            reservationResource
+            enrollmentResource
               .store(this.currentEnrollment)
               .then((response) => {
                 this.$message({
@@ -515,7 +601,7 @@ export default {
                   duration: 5 * 1000,
                 });
                 this.resetForm();
-                this.reservationFormVisible = false;
+                this.enrollmentFormVisible = false;
                 this.submitted = false;
                 this.getList();
               })
@@ -554,21 +640,21 @@ export default {
     },
     handleEdit(id, name) {
       this.formTitle = 'Edit Enrollment ' + name;
-      var data = this.list.find(
-        (reservation) => reservation.id === id
-      );
+      var data = this.list.find((reservation) => reservation.id === id);
       this.currentEnrollment.id = data.id;
       this.currentEnrollment.student_id = data.student.id;
       this.currentEnrollment.student_no = data.student.student_no;
-      this.currentEnrollment.name = data.student.first_name + ' ' + data.student.last_name;
-      this.currentEnrollment.student_type = data.student_type === '0' ? 'Old Student' : 'New';
-      this.currentEnrollment.reservation_fee = data.reservation_amount;
+      this.currentEnrollment.name =
+        data.student.first_name + ' ' + data.student.last_name;
+      this.currentEnrollment.student_type =
+        data.student_type === '0' ? 'Old Student' : 'New';
+      this.currentEnrollment.enrollment_fee = data.reservation_amount;
       this.currentEnrollment.reservation_amount = data.reservation_amount;
       this.currentEnrollment.school_year_id = data.school_year_id;
       this.currentEnrollment.grade_level_id = data.grade_level_id;
       this.filterSection();
       this.currentEnrollment.section_id = data.section_id;
-      this.reservationFormVisible = true;
+      this.enrollmentFormVisible = true;
       this.studentValid = true;
     },
     resetForm() {
@@ -584,12 +670,13 @@ export default {
       };
       this.submitted = false;
     },
-    onCancelSearch(){
+    onCancelSearch() {
       this.studentQuery = {
         id: '',
         birthdate: '',
       };
     },
+    /* Upload events */
     dropzoneS(file, response) {
       this.currentEnrollment.payment_receipt = file.xhr.responseText;
       // this.$message({ message: 'Upload success', type: 'success' });
@@ -598,43 +685,78 @@ export default {
       this.currentEnrollment.payment_receipt = '';
       // this.$message({ message: 'Delete success', type: 'success' });
     },
-    proceedReservation(data){
-      if (data.length === 0){
+    proceedReservation(data) {
+      if (data.length === 0) {
         this.studentValid = false;
       } else {
         this.student = data;
         this.resetForm();
         this.studentValid = true;
-        this.formTitle = 'Create Enrollment for ' + this.student.first_name + ' ' + this.student.last_name;
+        this.formTitle =
+          'Create Enrollment for ' +
+          this.student.first_name +
+          ' ' +
+          this.student.last_name;
         this.currentEnrollment.student_id = this.student.id;
         this.currentEnrollment.student_no = this.student.student_no;
-        this.currentEnrollment.name = this.student.first_name + ' ' + this.student.last_name;
+        this.currentEnrollment.name =
+          this.student.first_name + ' ' + this.student.last_name;
         this.currentEnrollment.student_type = 'New Student';
-        this.currentEnrollment.reservation_fee = 'PHP 2,000';
+        this.currentEnrollment.enrollment_fee = 'PHP 2,000';
         this.currentEnrollment.reservation_amount = '2000';
       }
     },
-    formatTuition(item){
+    /* Computations */
+    computeTuition() {
+      var tuition = this.subFeeList.filter(this.getTuition);
+      var discount = parseInt(tuition[0].discount);
       var fee = 0;
-      if(item.name.toUpperCase() === 'REGULAR'){
+
+      if (discount == 0) {
+        fee = parseInt(this.regular_fee) + parseInt(this.misc_fee);
+      } else {
+        fee =
+          parseInt(this.regular_fee) -
+          parseInt(this.regular_fee) * parseFloat(discount / 100) +
+          parseInt(this.misc_fee);
+      }
+      
+      var additional = this.paymentModeTypeList.filter(this.getAdditional);
+      if(additional.length > 0){
+        var percentage = parseFloat(additional[0].percentage);
+        fee = fee + (fee * (percentage / 100));
+      }
+      this.currentEnrollment.enrollment_fee = fee;
+    },
+    formatTuition(item) {
+      var fee = 0;
+      if (item.name.toUpperCase() === 'REGULAR') {
         this.regular_fee = item.tuition;
         this.misc_fee = item.misc;
         fee = parseInt(this.regular_fee) + parseInt(this.misc_fee);
         return item.name + '@' + fee;
-      }else{
-        fee = parseInt(this.regular_fee) - (parseInt(this.regular_fee) * parseFloat(item.discount/100)) + parseInt(this.misc_fee);
-        return item.name + '@' + fee + '(less '+ item.discount +'%)';
+      } else {
+        fee =
+          parseInt(this.regular_fee) -
+          parseInt(this.regular_fee) * parseFloat(item.discount / 100) +
+          parseInt(this.misc_fee);
+        return item.name + '@' + fee + '(less ' + item.discount + '%)';
       }
-      
     },
-    formatPaymentMode(item){
-      if(item.percentage === '0'){
-        return item.name + ' ['+ item.payable_in +' time payment]';
-      }else{
-        return item.name + ' ['+ item.payable_in +' gives @ '+ item.percentage +'%]';
+    formatPaymentMode(item) {
+      if (item.percentage === '0') {
+        return item.name + ' [' + item.payable_in + ' time payment]';
+      } else {
+        return (
+          item.name +
+          ' [' +
+          item.payable_in +
+          ' gives @ ' +
+          item.percentage +
+          '%]'
+        );
       }
-      
-    }
+    },
   },
 };
 </script>

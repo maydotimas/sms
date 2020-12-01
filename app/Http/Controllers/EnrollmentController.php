@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\EnrollmentResource;
 use App\Laravue\Models\Enrollment;
 use Illuminate\Http\Request;
 
@@ -58,6 +59,7 @@ class EnrollmentController extends Controller
      */
     public function store(Request $request)
     {
+        return dd($request->all());
         $validator = Validator::make(
             $request->all(),
             [

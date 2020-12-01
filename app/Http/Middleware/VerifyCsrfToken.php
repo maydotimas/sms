@@ -12,6 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        '/api/reservations/upload-receipt'
+        '/api/reservations/upload-receipt',
+        '/api/enrollments/upload-receipt'
     ];
 }
