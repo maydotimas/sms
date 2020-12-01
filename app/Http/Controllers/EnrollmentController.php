@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\EnrollmentResource;
 use App\Laravue\Models\Enrollment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class EnrollmentController extends Controller
 {
@@ -59,7 +60,6 @@ class EnrollmentController extends Controller
      */
     public function store(Request $request)
     {
-        return dd($request->all());
         $validator = Validator::make(
             $request->all(),
             [
@@ -67,7 +67,10 @@ class EnrollmentController extends Controller
                 'school_year_id' => ['required'],
                 'grade_level_id' => ['required'],
                 'section_id' => ['required'],
-                'reservation_amount' => ['required'],
+                'sub_fee_id' => ['required'],
+                'payment_mode_type_id' => ['required'],
+                'student_type' => ['required'],
+                'enrollment_fee' => ['required'],
                 'payment_receipt' => ['required'],
                 'type' => ['required'],
             ]
@@ -78,15 +81,17 @@ class EnrollmentController extends Controller
         } else {
             $params = $request->all();
             $record = Enrollment::create([
-                'reservation_code' => \Illuminate\Support\Str::random(6),
+                'enrollment_code' => \Illuminate\Support\Str::random(6),
                 'student_id' => $params['student_id'],
                 'school_year_id' => $params['school_year_id'],
                 'grade_level_id' => $params['grade_level_id'],
                 'section_id' => $params['section_id'],
-                'student_type' => $params['type'],
-                'reservation_amount' => $params['reservation_amount'],
+                'sub_fee_id' => $params['sub_fee_id'],
+                'payment_mode_type_id' => $params['payment_mode_type_id'],
+                'student_type' => $params['student_type'],
+                'enrollment_amount' => $params['enrollment_fee'],
                 'payment_receipt' => $params['payment_receipt'],
-                'status' => 'RESERVED',
+                'status' => 'ENROLLED',
             ]);
 
             return new EnrollmentResource($record);

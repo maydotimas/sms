@@ -29,7 +29,7 @@
         {{ $t('table.search') }}
       </el-button>
       <el-button
-        v-permission="['manage reservation']"
+        v-permission="['manage enrollment']"
         class="filter-item"
         type="primary"
         icon="el-icon-plus"
@@ -73,14 +73,14 @@
       </el-table-column>
 
       <el-table-column
-        v-permission="['manage reservation']"
+        v-permission="['manage enrollment']"
         align="center"
         label="Actions"
         width="200"
       >
         <template slot-scope="scope">
           <el-button
-            v-permission="['manage reservation']"
+            v-permission="['manage enrollment']"
             type="primary"
             size="small"
             icon="el-icon-edit"
@@ -95,7 +95,7 @@
             >Edit</el-button
           >
           <el-button
-            v-permission="['manage reservation']"
+            v-permission="['manage enrollment']"
             type="danger"
             size="small"
             icon="el-icon-delete"
@@ -123,7 +123,7 @@
     />
     <!--  DIALOG for Add and EDIT -->
     <el-dialog
-      v-permission="['manage reservation']"
+      v-permission="['manage enrollment']"
       :title="formTitle"
       :visible.sync="enrollmentFormVisible"
     >
@@ -163,15 +163,13 @@
           </el-form-item>
           <el-form-item v-if="currentEnrollment.type == 0">
             <el-button @click="onCancelSearch">Reset</el-button>
-            <el-button
-              type="primary"
-              @click="getStudentDetails"
+            <el-button type="primary" @click="getStudentDetails"
               >Search Student</el-button
             >
           </el-form-item>
           <student-activity
             v-if="currentEnrollment.type == 1"
-            :reservation="true"
+            :enrollment="true"
             @save-student="proceedReservation"
           />
         </el-form>
@@ -242,7 +240,7 @@
             <el-select
               v-model="currentEnrollment.sub_fee_id"
               class="filter-item"
-              placeholder="Please Section"
+              placeholder="Please Select Tuition"
               @change="computeTuition"
             >
               <el-option
@@ -257,7 +255,7 @@
             <el-select
               v-model="currentEnrollment.payment_mode_type_id"
               class="filter-item"
-              placeholder="Please Section"
+              placeholder="Please Payment Mode"
               @change="computeTuition"
             >
               <el-option
@@ -283,9 +281,7 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button
-              @click="enrollmentFormVisible = false"
-              >Cancel</el-button>
+            <el-button @click="enrollmentFormVisible = false">Cancel</el-button>
             <el-button
               :disabled="submitted"
               type="primary"
@@ -308,7 +304,7 @@ import StudentActivity from '../students/components/StudentActivity';
 import Dropzone from '@/components/Dropzone';
 
 const enrollmentResource = new Resource('enrollment');
-const reservationResource = new Resource('reservation');
+const reservationResource = new Resource('enrollment');
 const gradeLevelResource = new Resource('gradeLevels');
 const departmentResource = new Resource('departments');
 const sectionResource = new Resource('sections');
@@ -359,6 +355,8 @@ export default {
         reservation_amount: '',
         payment_receipt: '',
         type: 0,
+        sub_fee_id: '',
+        payment_mode_type_id: '',
       },
       student: [],
       dept_id: '',
@@ -469,7 +467,7 @@ export default {
     async getStudentDetails() {
       const { data } = await studentResource.list(this.studentQuery);
       this.student = data[0];
-      if(data.length == 0) return false;
+      if (data.length == 0) return false;
       // student data does not exist
       if (this.student.length === 0) {
         this.studentValid = false;
@@ -535,7 +533,10 @@ export default {
       }
     },
     getAdditional(item, index, arr) {
-      if (parseInt(item.id) === parseInt(this.currentEnrollment.payment_mode_type_id)) {
+      if (
+        parseInt(item.id) ===
+        parseInt(this.currentEnrollment.payment_mode_type_id)
+      ) {
         return item;
       }
     },
@@ -614,7 +615,7 @@ export default {
     },
     handleDelete(id, name) {
       this.$confirm(
-        'This will permanently delete reservation ' + name + '. Continue?',
+        'This will permanently delete enrollment ' + name + '. Continue?',
         'Warning',
         {
           confirmButtonText: 'OK',
@@ -639,8 +640,9 @@ export default {
         });
     },
     handleEdit(id, name) {
+      this.resetForm();
       this.formTitle = 'Edit Enrollment ' + name;
-      var data = this.list.find((reservation) => reservation.id === id);
+      var data = this.list.find((enrollment) => enrollment.id === id);
       this.currentEnrollment.id = data.id;
       this.currentEnrollment.student_id = data.student.id;
       this.currentEnrollment.student_no = data.student.student_no;
@@ -648,12 +650,15 @@ export default {
         data.student.first_name + ' ' + data.student.last_name;
       this.currentEnrollment.student_type =
         data.student_type === '0' ? 'Old Student' : 'New';
-      this.currentEnrollment.enrollment_fee = data.reservation_amount;
-      this.currentEnrollment.reservation_amount = data.reservation_amount;
       this.currentEnrollment.school_year_id = data.school_year_id;
       this.currentEnrollment.grade_level_id = data.grade_level_id;
       this.filterSection();
       this.currentEnrollment.section_id = data.section_id;
+      this.currentEnrollment.sub_fee_id = data.sub_fee_id;
+      this.currentEnrollment.payment_mode_type_id = data.payment_mode_type_id;
+      this.currentEnrollment.enrollment_fee = data.enrollment_amount;
+      this.currentEnrollment.schoolYear = data.school_year.name;
+      this.currentEnrollment.payment_receipt = data.payment_receipt;
       this.enrollmentFormVisible = true;
       this.studentValid = true;
     },
@@ -667,6 +672,8 @@ export default {
         reservation_amount: '',
         payment_receipt: '',
         type: 0,
+        sub_fee_id: '',
+        payment_mode_type_id: '',
       };
       this.submitted = false;
     },
@@ -707,11 +714,12 @@ export default {
       }
     },
     /* Computations */
-    computeTuition() {
+    computeTuition(item) {
       var tuition = this.subFeeList.filter(this.getTuition);
       var discount = parseInt(tuition[0].discount);
       var fee = 0;
-
+      console.log(tuition);
+      console.log(discount);
       if (discount == 0) {
         fee = parseInt(this.regular_fee) + parseInt(this.misc_fee);
       } else {
@@ -720,11 +728,11 @@ export default {
           parseInt(this.regular_fee) * parseFloat(discount / 100) +
           parseInt(this.misc_fee);
       }
-      
+
       var additional = this.paymentModeTypeList.filter(this.getAdditional);
-      if(additional.length > 0){
+      if (additional.length > 0) {
         var percentage = parseFloat(additional[0].percentage);
-        fee = fee + (fee * (percentage / 100));
+        fee = fee + fee * (percentage / 100);
       }
       this.currentEnrollment.enrollment_fee = fee;
     },
