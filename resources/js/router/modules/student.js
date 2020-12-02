@@ -10,7 +10,7 @@ const studentRoutes = {
   meta: {
     title: 'student',
     icon: 'people',
-    permissions: ['view menu administrator'],
+    permissions: ['view menu student'],
   },
   children: [
     /** User managements */
