@@ -163,7 +163,9 @@
           </el-form-item>
           <el-form-item v-if="currentEnrollment.type == 0">
             <el-button @click="onCancelSearch">Reset</el-button>
-            <el-button type="primary" @click="getStudentDetails"
+            <el-button
+              type="primary"
+              @click="getStudentDetails"
               >Search Student</el-button
             >
           </el-form-item>
@@ -467,7 +469,9 @@ export default {
     async getStudentDetails() {
       const { data } = await studentResource.list(this.studentQuery);
       this.student = data[0];
-      if (data.length == 0) return false;
+      if (data.length === 0){
+        return false;
+      }
       // student data does not exist
       if (this.student.length === 0) {
         this.studentValid = false;
@@ -720,7 +724,7 @@ export default {
       var fee = 0;
       console.log(tuition);
       console.log(discount);
-      if (discount == 0) {
+      if (discount === 0) {
         fee = parseInt(this.regular_fee) + parseInt(this.misc_fee);
       } else {
         fee =

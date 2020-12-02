@@ -76,7 +76,7 @@ export default {
     externalLink: 'External Link',
     elementUi: 'Element UI',
     administrator: 'Administrator',
-    configuration: 'Configurations',
+    configuration: 'Admin Configuration',
     student: 'Student',
     users: 'Users',
     userProfile: 'User Profile',

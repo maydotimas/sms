@@ -22,7 +22,7 @@ import studentRoutes from './modules/student';
 import parentRoutes from './modules/parent';
 // import syRoutes from './modules/school-year';
 // import nestedRoutes from './modules/nested';
-import errorRoutes from './modules/error';
+// import errorRoutes from './modules/error';
 // import excelRoutes from './modules/excel';
 // import permissionRoutes from './modules/permission';
 
@@ -198,7 +198,7 @@ export const asyncRoutes = [
   //     },
   //   ],
   // },
-  errorRoutes,
+  // errorRoutes,
   // excelRoutes,
   // {
   //   path: '/zip',

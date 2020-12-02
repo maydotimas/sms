@@ -71,9 +71,19 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersTableSeeder::class);
 //        $this->call(CategoriesSeeder::class);
 
+//        $this->call(CategoriesTableSeeder::class);
         $this->call(BarangaySeeder::class);
 //        $this->call(CityTableSeeder::class);
         $this->call(ProvinceTableSeeder::class);
         $this->call(CitiesTableSeeder::class);
+        $this->call(DepartmentsTableSeeder::class);
+        $this->call(GradeLevelsTableSeeder::class);
+        $this->call(SectionsTableSeeder::class);
+        $this->call(FeesTableSeeder::class);
+        $this->call(PaymentModesTableSeeder::class);
+        $this->call(PaymentModeTypesTableSeeder::class);
+        $this->call(StudentsTableSeeder::class);
+        $this->call(SubFeesTableSeeder::class);
+//        $this->call(SubjectsTableSeeder::class);
     }
 }

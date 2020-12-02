@@ -5,7 +5,7 @@ const adminRoutes = {
   path: '/administrator',
   component: Layout,
   redirect: '/administrator/users',
-  name: 'Configurations',
+  name: 'Management',
   alwaysShow: true,
   meta: {
     title: 'configuration',
