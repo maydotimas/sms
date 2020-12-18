@@ -19,10 +19,10 @@ use Illuminate\Support\Str;
 final class Acl
 {
     const ROLE_ADMIN = 'admin';
-    const ROLE_MANAGER = 'manager';
-    const ROLE_EDITOR = 'editor';
-    const ROLE_USER = 'user';
-    const ROLE_VISITOR = 'visitor';
+    const ROLE_MANAGER = 'principal';
+    const ROLE_EDITOR = 'cashier';
+    const ROLE_USER = 'teacher';
+    const ROLE_VISITOR = 'parent';
 
     const PERMISSION_VIEW_MENU_ELEMENT_UI = 'view menu element ui';
     const PERMISSION_VIEW_MENU_PERMISSION = 'view menu permission';

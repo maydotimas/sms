@@ -20,23 +20,23 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('laravue'),
         ]);
         $manager = User::create([
-            'name' => 'Manager',
-            'email' => 'manager@laravue.dev',
+            'name' => 'Principal',
+            'email' => 'principal@laravue.dev',
             'password' => Hash::make('laravue'),
         ]);
         $editor = User::create([
-            'name' => 'Editor',
-            'email' => 'editor@laravue.dev',
+            'name' => 'Cashier',
+            'email' => 'cashier@laravue.dev',
             'password' => Hash::make('laravue'),
         ]);
         $user = User::create([
-            'name' => 'User',
-            'email' => 'user@laravue.dev',
+            'name' => 'Teacher',
+            'email' => 'teacher@laravue.dev',
             'password' => Hash::make('laravue'),
         ]);
         $visitor = User::create([
-            'name' => 'Visitor',
-            'email' => 'visitor@laravue.dev',
+            'name' => 'Parent',
+            'email' => 'parent@laravue.dev',
             'password' => Hash::make('laravue'),
         ]);
 
