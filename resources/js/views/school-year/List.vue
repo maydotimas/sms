@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    Test
     <div class="filter-container">
       <el-input
         v-model="listQuery.title"
@@ -8,19 +9,12 @@
         class="filter-item"
         @keyup.enter.native="getList"
       />
-      <el-button
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        @click="getList">
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="getList">
         {{ $t('table.search') }}
       </el-button>
-      <el-button
-        v-permission="['manage schoolyear']"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-plus"
-        @click="handleCreate">{{ $t('table.add') }}</el-button>
+      <el-button v-permission="['manage schoolyear']" class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
+        {{ $t('table.add') }}
+      </el-button>
     </div>
 
     <el-table v-loading="loading" :data="list" border fit highlight-current-row>
@@ -74,21 +68,10 @@
             @click="handleView(scope.row.id, scope.row.name)"
             >View</el-button
           > -->
-          <el-button
-            v-permission="['manage schoolyear']"
-            type="primary"
-            size="small"
-            icon="el-icon-edit"
-            @click="handleEdit(scope.row.id, scope.row.name)"
-            >Edit</el-button
-          >
-          <el-button
-            v-permission="['manage schoolyear']"
-            type="danger"
-            size="small"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row.id, scope.row.name)"
-          >
+          <el-button v-permission="['manage schoolyear']" type="primary" size="small" icon="el-icon-edit" @click="handleEdit(scope.row.id, scope.row.name)">
+            Edit
+          </el-button>
+          <el-button v-permission="['manage schoolyear']" type="danger" size="small" icon="el-icon-delete" @click="handleDelete(scope.row.id, scope.row.name)">
             Delete
           </el-button>
         </template>
@@ -171,12 +154,26 @@
               <el-option label="Active" value="1" />
             </el-select>
           </el-form-item>
+          <el-form-item label="Payment Mode" prop="payment_mode">
+            <el-select
+              v-model="currentSchoolYear.payment_mode_id"
+              class="filter-item"
+              placeholder="Please select payment mode"
+            >
+              <el-option
+                v-for="item in paymentModeList"
+                :key="item.id"
+                :label="item.name | uppercaseFirst"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
           <div v-for="department in deptList" :key="department.id">
             <el-form-item :label="department.name" prop="department_id">
               <el-select
                 v-model="currentSchoolYear.fees[department.id]"
                 class="filter-item"
-                placeholder="Please select payment config"
+                placeholder="Please select tuition fee"
               >
                 <el-option
                   v-for="item in feeList"
@@ -191,8 +188,8 @@
         <div slot="footer" class="dialog-footer">
           <el-button @click="schoolYearFormVisible = false">Cancel</el-button>
           <el-button :disabled="submitted" type="primary" @click="handleSubmit">
-            Confirm</el-button
-          >
+            Confirm
+          </el-button>
         </div>
       </div>
     </el-dialog>
@@ -245,8 +242,8 @@
         <div slot="footer" class="dialog-footer">
           <el-button @click="schoolYearDetails = false">Cancel</el-button>
           <el-button type="primary" @click="schoolYearDetails = false">
-            Confirm</el-button
-          >
+            Confirm
+          </el-button>
         </div>
       </div>
     </el-dialog>
@@ -261,6 +258,7 @@ import Pagination from '@/components/Pagination'; // Secondary package based on 
 const schoolYearResource = new Resource('schoolYear');
 const feeResource = new Resource('fees');
 const departmentResource = new Resource('departments');
+const paymentModeResource = new Resource('payment_modes');
 
 export default {
   name: 'SchoolYearList',
@@ -292,6 +290,7 @@ export default {
       ],
       deptList: [],
       feeList: [],
+      paymentModeList: [],
       departments: [],
       fees: [],
       loading: true,
@@ -309,6 +308,7 @@ export default {
     this.getList();
     this.getDeptList();
     this.getFeeList();
+    this.getPaymentModeList();
     this.resetForm();
   },
   methods: {
@@ -329,6 +329,12 @@ export default {
       this.loading = true;
       const { data } = await feeResource.list({});
       this.feeList = data.data;
+      this.loading = false;
+    },
+    async getPaymentModeList() {
+      this.loading = true;
+      const { data } = await paymentModeResource.list({});
+      this.paymentModeList = data.data;
       this.loading = false;
     },
     checkRegular(subfee){
@@ -354,7 +360,7 @@ export default {
       this.currentSchoolYearView.school_year_config.forEach(this.mapDeptFee);
     },
     mapDeptFee(item, index, arr){
-      this.currentSchoolYear.fees[item.department_id] = item.fees_id;
+      this.currentSchoolYear.fees[item.department_id] = item.fee_id;
     },
     handleCreate() {
       this.schoolYearFormVisible = true;
@@ -446,6 +452,7 @@ export default {
         year: this.currentSchoolYearEdit.year,
         start_month: this.currentSchoolYearEdit.start_month,
         end_month: this.currentSchoolYearEdit.end_month,
+        payment_mode_id: this.currentSchoolYearEdit.payment_mode_id,
         status: this.currentSchoolYearEdit.status === '1' ? 'Active' : 'Inactive',
         fees: [],
       };

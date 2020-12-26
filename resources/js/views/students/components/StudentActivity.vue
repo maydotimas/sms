@@ -18,13 +18,14 @@
             <el-form-item v-if="student.type === 0" label="Student No">
               <el-input
                 v-model="student.student_no"
-                aria-placeholder="LRN (Learners Reference Number)"
+                aria-placeholder="Student No"
               />
             </el-form-item>
             <el-form-item label="LRN">
               <el-input
                 v-model="student.lrn"
                 aria-placeholder="LRN (Learners Reference Number)"
+                maxlength="12"
               />
             </el-form-item>
             <el-form-item label="Last Name" prop="last_name">

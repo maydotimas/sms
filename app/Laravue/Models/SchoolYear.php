@@ -11,7 +11,8 @@ class SchoolYear extends Model
         'year',
         'start_month',
         'end_month',
-        'status'
+        'status',
+        'payment_mode_id'
     ];
 
     public function scopeSearch($query,$keyword){
@@ -29,5 +30,10 @@ class SchoolYear extends Model
     public function schoolYearConfig()
     {
         return $this->hasMany('App\Laravue\Models\SchoolYearConfig');
+    }
+
+    public function paymentMode()
+    {
+        return $this->belongsTo('App\Laravue\Models\PaymentMode');
     }
 }

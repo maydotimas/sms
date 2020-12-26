@@ -20,22 +20,13 @@
           :value="item.id"
         />
       </el-select>
-      <el-button
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        @click="getList"
-      >
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="getList">
         {{ $t('table.search') }}
       </el-button>
-      <el-button
-        v-permission="['manage enrollment']"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-plus"
-        @click="handleCreate"
-        >{{ $t('table.add') }}</el-button
-      >
+
+      <el-button v-permission="['manage enrollment']" class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
+        {{ $t('table.add') }}
+      </el-button>
     </div>
 
     <el-table v-loading="loading" :data="list" border fit highlight-current-row>
@@ -47,10 +38,10 @@
 
       <el-table-column align="center" label="Name" width="200">
         <template slot-scope="scope">
-          <span
-            >{{ scope.row.student.last_name }},
-            {{ scope.row.student.first_name }}</span
-          >
+          <span>
+            {{ scope.row.student.last_name }},
+            {{ scope.row.student.first_name }}
+          </span>
         </template>
       </el-table-column>
 
@@ -79,21 +70,9 @@
         width="200"
       >
         <template slot-scope="scope">
-          <el-button
-            v-permission="['manage enrollment']"
-            type="primary"
-            size="small"
-            icon="el-icon-edit"
-            @click="
-              handleEdit(
-                scope.row.id,
-                scope.row.student.last_name +
-                  ', ' +
-                  scope.row.student.first_name
-              )
-            "
-            >Edit</el-button
-          >
+          <el-button v-permission="['manage enrollment']" type="primary" size="small" icon="el-icon-edit" @click="handleEdit(scope.row.id,scope.row.student.last_name +', ' +scope.row.student.first_name)">
+            Edit
+          </el-button>
           <el-button
             v-permission="['manage enrollment']"
             type="danger"
@@ -163,11 +142,9 @@
           </el-form-item>
           <el-form-item v-if="currentEnrollment.type == 0">
             <el-button @click="onCancelSearch">Reset</el-button>
-            <el-button
-              type="primary"
-              @click="getStudentDetails"
-              >Search Student</el-button
-            >
+            <el-button type="primary" @click="getStudentDetails">
+              Search Student
+            </el-button>
           </el-form-item>
           <student-activity
             v-if="currentEnrollment.type == 1"
@@ -284,13 +261,9 @@
           </el-form-item>
           <el-form-item>
             <el-button @click="enrollmentFormVisible = false">Cancel</el-button>
-            <el-button
-              :disabled="submitted"
-              type="primary"
-              @click="handleSubmit"
-            >
-              Confirm</el-button
-            >
+            <el-button :disabled="submitted" type="primary" @click="handleSubmit">
+              Confirm
+            </el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -362,7 +335,7 @@ export default {
       },
       student: [],
       dept_id: '',
-      fees_id: '',
+      fee_id: '',
       regular_fee: '',
       misc_fee: '',
       tuition_fee: '',
@@ -470,6 +443,18 @@ export default {
       const { data } = await studentResource.list(this.studentQuery);
       this.student = data[0];
       if (data.length === 0){
+        this.enrollmentFormVisible = false;
+        this.$alert(
+          'Student details not found. Please try again.',
+          'Warning',
+          {
+            confirmButtonText: 'OK',
+            type: 'warning',
+            callback: action => {
+              this.enrollmentFormVisible = true;
+            },
+          }
+        );
         return false;
       }
       // student data does not exist
@@ -501,7 +486,7 @@ export default {
       this.dept_id = dept[0].department_id;
       /* Get fees ID */
       var fees = this.schoolYearList[0].school_year_config.filter(this.mapFees);
-      this.fees_id = fees[0].fees_id;
+      this.fee_id = fees[0].fee_id;
       /* Get available Sections */
       this.filteredSectionList = [];
       this.filteredSectionList = this.sectionList.filter(this.mapSection);
@@ -545,7 +530,7 @@ export default {
       }
     },
     mapTuition(item, index, arr) {
-      if (parseInt(item.fee_id) === parseInt(this.fees_id)) {
+      if (parseInt(item.fee_id) === parseInt(this.fee_id)) {
         return item;
       }
     },
@@ -557,16 +542,28 @@ export default {
     },
     mapPaymentMode(item, index, arr) {
       /* var config = this.schoolYearList[0].school_year_config;
-      var fees_id = config[0].fees_id;
+      var fee_id = config[0].fee_id;
       if (parseInt(item.grade_level_id) === parseInt(this.currentEnrollment.grade_level_id)){ */
       return item;
       // }
     },
     /* Form Events */
     handleCreate() {
-      this.enrollmentFormVisible = true;
-      this.resetForm();
-      this.formTitle = 'Create Enrollment';
+      // check if there are active school year
+      if (this.schoolYearList.length > 0){
+        this.enrollmentFormVisible = true;
+        this.resetForm();
+        this.formTitle = 'Create Enrollment';
+      } else {
+        this.$alert(
+          'No Active School Year. Please set an active School Year.',
+          'Warning',
+          {
+            confirmButtonText: 'OK',
+            type: 'warning',
+          }
+        );
+      }
     },
     handleSubmit() {
       this.$refs['enrollmentForm'].validate((valid) => {

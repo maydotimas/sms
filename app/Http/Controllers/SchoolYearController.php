@@ -69,19 +69,19 @@ class SchoolYearController extends Controller
                 'start_month' => $params['start_month'],
                 'end_month' => $params['end_month'],
                 'status' => $params['status'],
+                'payment_mode_id' => $params['payment_mode_id'],
             ]);
 
             // Create school year configuration
             $fees = $params['fees'];
             $keys = array_keys($fees);
 
-
             foreach ($keys as $key) {
                 if ($fees[$key] != null) {
                     SchoolYearConfig::create([
                         'school_year_id' => $record->id,
                         'department_id' => $key,
-                        'fees_id' => $fees[$key],
+                        'fee_id' => $fees[$key],
                     ]);
                 }
             }

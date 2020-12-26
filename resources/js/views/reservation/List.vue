@@ -20,19 +20,12 @@
           :value="item.id"
         />
       </el-select>
-      <el-button
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        @click="getList">
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="getList">
         {{ $t('table.search') }}
       </el-button>
-      <el-button
-        v-permission="['manage reservation']"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-plus"
-        @click="handleCreate">{{ $t('table.add') }}</el-button>
+      <el-button v-permission="['manage reservation']" class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
+        {{ $t('table.add') }}
+      </el-button>
     </div>
 
     <el-table v-loading="loading" :data="list" border fit highlight-current-row>
@@ -41,31 +34,26 @@
           <span>{{ scope.row.school_year.name }}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="Name" width="200">
         <template slot-scope="scope">
           <span>{{ scope.row.student.last_name }}, {{ scope.row.student.first_name }}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="Grade Level" width="200">
         <template slot-scope="scope">
           <span>{{ scope.row.grade_level.name }}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="Section" width="200">
         <template slot-scope="scope">
           <span>{{ scope.row.section.name }}</span>
         </template>
       </el-table-column>
-
       <el-table-column align="center" label="Status" width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.status }}</span>
         </template>
       </el-table-column>
-
       <el-table-column
         v-permission="['manage reservation']"
         align="center"
@@ -73,14 +61,9 @@
         width="200"
       >
         <template slot-scope="scope">
-          <el-button
-            v-permission="['manage reservation']"
-            type="primary"
-            size="small"
-            icon="el-icon-edit"
-            @click="handleEdit(scope.row.id, scope.row.student.last_name + ', ' + scope.row.student.first_name)"
-            >Edit</el-button
-          >
+          <el-button v-permission="['manage reservation']" type="primary" size="small" icon="el-icon-edit" @click="handleEdit(scope.row.id, scope.row.student.last_name + ', ' + scope.row.student.first_name)">
+            Edit
+          </el-button>
           <el-button
             v-permission="['manage reservation']"
             type="danger"
@@ -134,14 +117,10 @@
             />
           </el-form-item>
           <el-form-item v-if="currentReservation.type == 0">
-              <el-button @click="onCancelSearch">Reset</el-button>
-              <el-button type="primary" @click="getStudentDetails">Search Student</el-button>
-            </el-form-item>
-          <student-activity
-            v-if="currentReservation.type == 1"
-            :reservation = true
-            @save-student = "proceedReservation"
-          />
+            <el-button @click="onCancelSearch">Reset</el-button>
+            <el-button type="primary" @click="getStudentDetails">Search Student</el-button>
+          </el-form-item>
+          <student-activity v-if="currentReservation.type==1" :reservation="true" @save-student="proceedReservation" />
         </el-form>
 
         <el-form
@@ -214,9 +193,9 @@
           <el-form-item>
             <el-button @click="reservationFormVisible = false">Cancel</el-button>
             <el-button :disabled="submitted" type="primary" @click="handleSubmit">
-              Confirm</el-button
-            >
-            </el-form-item>
+              Confirm
+            </el-button>
+          </el-form-item>
         </el-form>
       </div>
     </el-dialog>

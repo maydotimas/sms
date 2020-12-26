@@ -21,6 +21,12 @@ class CreateSchoolYearTable extends Migration
             $table->string('start_month');
             $table->string('end_month');
             $table->integer('status')->default(0);
+            $table->integer('locked')->default(0);
+
+
+            $table->foreignId('payment_mode_id')
+                ->constrained('payment_modes')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }
