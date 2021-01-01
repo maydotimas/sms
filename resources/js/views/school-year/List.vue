@@ -47,6 +47,13 @@
           <span>{{ scope.row.end_month }}</span>
         </template>
       </el-table-column>
+
+      <el-table-column align="center" label="Is Locked" width="200">
+        <template slot-scope="scope">
+          <span>{{ scope.row.is_locked }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="Status" width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.status == 1 ? 'Active' : 'Inactive' }}</span>
@@ -57,7 +64,7 @@
         v-permission="['manage schoolyear']"
         align="center"
         label="Actions"
-        width="300"
+        width="450"
       >
         <template slot-scope="scope">
           <!--  <el-button
@@ -68,6 +75,18 @@
             @click="handleView(scope.row.id, scope.row.name)"
             >View</el-button
           > -->
+          <el-button v-if="scope.row.is_locked == 'NO'" v-permission="['manage schoolyear']" type="warning" size="small" icon="el-icon-lock" @click="handleLock(scope.row.id, scope.row.name, 'lock')">
+            Lock
+          </el-button>
+          <el-button v-if="scope.row.is_locked == 'YES'" v-permission="['manage schoolyear']" type="success" size="small" icon="el-icon-key" @click="handleLock(scope.row.id, scope.row.name, 'unlock')">
+            Unlock
+          </el-button>
+          <el-button v-if="scope.row.status == 0" v-permission="['manage schoolyear']" type="success" size="small" @click="handleActivate(scope.row.id, scope.row.name, 'activate')">
+            Activate
+          </el-button>
+          <el-button v-if="scope.row.status == 1" v-permission="['manage schoolyear']" type="info" size="small" @click="handleActivate(scope.row.id, scope.row.name, 'deactivate')">
+            Deactivate
+          </el-button>
           <el-button v-permission="['manage schoolyear']" type="primary" size="small" icon="el-icon-edit" @click="handleEdit(scope.row.id, scope.row.name)">
             Edit
           </el-button>
@@ -434,6 +453,90 @@ export default {
           this.$message({
             type: 'info',
             message: 'Delete canceled',
+          });
+        });
+    },
+    handleLock(id, name, mode) {
+      this.$confirm(
+        'This will ' + mode + ' school year ' + name + '. Continue?',
+        'Warning',
+        {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning',
+        }
+      )
+        .then(() => {
+          schoolYearResource
+            .update(id, { 'is_locked': mode })
+            .then((response) => {
+              this.$message({
+                type: 'success',
+                message: 'School Year info has been updated successfully',
+                duration: 5 * 1000,
+              });
+              this.getList();
+              this.submitted = false;
+            })
+            .catch((error) => {
+              console.log(error);
+            })
+            .finally(() => {
+              this.getList();
+              this.schoolYearFormVisible = false;
+              this.submitted = false;
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Update canceled',
+          });
+        });
+    },
+    handleActivate(id, name, mode) {
+      var msg = '';
+
+      if(mode=='activate'){
+        msg = 'This will ' + mode + ' school year ' + name + ' and deactivate other school years. Continue?';
+      } else{
+        msg = 'This will ' + mode + ' school year ' + name + '. Continue?';
+      }
+
+      this.$confirm(
+        msg,
+        'Warning',
+        {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning',
+        }
+      )
+        .then(() => {
+          schoolYearResource
+            .update(id, { 'is_active': mode })
+            .then((response) => {
+              this.$message({
+                type: 'success',
+                message: 'School Year info has been updated successfully',
+                duration: 5 * 1000,
+              });
+              this.getList();
+              this.submitted = false;
+            })
+            .catch((error) => {
+              console.log(error);
+            })
+            .finally(() => {
+              this.getList();
+              this.schoolYearFormVisible = false;
+              this.submitted = false;
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Update canceled',
           });
         });
     },

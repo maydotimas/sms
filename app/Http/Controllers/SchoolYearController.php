@@ -123,27 +123,67 @@ class SchoolYearController extends Controller
         if ($schoolYear === null) {
             return response()->json(['error' => 'School Year not found'], 404);
         }
+        $params = $request->all();
+        if (isset($params['is_locked'])) {
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'is_locked' => ['required']
+                ]
+            );
 
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'name' => ['required']
-            ]
-        );
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 403);
+            } else {
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 403);
+                /* Update school year details */
+                $schoolYear->is_locked = $params['is_locked'] == 'lock' ? 'YES' : 'NO';
+                $schoolYear->save();
+
+            }
+        } else if (isset($params['is_active'])) {
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'is_active' => ['required']
+                ]
+            );
+
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 403);
+            } else {
+                //deactivate first
+                if ($params['is_active'] == 'activate') {
+                    SchoolYear::where('id', '>', '0')->update(['status' => '0']);
+                }
+                /* Update school year details */
+                $schoolYear->status = $params['is_active'] == 'activate' ? '1' : '0';
+                $schoolYear->save();
+
+            }
         } else {
-            $params = $request->all();
-            /* Update school year details */
-            $schoolYear->name = $params['name'];
-            $schoolYear->year = $params['year'];
-            $schoolYear->start_month = $params['start_month'];
-            $schoolYear->end_month = $params['end_month'];
-            $schoolYear->status = $params['status'];
-            $schoolYear->save();
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'name' => ['required']
+                ]
+            );
 
-            /* Update school year config */
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 403);
+            } else {
+
+                /* Update school year details */
+                $schoolYear->name = $params['name'];
+                $schoolYear->year = $params['year'];
+                $schoolYear->start_month = $params['start_month'];
+                $schoolYear->end_month = $params['end_month'];
+                $schoolYear->status = $params['status'];
+                $schoolYear->save();
+
+                /* Update school year config */
+            }
+
         }
 
         return new SchoolYearResource($schoolYear);
@@ -172,7 +212,8 @@ class SchoolYearController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function get_payment_details(Request $request){
+    public function get_payment_details(Request $request)
+    {
         $data = SchoolYearConfig::search($request->id);
 
         return SchoolYearConfigResource::collection(['data' => $data]);

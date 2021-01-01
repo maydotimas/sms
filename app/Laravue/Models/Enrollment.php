@@ -18,6 +18,7 @@ class Enrollment extends Model
         'payment_receipt',
         'enrollment_code',
         'status',
+        'is_locked',
     ];
 
     public function scopeSearch($query,$keyword){
