@@ -92,7 +92,6 @@ class EnrollmentController extends Controller
                 'enrollment_amount' => $params['enrollment_fee'],
                 'payment_receipt' => $params['payment_receipt'],
                 'status' => 'ENROLLED',
-                'is_locked' => 'NO',
             ]);
 
             return new EnrollmentResource($record);

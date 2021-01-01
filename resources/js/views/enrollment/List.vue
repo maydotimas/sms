@@ -70,7 +70,10 @@
         width="200"
       >
         <template slot-scope="scope">
-          <el-button v-permission="['manage enrollment']" type="primary" size="small" icon="el-icon-edit" @click="handleEdit(scope.row.id,scope.row.student.last_name +', ' +scope.row.student.first_name)">
+          <el-button v-if="scope.row.school_year.is_locked === 'NO'" v-permission="['manage enrollment']" type="primary" size="small" icon="el-icon-edit" @click="handleEdit(scope.row.id,scope.row.student.last_name +', ' +scope.row.student.first_name)">
+            Edit
+          </el-button>
+          <el-button v-if="scope.row.school_year.is_locked === 'YES'" v-permission="['manage enrollment']" type="info" size="small" icon="el-icon-edit" @click="lockedSchoolYear()">
             Edit
           </el-button>
           <el-button
@@ -398,6 +401,7 @@ export default {
       this.loading = true;
       const { data } = await enrollmentResource.list(this.listQuery);
       this.list = data.data;
+      console.log(this.list);
       this.total = data.total;
       this.loading = false;
     },
@@ -765,6 +769,19 @@ export default {
           '%]'
         );
       }
+    },
+    /* Dialog */
+    lockedSchoolYear(){
+      this.$alert(
+        'School Year is locked. You are not allowed to update any enrollment record.',
+        'Warning',
+        {
+          confirmButtonText: 'OK',
+          type: 'warning',
+        }
+      ).then(() => {
+        this.getList();
+      });
     },
   },
 };

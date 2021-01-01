@@ -497,9 +497,9 @@ export default {
     handleActivate(id, name, mode) {
       var msg = '';
 
-      if(mode=='activate'){
+      if (mode === 'activate'){
         msg = 'This will ' + mode + ' school year ' + name + ' and deactivate other school years. Continue?';
-      } else{
+      } else {
         msg = 'This will ' + mode + ' school year ' + name + '. Continue?';
       }
 
