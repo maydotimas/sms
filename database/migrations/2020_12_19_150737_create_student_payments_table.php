@@ -29,6 +29,7 @@ class CreateStudentPaymentsTable extends Migration
                 ->onDelete('cascade');
 
             $table->string('payment_no');
+            $table->string('payment_amount_due');
             $table->string('payment_amount');
             $table->string('payment_date');
             $table->string('payment_due');

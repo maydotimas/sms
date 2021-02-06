@@ -1,254 +1,265 @@
 <template>
-  <el-card>
-    <el-tabs v-model="activeActivity" @tab-click="handleClick">
-      <el-tab-pane label="Personal Information" name="first">
-        <div>
-          <el-form
-            ref="form1"
-            :rules="rule1"
-            :model="student"
-            label-width="120px"
-          >
-            <el-form-item label="Student Type">
-              <el-radio-group v-model="student.type">
-                <el-radio v-if="!reservation" :label="0">Old Student</el-radio>
-                <el-radio :label="1">New Student</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item v-if="student.type === 0" label="Student No">
-              <el-input
-                v-model="student.student_no"
-                aria-placeholder="Student No"
-              />
-            </el-form-item>
-            <el-form-item label="LRN">
-              <el-input
-                v-model="student.lrn"
-                aria-placeholder="LRN (Learners Reference Number)"
-                maxlength="12"
-              />
-            </el-form-item>
-            <el-form-item label="Last Name" prop="last_name">
-              <el-input
-                v-model="student.last_name"
-                aria-placeholder="Last Name"
-              />
-            </el-form-item>
-            <el-form-item label="First Name" prop="first_name">
-              <el-input
-                v-model="student.first_name"
-                aria-placeholder="First Name"
-              />
-            </el-form-item>
-            <el-form-item label="Middle Name" prop="middle_name">
-              <el-input
-                v-model="student.middle_name"
-                aria-placeholder="Middle Name"
-              />
-            </el-form-item>
-            <el-form-item label="Suffix" prop="suffix">
-              <el-select v-model="student.suffix" placeholder="Suffix">
-                <el-option label="N/A" value="" />
-                <el-option label="JR" value="JR" />
-                <el-option label="II" value="II" />
-                <el-option label="III" value="III" />
-                <el-option label="IV" value="IV" />
-                <el-option label="V" value="V" />
-                <el-option label="VI" value="VI" />
-                <el-option label="VII" value="VII" />
-                <el-option label="VIII" value="VIII" />
-                <el-option label="IX" value="IX" />
-                <el-option label="X" value="X" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="Nick Name" prop="nick_name">
-              <el-input
-                v-model="student.nickname"
-                aria-placeholder="Nickname"
-              />
-            </el-form-item>
-            <el-form-item label="Gender" prop="gender">
-              <el-select v-model="student.gender" placeholder="Select Gender">
-                <el-option label="Male" value="Male" />
-                <el-option label="Female" value="Female" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="Birthdate" prop="birthdate">
-              <el-date-picker
-                v-model="student.birthdate"
-                type="date"
-                placeholder="Select Birtdate"
-                style="width: 100%"
-              />
-            </el-form-item>
-            <el-form-item label="Handedness" prop="handedness">
-              <el-select
-                v-model="student.handedness"
-                placeholder="Select Handedness"
-              >
-                <el-option label="Left" value="Left" />
-                <el-option label="Right" value="Right" />
-                <el-option label="Ambidextrous" value="Ambidextrous" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="Religion" prop="religion">
-              <el-select
-                v-model="student.religion"
-                auto-complete="true"
-                placeholder="Select Religion"
-              >
-                <el-option label="Ang Dating Daan" value="Ang Dating Daan" />
-                <el-option label="Born Again" value="Born Again" />
-                <el-option label="Catholic" value="Catholic" />
-                <el-option label="Hindu" value="Hindu" />
-                <el-option
-                  label="Iglesia ni Cristo"
-                  value="Iglesia ni Cristo"
+  <div>
+    <el-card>
+      <el-tabs v-model="activeActivity" @tab-click="handleClick">
+        <el-tab-pane label="Personal Information" name="first">
+          <div>
+            <el-form
+              ref="form1"
+              :rules="rule1"
+              :model="student"
+              label-width="120px"
+            >
+              <el-form-item label="Student Type">
+                <el-radio-group v-model="student.type">
+                  <el-radio v-if="!reservation" :label="0">Old Student</el-radio>
+                  <el-radio :label="1">New Student</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item v-if="student.type === 0" label="Student No">
+                <el-input
+                  v-model="student.student_no"
+                  aria-placeholder="Student No"
                 />
-                <el-option label="Islam" value="Islam" />
-                <el-option label="Jewish" value="Jewish" />
-                <el-option
-                  label="Jehovah's Witness"
-                  value="Jehovah's Witness"
+              </el-form-item>
+              <el-form-item label="LRN">
+                <el-input
+                  v-model="student.lrn"
+                  aria-placeholder="LRN (Learners Reference Number)"
+                  maxlength="12"
                 />
-                <el-option label="Mormon" value="Mormon" />
-                <el-option label="Protestant" value="Protestant" />
-                <el-option
-                  label="Seventh Day Adventist"
-                  value="Seventh Day Adventist"
+              </el-form-item>
+              <el-form-item label="Last Name" prop="last_name">
+                <el-input
+                  v-model="student.last_name"
+                  aria-placeholder="Last Name"
                 />
-                <el-option label="Others" value="Others" />
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button @click="onCancel">Reset</el-button>
-              <el-button type="primary" @click="onNext">Next</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="Contact Information" name="second">
-        <div class="student-activity">
-          <el-form
-            ref="form2"
-            :rules="rule2"
-            :model="student"
-            label-width="120px"
-          >
-            <el-form-item label="Email Address" prop="email">
-              <el-input
-                v-model="student.email"
-                type="email"
-                aria-placeholder="E-Mail Address"
-              />
-            </el-form-item>
-            <el-form-item label="Mobile Number" prop="mobile">
-              <el-input
-                v-model="student.mobile"
-                aria-placeholder="Mobile Number"
-              />
-            </el-form-item>
-            <el-form-item label="Street" prop="street">
-              <el-input
-                v-model="student.street"
-                type="textarea"
-                aria-placeholder="Street"
-              />
-            </el-form-item>
-            <el-form-item label="Province" prop="province">
-              <el-autocomplete
-                v-model="province"
-                class="inline-input"
-                :fetch-suggestions="provinceSearch"
-                placeholder="Please Input Province"
-                :trigger-on-focus="true"
-                @select="handleSelectProvince"
-              />
-            </el-form-item>
-            <el-form-item label="Municipality" prop="town">
-              <el-autocomplete
-                v-model="town"
-                class="inline-input"
-                :fetch-suggestions="townSearch"
-                placeholder="Please Input Municipality"
-                :trigger-on-focus="true"
-                @select="handleSelectTown"
-              />
-            </el-form-item>
-            <el-form-item label="Barangay" prop="emergency_rule">
-              <el-autocomplete
-                v-model="barangay"
-                class="inline-input"
-                :fetch-suggestions="brgySearch"
-                placeholder="Please Input Barangay"
-                :trigger-on-focus="true"
-                @select="handleSelectBrgy"
-              />
-            </el-form-item>
-            <el-form-item label="In Case Of Emergency" prop="emergency_rule">
-              <el-autocomplete
-                v-model="emergency"
-                :fetch-suggestions="parentSearch"
-                placeholder="Please Input"
-                :trigger-on-focus="true"
-                @select="handleSelectEmergency"
-              />
-            </el-form-item>
-            <el-form-item>
-              <el-button @click="onPrevious">Previous</el-button>
-              <el-button type="primary" @click="onNext">Next</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="Family Information" name="third">
-        <div class="student-activity">
-          <el-form ref="form3" :model="student" label-width="120px">
-            <el-form-item label="Father">
-              <el-autocomplete
-                v-model="father"
-                :fetch-suggestions="popSearch"
-                placeholder="Please Input"
-                @select="handleSelectFather"
-              />
-            </el-form-item>
-            <el-form-item label="Mother">
-              <el-autocomplete
-                v-model="mother"
-                :fetch-suggestions="momSearch"
-                placeholder="Please Input"
-                @select="handleSelectMother"
-              />
-            </el-form-item>
-            <el-form-item label="Guardian">
-              <el-autocomplete
-                v-model="guardian"
-                :fetch-suggestions="guardianSearch"
-                placeholder="Please Input"
-                @select="handleSelectGuardian"
-              />
-            </el-form-item>
-            <el-form-item>
-              <el-button @click="onCancel">Reset</el-button>
-              <el-button type="primary" @click="onSubmit">Submit</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-tab-pane>
-    </el-tabs>
-  </el-card>
+              </el-form-item>
+              <el-form-item label="First Name" prop="first_name">
+                <el-input
+                  v-model="student.first_name"
+                  aria-placeholder="First Name"
+                />
+              </el-form-item>
+              <el-form-item label="Middle Name" prop="middle_name">
+                <el-input
+                  v-model="student.middle_name"
+                  aria-placeholder="Middle Name"
+                />
+              </el-form-item>
+              <el-form-item label="Suffix" prop="suffix">
+                <el-select v-model="student.suffix" placeholder="Suffix">
+                  <el-option label="N/A" value="" />
+                  <el-option label="JR" value="JR" />
+                  <el-option label="II" value="II" />
+                  <el-option label="III" value="III" />
+                  <el-option label="IV" value="IV" />
+                  <el-option label="V" value="V" />
+                  <el-option label="VI" value="VI" />
+                  <el-option label="VII" value="VII" />
+                  <el-option label="VIII" value="VIII" />
+                  <el-option label="IX" value="IX" />
+                  <el-option label="X" value="X" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="Nick Name" prop="nick_name">
+                <el-input
+                  v-model="student.nickname"
+                  aria-placeholder="Nickname"
+                />
+              </el-form-item>
+              <el-form-item label="Gender" prop="gender">
+                <el-select v-model="student.gender" placeholder="Select Gender">
+                  <el-option label="Male" value="Male" />
+                  <el-option label="Female" value="Female" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="Birthdate" prop="birthdate">
+                <el-date-picker
+                  v-model="student.birthdate"
+                  type="date"
+                  placeholder="YYYY-mm-dd"
+                  style="width: 100%"
+                />
+              </el-form-item>
+              <el-form-item label="Handedness" prop="handedness">
+                <el-select
+                  v-model="student.handedness"
+                  placeholder="Select Handedness"
+                >
+                  <el-option label="Left" value="Left" />
+                  <el-option label="Right" value="Right" />
+                  <el-option label="Ambidextrous" value="Ambidextrous" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="Religion" prop="religion">
+                <el-select
+                  v-model="student.religion"
+                  auto-complete="true"
+                  placeholder="Select Religion"
+                >
+                  <el-option label="Ang Dating Daan" value="Ang Dating Daan" />
+                  <el-option label="Born Again" value="Born Again" />
+                  <el-option label="Catholic" value="Catholic" />
+                  <el-option label="Hindu" value="Hindu" />
+                  <el-option
+                    label="Iglesia ni Cristo"
+                    value="Iglesia ni Cristo"
+                  />
+                  <el-option label="Islam" value="Islam" />
+                  <el-option label="Jewish" value="Jewish" />
+                  <el-option
+                    label="Jehovah's Witness"
+                    value="Jehovah's Witness"
+                  />
+                  <el-option label="Mormon" value="Mormon" />
+                  <el-option label="Protestant" value="Protestant" />
+                  <el-option
+                    label="Seventh Day Adventist"
+                    value="Seventh Day Adventist"
+                  />
+                  <el-option label="Others" value="Others" />
+                </el-select>
+              </el-form-item>
+              <el-form-item>
+                <el-button @click="onCancel">Reset</el-button>
+                <el-button type="primary" @click="onNext">Next</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="Contact Information" name="second">
+          <div class="student-activity">
+            <el-form
+              ref="form2"
+              :rules="rule2"
+              :model="student"
+              label-width="120px"
+            >
+              <el-form-item label="Email Address" prop="email">
+                <el-input
+                  v-model="student.email"
+                  type="email"
+                  aria-placeholder="E-Mail Address"
+                />
+              </el-form-item>
+              <el-form-item label="Mobile Number" prop="mobile">
+                <el-input
+                  v-model="student.mobile"
+                  aria-placeholder="Mobile Number"
+                />
+              </el-form-item>
+              <el-form-item label="Street" prop="street">
+                <el-input
+                  v-model="student.street"
+                  type="textarea"
+                  aria-placeholder="Street"
+                />
+              </el-form-item>
+              <el-form-item label="Province" prop="province">
+                <el-autocomplete
+                  v-model="province"
+                  class="inline-input"
+                  :fetch-suggestions="provinceSearch"
+                  placeholder="Please Input Province"
+                  :trigger-on-focus="true"
+                  @select="handleSelectProvince"
+                />
+              </el-form-item>
+              <el-form-item label="Municipality" prop="town">
+                <el-autocomplete
+                  v-model="town"
+                  class="inline-input"
+                  :fetch-suggestions="townSearch"
+                  placeholder="Please Input Municipality"
+                  :trigger-on-focus="true"
+                  @select="handleSelectTown"
+                />
+              </el-form-item>
+              <el-form-item label="Barangay" prop="emergency_rule">
+                <el-autocomplete
+                  v-model="barangay"
+                  class="inline-input"
+                  :fetch-suggestions="brgySearch"
+                  placeholder="Please Input Barangay"
+                  :trigger-on-focus="true"
+                  @select="handleSelectBrgy"
+                />
+              </el-form-item>
+              <el-form-item label="In Case Of Emergency" prop="emergency_rule">
+                <el-autocomplete
+                  v-model="emergency"
+                  :fetch-suggestions="parentSearch"
+                  placeholder="Please Input"
+                  :trigger-on-focus="true"
+                  @select="handleSelectEmergency"
+                />
+                <el-button @click="newParent">New Contact Emergency</el-button>
+              </el-form-item>
+              <el-form-item>
+                <el-button @click="onPrevious">Previous</el-button>
+                <el-button type="primary" @click="onNext">Next</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="Family Information" name="third">
+          <div class="student-activity">
+            <el-form ref="form3" :model="student" label-width="120px">
+              <el-form-item label="Father">
+                <el-autocomplete
+                  v-model="father"
+                  :fetch-suggestions="popSearch"
+                  placeholder="Please Input"
+                  @select="handleSelectFather"
+                />
+                <el-button @click="newParent">New Father</el-button>
+              </el-form-item>
+              <el-form-item label="Mother">
+                <el-autocomplete
+                  v-model="mother"
+                  :fetch-suggestions="momSearch"
+                  placeholder="Please Input"
+                  @select="handleSelectMother"
+                />
+                <el-button @click="newParent">New Mother</el-button>
+              </el-form-item>
+              <el-form-item label="Guardian">
+                <el-autocomplete
+                  v-model="guardian"
+                  :fetch-suggestions="guardianSearch"
+                  placeholder="Please Input"
+                  @select="handleSelectGuardian"
+                />
+                <el-button @click="newParent">New Guardian</el-button>
+              </el-form-item>
+              <el-form-item>
+                <el-button @click="onCancel">Reset</el-button>
+                <el-button type="primary" @click="onSubmit">Submit</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </el-card>
+    <el-dialog :title="formTitle" :visible.sync="isNewParent">
+      <parent-activity />
+    </el-dialog>
+  </div>
 </template>
 
 <script>
 import Resource from '@/api/resource';
+import ParentActivity from '../../parents/components/ParentActivity.vue';
+
 const studentResource = new Resource('students');
-// const parentResource = new Resource('parents');
 const provinceResource = new Resource('province');
 const cityResource = new Resource('city');
 const brgyResource = new Resource('barangay');
 const parentResource = new Resource('studentparents');
 
 export default {
+  components: { ParentActivity },
   props: {
     reservation: {
       type: Boolean,
@@ -288,7 +299,7 @@ export default {
     /* Custom Rules */
     var checkEmail = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error('Please input email'));
+        return callback();
       }
       if (
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
@@ -419,7 +430,7 @@ export default {
         ],
       },
       rule2: {
-        email: [{ required: true, validator: checkEmail, trigger: 'blur' }],
+        email: [{ validator: checkEmail, trigger: 'blur' }],
         mobile: [
           {
             required: true,
@@ -501,6 +512,8 @@ export default {
       form1Valid: false,
       form2Valid: false,
       form3Valid: false,
+      isNewParent: false,
+      formTitle: 'New Parent',
     };
   },
   mounted() {},
@@ -516,6 +529,9 @@ export default {
         this.activeActivity = 'fourth';
       }
       console.log('Switching tab ');
+    },
+    newParent(){
+      this.isNewParent = true;
     },
     onNext() {
       // validate fields
@@ -657,30 +673,29 @@ export default {
       // call callback function to return suggestions
       cb(results);
     },
-
     async loadFather() {
       this.fatherQuery.title = this.father;
       const { data } = await parentResource.ask(this.fatherQuery);
-      this.fathers = data.data;
-      return data.data;
+      this.fathers = data;
+      return data;
     },
     async loadMother() {
       this.motherQuery.title = this.mother;
       const { data } = await parentResource.ask(this.motherQuery);
-      this.mothers = data.data;
-      return data.data;
+      this.mothers = data;
+      return data;
     },
     async loadGuardian() {
       this.guardianQuery.title = this.guardian;
       const { data } = await parentResource.ask(this.guardianQuery);
-      this.guardians = data.data;
-      return data.data;
+      this.guardians = data;
+      return data;
     },
     async loadParents() {
       this.parentQuery.title = this.emergency;
       const { data } = await parentResource.ask(this.parentQuery);
-      this.parents = data.data;
-      return data.data;
+      this.parents = data;
+      return data;
     },
     async loadProvince() {
       if (this.province === '') {

@@ -33,6 +33,9 @@ class CreateStudentsTable extends Migration
             $table->string('province');
             $table->string('email');
             $table->string('mobile');
+            $table->string('father')->nullable();
+            $table->string('mother')->nullable();
+            $table->string('guardian')->nullable();
             $table->string('avatar')->nullable();
             $table->string('emergency_contact')->nullable();
             $table->timestamp('created_at')->nullable();

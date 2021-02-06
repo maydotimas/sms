@@ -22,9 +22,10 @@ class StudentController extends Controller
 
             $data = Student::search($request->title)
                 ->paginate($request->limit);
-        } else if (($request->has('id') && $request->input('id') != '') &&
+        } else if ((($request->has('id') && $request->input('id') != '') ||
+            ($request->has('lrn') && $request->input('lrn') != '')) &&
             ($request->has('birthdate') && $request->input('birthdate') != '')) {
-            $data = Student::searchStudent($request->id, $request->birthdate)->get();
+            $data = Student::searchStudent($request->id, $request->lrn, $request->birthdate)->get();
         } else {
             $data = Student::paginate($request->limit);
         }
@@ -50,6 +51,7 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
+//        dd($request->all());
         $validator = Validator::make(
             $request->all(),
             [
@@ -59,7 +61,6 @@ class StudentController extends Controller
                 'birthdate' => ['required'],
                 'handedness' => ['required'],
                 'religion' => ['required'],
-                'email' => ['required'],
                 'mobile' => ['required'],
                 'street' => ['required'],
                 'province' => ['required'],
@@ -101,8 +102,13 @@ class StudentController extends Controller
                 'gender' => $params['gender'],
                 'birthdate' => $params['birthdate'],
                 'emergency_contact' => $params['emergency_contact'],
+                'father' => $params['father'],
+                'mother' => $params['mother'],
+                'guardian' => $params['guardian'],
                 'avatar' => 'uploads\default.png',
             ]);
+
+
 
             return new StudentResource($student);
         }

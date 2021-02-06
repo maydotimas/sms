@@ -112,7 +112,7 @@
             <el-date-picker
               v-model="studentQuery.birthdate"
               type="date"
-              placeholder="Select Birtdate"
+              placeholder="YYYY-mm-dd"
               style="width: 100%"
             />
           </el-form-item>

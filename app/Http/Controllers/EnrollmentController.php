@@ -4,6 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\EnrollmentResource;
 use App\Laravue\Models\Enrollment;
+use App\Laravue\Models\PaymentMode;
+use App\Laravue\Models\PaymentModeType;
+use App\Laravue\Models\Reservation;
+use App\Laravue\Models\SchoolYear;
+use App\Laravue\Models\Student;
+use App\Laravue\Models\StudentPayment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -25,8 +31,8 @@ class EnrollmentController extends Controller
                 ->with('section')
                 ->paginate($request->limit);
         } else if (($request->has('title') && $request->input('title') != '') ||
-            ($request->has('school_year_id') && $request->input('school_year_id') != '')){
-            $data = Enrollment::filterSearch($request->title,$request->school_year_id)
+            ($request->has('school_year_id') && $request->input('school_year_id') != '')) {
+            $data = Enrollment::filterSearch($request->title, $request->school_year_id)
                 ->with('student')
                 ->with('schoolYear')
                 ->with('gradeLevel')
@@ -55,11 +61,12 @@ class EnrollmentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
+
         $validator = Validator::make(
             $request->all(),
             [
@@ -71,7 +78,6 @@ class EnrollmentController extends Controller
                 'payment_mode_type_id' => ['required'],
                 'student_type' => ['required'],
                 'enrollment_fee' => ['required'],
-                'payment_receipt' => ['required'],
                 'type' => ['required'],
             ]
         );
@@ -90,9 +96,101 @@ class EnrollmentController extends Controller
                 'payment_mode_type_id' => $params['payment_mode_type_id'],
                 'student_type' => $params['student_type'],
                 'enrollment_amount' => $params['enrollment_fee'],
-                'payment_receipt' => $params['payment_receipt'],
+                'payment_receipt' => 'na',
                 'status' => 'ENROLLED',
             ]);
+            // get payment mode details
+            $payment_mode = PaymentModeType::where('id', '=', $params['payment_mode_type_id'])->get();
+            $payable_in = $payment_mode[0]->payable_in;
+
+            // get payment details
+            $payment_option = PaymentMode::where('id','=',$payment_mode[0]->payment_mode_id)->get();
+            $monthly_due = $payment_option[0]->payment_cut_off;
+            $monthly_grace_due = $payment_option[0]->payment_cut_off + $payment_option[0]->grace_period;
+
+            // get school year details
+            $schoolyear = SchoolYear::where('id', '=', $params['school_year_id'])->get();
+            $sy_data = $schoolyear[0];
+
+            // months array
+            $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'October', 'November', 'December'];
+
+            // count months
+            $start_month = $sy_data->start_month;
+            $end_month = $sy_data->end_month;
+            $start_year = $sy_data->year;
+            $end_year = $sy_data->year;
+            $count_months = 0;
+
+            // get index of month
+            $start_month_key = array_search($start_month, $months);
+            $end_month_key = array_search($end_month, $months);
+            if ($end_month_key < $start_month_key) {
+                $end_year = $start_year + 1;
+                $count_months = 12 - $start_month_key + $end_month_key;
+            } else {
+                $count_months = $end_month_key - $start_month_key;
+            }
+
+            $has_reservation = 0;
+
+            // check if has reservation
+            $reservation = Reservation::where('school_year_id','=',$params['school_year_id'])
+                ->where('student_id','=',$params['student_id'])
+                ->get();
+
+            if(count($reservation)>0){
+                $has_reservation = 1;
+                // create student payment
+                StudentPayment::create([
+                    'student_id' => $params['student_id'],
+                    'school_year_id' => $params['school_year_id'],
+                    'enrollment_id' => $record->id,
+                    'payment_no' => $has_reservation,
+                    'payment_amount_due' => $reservation[0]->reservation_amount,
+                    'payment_amount' => $reservation[0]->reservation_amount,
+                    'payment_date' => $reservation[0]->created_at,
+                    'payment_due' =>  $reservation[0]->created_at,
+                    'remarks' => 'RESERVATION',
+                    'type' => 'RESERVATION',
+                    'status' => 1 // PAID - 1 UNPAID - 0
+                ]);
+            }
+            // compute monthly fee
+            $monthly = $params['enrollment_fee'] / $payable_in;
+
+            // count number of months and create payment
+            $ctr = 1;
+            for ($ctr == 1; $ctr <= $payable_in; $ctr++) {
+                if($start_month_key > 13){
+                    $payment_due = $start_year + 1 .'-01-'.$monthly_grace_due;
+                    $start_month_key = 1;
+                }else{
+                    if($start_month_key > 9){
+                        $payment_due = $start_year + 1 .'-'.$start_month_key.'-'.$monthly_grace_due;
+                    }else{
+                        $payment_due = $start_year + 1 .'-0'.$start_month_key.'-'.$monthly_grace_due;
+                    }
+                }
+                $start_month_key = $start_month_key + 1;
+                StudentPayment::create([
+                    'student_id' => $params['student_id'],
+                    'school_year_id' => $params['school_year_id'],
+                    'enrollment_id' => $record->id,
+                    'payment_no' => $ctr+$has_reservation,
+                    'payment_amount_due' => $monthly,
+                    'payment_amount' => '',
+                    'payment_date' => '',
+                    'payment_due' =>  $payment_due,
+                    'remarks' => '',
+                    'type' => 'PAYMENT',
+                    'status' => 0 // PAID - 1 UNPAID - 0
+                ]);
+
+            }
+
+            // save records in student payments
+
 
             return new EnrollmentResource($record);
         }
@@ -101,7 +199,7 @@ class EnrollmentController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Laravue\Models\Enrollment  $enrollment
+     * @param \App\Laravue\Models\Enrollment $enrollment
      * @return \Illuminate\Http\Response
      */
     public function show(Enrollment $enrollment)
@@ -112,7 +210,7 @@ class EnrollmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Laravue\Models\Enrollment  $enrollment
+     * @param \App\Laravue\Models\Enrollment $enrollment
      * @return \Illuminate\Http\Response
      */
     public function edit(Enrollment $enrollment)
@@ -123,8 +221,8 @@ class EnrollmentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Laravue\Models\Enrollment  $enrollment
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Laravue\Models\Enrollment $enrollment
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Enrollment $enrollment)
@@ -135,7 +233,7 @@ class EnrollmentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Laravue\Models\Enrollment  $enrollment
+     * @param \App\Laravue\Models\Enrollment $enrollment
      * @return \Illuminate\Http\Response
      */
     public function destroy(Enrollment $enrollment)
@@ -156,7 +254,7 @@ class EnrollmentController extends Controller
         $destinationPath = 'uploads';
         $avatar_name = date('YmdHis') . '.' . $file->getClientOriginalExtension();
         $file->move($destinationPath, $avatar_name);
-        $payment_receipt = 'uploads\\enrollment\\'.date('Ymd').'\\'. $avatar_name;
+        $payment_receipt = 'uploads\\enrollment\\' . date('Ymd') . '\\' . $avatar_name;
         return $payment_receipt;
 
     }

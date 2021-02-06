@@ -77,11 +77,10 @@ export default {
   },
   methods: {
     cropSuccess(resData) {
-      console.log(resData);
       this.imagecropperShow = false;
       this.imagecropperKey = this.imagecropperKey + 1;
       this.student.avatar = resData.avatar;
-      this.$emit('update-avatar', this.image);
+      this.$emit('update-avatar', this.student.avatar);
     },
     close() {
       this.imagecropperShow = false;
@@ -91,7 +90,9 @@ export default {
         this.image = 'uploads/default.png';
       } else {
         const { data } = await studentResource.get(this.studentId);
+        this.image = data.avatar;
         this.studentData = data.avatar;
+        this.$emit('update-avatar', this.image);
       }
     },
   },

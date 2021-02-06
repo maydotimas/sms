@@ -52,9 +52,6 @@ class StudentParentController extends Controller
             [
                 'first_name' => ['required'],
                 'last_name' => ['required'],
-                'occupation' => ['required'],
-                'email' => ['required'],
-                'mobile' => ['required'],
                 'type' => ['required'],
             ]
         );
@@ -128,9 +125,6 @@ class StudentParentController extends Controller
             [
                 'first_name' => ['required'],
                 'last_name' => ['required'],
-                'occupation' => ['required'],
-                'email' => ['required'],
-                'mobile' => ['required'],
                 'type' => ['required'],
             ]
         );
@@ -203,35 +197,35 @@ class StudentParentController extends Controller
     {
         if ($request->has('type') && $request->input('type') != 'all') {
             if ($request->has('title') && $request->input('title') != '') {
-                $data = StudentParent::select('id as link', DB::raw('CONCAT(last_name,", ",first_name," ",middle_name, " ", IFNULL(suffix,"")) as value, type as type'))
+                $data = StudentParent::select('id as link', DB::raw('TRIM(CONCAT(last_name,", ",first_name," ",IFNULL(middle_name,""), " ", IFNULL(suffix,""))) as value, type as type'))
                     ->search($request->title)
                     ->where('type', $request->type)
                     ->orderBy('last_name', 'ASC')
                     ->orderBy('first_name', 'ASC')
                     ->orderBy('middle_name', 'ASC')
-                    ->paginate($request->limit);
+                    ->get();
             } else {
-                $data = StudentParent::select('id as link', DB::raw('CONCAT(last_name,", ",first_name," ",middle_name, " ", IFNULL(suffix,"")) as value, type as type'))
+                $data = StudentParent::select('id as link', DB::raw('TRIM(CONCAT(last_name,", ",first_name," ",IFNULL(middle_name,""), " ", IFNULL(suffix,""))) as value, type as type'))
                     ->where('type', $request->type)
                     ->orderBy('last_name', 'ASC')
                     ->orderBy('first_name', 'ASC')
                     ->orderBy('middle_name', 'ASC')
-                    ->paginate($request->limit);
+                    ->get();
             }
         } else {
             if ($request->has('title') && $request->input('title') != '') {
-                $data = StudentParent::select('id as link', DB::raw('CONCAT(last_name,", ",first_name," ",middle_name, " ", IFNULL(suffix,"")) as value, type as type'))
+                $data = StudentParent::select('id as link', DB::raw('TRIM(CONCAT(last_name,", ",first_name," ", IFNULL(middle_name,""), " ", IFNULL(suffix,""))) as value, type as type'))
                     ->search($request->title)
                     ->orderBy('last_name', 'ASC')
                     ->orderBy('first_name', 'ASC')
                     ->orderBy('middle_name', 'ASC')
-                    ->paginate($request->limit);
+                    ->get();
             } else {
-                $data = StudentParent::select('id as link', DB::raw('CONCAT(last_name,", ",first_name," ",middle_name, " ", IFNULL(suffix,"")) as value, type as type'))
+                $data = StudentParent::select('id as link', DB::raw('TRIM(CONCAT(last_name,", ",first_name," ",IFNULL(middle_name,""), " ", IFNULL(suffix,""))) as value, type as type'))
                     ->orderBy('last_name', 'ASC')
                     ->orderBy('first_name', 'ASC')
                     ->orderBy('middle_name', 'ASC')
-                    ->paginate($request->limit);
+                    ->get();
             }
         }
 

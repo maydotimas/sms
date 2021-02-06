@@ -18,6 +18,9 @@ class CreatePaymentModeTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->unique();
+            $table->integer('penalty')->default(3);
+            $table->integer('grace_period')->default(3);
+            $table->integer('payment_cut_off')->default(15);
             $table->string('description');
             $table->timestamps();
         });

@@ -24,7 +24,7 @@
         {{ $t('table.search') }}
       </el-button>
 
-      <el-button v-permission="['manage enrollment']" class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
+      <el-button v-permission="['manage enrollment']" :disabled="schoolYearList.length==0" class="filter-item" type="primary" icon="el-icon-plus" @click="handleCreate">
         {{ $t('table.add') }}
       </el-button>
     </div>
@@ -133,14 +133,21 @@
           </el-form-item>
           <el-form-item
             v-if="currentEnrollment.type == 0"
+            label="LRN"
+            prop="lrn"
+          >
+            <el-input v-model="studentQuery.lrn" maxlength="12" />
+          </el-form-item>
+          <el-form-item
+            v-if="currentEnrollment.type == 0"
             label="Birthdate"
             prop="birthdate"
           >
             <el-date-picker
               v-model="studentQuery.birthdate"
               type="date"
-              placeholder="Select Birtdate"
               style="width: 100%"
+              placeholder="YYYY-mm-dd"
             />
           </el-form-item>
           <el-form-item v-if="currentEnrollment.type == 0">
@@ -254,7 +261,7 @@
               :readonly="studentValid"
             />
           </el-form-item>
-          <el-form-item label="Receipt">
+          <el-form-item v-if="false" label="Receipt">
             <dropzone
               id="myVueDropzone"
               url="/api/enrollments/upload-receipt"
@@ -306,6 +313,7 @@ export default {
       },
       studentQuery: {
         id: '',
+        lrn: '',
         birthdate: '',
       },
       total: 0,
@@ -335,6 +343,7 @@ export default {
         type: 0,
         sub_fee_id: '',
         payment_mode_type_id: '',
+        payable_in: '',
       },
       student: [],
       dept_id: '',
@@ -539,17 +548,21 @@ export default {
       }
     },
     filterPaymentMode() {
-      this.filteredPaymentMode = [];
-      this.filteredPaymentMode = this.paymentModeTypeList.filter(
+      this.paymentModeTypeList.forEach(element => {
+        if (element.id === this.currentEnrollment.payment_mode_type_id){
+          this.currentEnrollment.payable_in = element.payable_in;
+        }
+      });
+      this.temp = [];
+      this.temp = this.paymentModeTypeList.filter(
         this.mapPaymentMode
       );
+      this.paymentModeTypeList = this.temp;
     },
     mapPaymentMode(item, index, arr) {
-      /* var config = this.schoolYearList[0].school_year_config;
-      var fee_id = config[0].fee_id;
-      if (parseInt(item.grade_level_id) === parseInt(this.currentEnrollment.grade_level_id)){ */
-      return item;
-      // }
+      if (item.payable_in <= this.currentEnrollment.payable_in){
+        return item;
+      }
     },
     /* Form Events */
     handleCreate() {
@@ -606,10 +619,10 @@ export default {
                   type: 'success',
                   duration: 5 * 1000,
                 });
-                this.resetForm();
+                /* this.resetForm();
                 this.enrollmentFormVisible = false;
                 this.submitted = false;
-                this.getList();
+                this.getList(); */
               })
               .catch((error) => {
                 console.log(error);
@@ -645,9 +658,15 @@ export default {
         });
     },
     handleEdit(id, name) {
+      /* Reset form details */
       this.resetForm();
+      /* form */
       this.formTitle = 'Edit Enrollment ' + name;
+      /* get enrollment detail */
       var data = this.list.find((enrollment) => enrollment.id === id);
+      console.log('edit enrollment');
+      console.log(data);
+      /* Initialize display data */
       this.currentEnrollment.id = data.id;
       this.currentEnrollment.student_id = data.student.id;
       this.currentEnrollment.student_no = data.student.student_no;
@@ -661,6 +680,7 @@ export default {
       this.currentEnrollment.section_id = data.section_id;
       this.currentEnrollment.sub_fee_id = data.sub_fee_id;
       this.currentEnrollment.payment_mode_type_id = data.payment_mode_type_id;
+      this.filterPaymentMode();
       this.currentEnrollment.enrollment_fee = data.enrollment_amount;
       this.currentEnrollment.schoolYear = data.school_year.name;
       this.currentEnrollment.payment_receipt = data.payment_receipt;
@@ -679,12 +699,14 @@ export default {
         type: 0,
         sub_fee_id: '',
         payment_mode_type_id: '',
+        payable_in: '',
       };
       this.submitted = false;
     },
     onCancelSearch() {
       this.studentQuery = {
         id: '',
+        lrn: '',
         birthdate: '',
       };
     },

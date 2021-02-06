@@ -94,6 +94,15 @@
           <el-form-item label="Description" prop="description">
             <el-input v-model="currentPaymentMode.description" />
           </el-form-item>
+          <el-form-item label="Penalty" prop="penalty">
+            <el-input v-model="currentPaymentMode.penalty" />
+          </el-form-item>
+          <el-form-item label="Monthly Payment Schedule" prop="payment_cut_off">
+            <el-input v-model="currentPaymentMode.payment_cut_off" />
+          </el-form-item>
+          <el-form-item label="Grace Period" prop="grace_period">
+            <el-input v-model="currentPaymentMode.grace_period" />
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="paymentModeFormVisible = false">Cancel</el-button>
@@ -221,6 +230,7 @@ export default {
     },
 
     handleEdit(id, name) {
+      this.resetForm();
       this.formTitle = 'Edit Payment Mode ' + name;
       this.currentPaymentMode = this.list.find((payment_mode) => payment_mode.id === id);
       this.paymentModeFormVisible = true;
@@ -230,6 +240,9 @@ export default {
       this.currentPaymentMode = {
         name: '',
         description: '',
+        grace_period: '',
+        penalty: '',
+        payment_cut_off: '',
       };
     },
   },

@@ -64,6 +64,9 @@ class PaymentModeController extends Controller
                 'name' => $params['name'],
                 'code' => strtolower($params['name']) . time(), // Just to make sure this value is unique
                 'description' => $params['description'],
+                'penalty' => $params['penalty'],
+                'grace_period' => $params['grace_period'],
+                'payment_cut_off' => $params['payment_cut_off'],
             ]);
 
             PaymentModeType::create([
@@ -127,6 +130,9 @@ class PaymentModeController extends Controller
             $params = $request->all();
             $paymentMode->name = $params['name'];
             $paymentMode->description = $params['description'];
+            $paymentMode->penalty = $params['penalty'];
+            $paymentMode->grace_period = $params['grace_period'];
+            $paymentMode->payment_cut_off = $params['payment_cut_off'];
             $paymentMode->save();
         }
 

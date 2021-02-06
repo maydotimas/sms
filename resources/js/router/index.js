@@ -166,6 +166,19 @@ export const asyncRoutes = [
   // syRoutes,
   studentRoutes,
   parentRoutes,
+  {
+    path: '/payments',
+    component: Layout,
+    redirect: '/paymentList',
+    children: [
+      {
+        path: '/paymentList',
+        component: () => import('@/views/payments/List'),
+        name: 'Payments',
+        meta: { title: 'paymentLists', icon: 'excel', noCache: true },
+      },
+    ],
+  },
   // permissionRoutes,
   // componentRoutes,
   // chartsRoutes,

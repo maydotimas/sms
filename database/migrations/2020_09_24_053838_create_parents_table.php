@@ -23,8 +23,8 @@ class CreateParentsTable extends Migration
             $table->string('occupation')->nullable();
             $table->string('education')->nullable();
             $table->string('office_address')->nullable();
-            $table->string('email');
-            $table->string('mobile');
+            $table->string('email')->nullable();
+            $table->string('mobile')->nullable();
             $table->string('avatar')->nullable();
             $table->enum('type',['Father','Mother','Guardian']);
             $table->timestamp('created_at')->nullable();

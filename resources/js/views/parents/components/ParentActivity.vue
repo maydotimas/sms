@@ -124,6 +124,7 @@ export default {
           last_name: '',
           suffix: '',
           occupation: '',
+          office_address: '',
           street: '',
           brgy: '',
           town: '',
@@ -179,46 +180,6 @@ export default {
             trigger: 'blur',
           },
         ],
-        email: [
-          {
-            required: true,
-            message: 'Please input Email',
-            trigger: 'blur',
-          },
-        ],
-        mobile: [
-          {
-            required: true,
-            message: 'Please input Mobile Number',
-            trigger: 'blur',
-          },
-        ],
-        occupation: [
-          {
-            required: true,
-            message: 'Please input Occupation',
-            trigger: 'blur',
-          },
-          {
-            min: 3,
-            max: 50,
-            message: 'Length should be 3 to 5',
-            trigger: 'blur',
-          },
-        ],
-        office_address: [
-          {
-            required: true,
-            message: 'Please input Office Address',
-            trigger: 'blur',
-          },
-          {
-            min: 3,
-            max: 500,
-            message: 'Length should be 3 to 5',
-            trigger: 'blur',
-          },
-        ],
       },
     };
   },
@@ -262,7 +223,7 @@ export default {
                   duration: 5 * 1000,
                 });
                 this.updating = false;
-                this.$router.push({ name: 'ParentList' });
+                // this.$router.push({ name: 'ParentList' });
               })
               .catch((error) => {
                 console.log(error);
