@@ -42,6 +42,8 @@ class CreateEnrollmentTable extends Migration
 
             $table->string('student_type');
             $table->string('enrollment_amount');
+            $table->string('tf');
+            $table->string('misc');
             $table->string('payment_receipt');
             $table->string('enrollment_code');
             $table->string('status');

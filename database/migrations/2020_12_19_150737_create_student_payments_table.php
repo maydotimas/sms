@@ -33,6 +33,8 @@ class CreateStudentPaymentsTable extends Migration
             $table->string('payment_amount');
             $table->string('payment_date');
             $table->string('payment_due');
+            $table->string('tuition');
+            $table->string('misc');
             $table->string('remarks');
             $table->string('type');
 

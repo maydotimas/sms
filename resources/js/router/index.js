@@ -20,9 +20,10 @@ import Layout from '@/layout';
 import adminRoutes from './modules/admin';
 import studentRoutes from './modules/student';
 import parentRoutes from './modules/parent';
+import studentPaymentRoutes from './modules/studentpayments';
 // import syRoutes from './modules/school-year';
 // import nestedRoutes from './modules/nested';
-// import errorRoutes from './modules/error';
+import errorRoutes from './modules/error';
 // import excelRoutes from './modules/excel';
 // import permissionRoutes from './modules/permission';
 
@@ -166,19 +167,7 @@ export const asyncRoutes = [
   // syRoutes,
   studentRoutes,
   parentRoutes,
-  {
-    path: '/payments',
-    component: Layout,
-    redirect: '/paymentList',
-    children: [
-      {
-        path: '/paymentList',
-        component: () => import('@/views/payments/List'),
-        name: 'Payments',
-        meta: { title: 'paymentLists', icon: 'excel', noCache: true },
-      },
-    ],
-  },
+  studentPaymentRoutes,
   // permissionRoutes,
   // componentRoutes,
   // chartsRoutes,
@@ -211,7 +200,7 @@ export const asyncRoutes = [
   //     },
   //   ],
   // },
-  // errorRoutes,
+  errorRoutes,
   // excelRoutes,
   // {
   //   path: '/zip',

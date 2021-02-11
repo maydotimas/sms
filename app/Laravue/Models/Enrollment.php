@@ -29,6 +29,10 @@ class Enrollment extends Model
         return $query->where('id','=',$keyword)
             ->orWhere('school_year_id','=',$sy);
     }
+    public function scopeEnrollmentSearch($query,$keyword,$sy){
+        return $query->where('student_id','=',$keyword)
+            ->where('school_year_id','=',$sy);
+    }
 
     public function student()
     {
@@ -45,5 +49,9 @@ class Enrollment extends Model
     public function section()
     {
         return $this->belongsTo('App\Laravue\Models\Section');
+    }
+    public function paymentModeType()
+    {
+        return $this->belongsTo('App\Laravue\Models\PaymentModeType');
     }
 }

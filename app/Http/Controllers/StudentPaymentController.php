@@ -4,17 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Laravue\Models\StudentPayment;
 use Illuminate\Http\Request;
+use App\Http\Resources\StudentPayment as StudentPaymentResource;
 
 class StudentPaymentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->has('title') && $request->input('title') != '') {
+            $data = StudentPayment::search($request->title)
+                ->with('student')
+                ->with('enrollment')
+                ->with('schoolYear')
+                ->paginate($request->limit);
+        } else if (($request->has('title') && $request->input('title') != '') ||
+            ($request->has('school_year_id') && $request->input('school_year_id') != '')) {
+            $data = StudentPayment::filterSearch($request->title, $request->school_year_id)
+                ->with('student')
+                ->with('enrollment')
+                ->with('schoolYear')
+                ->paginate($request->limit);
+        } else {
+            $data = StudentPayment::with('student')
+                ->with('enrollment')
+                ->with('schoolYear')
+                ->paginate($request->limit);
+        }
+        return StudentPaymentResource::collection(['data' => $data]);
     }
 
     /**

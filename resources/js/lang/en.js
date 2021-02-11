@@ -47,6 +47,8 @@ export default {
     customTreeTable: 'Custom TreeTable',
     tab: 'Tab',
     form: 'Form',
+    studentPayment: 'Student Payment',
+    newStudentPayment: 'New Student Payment',
     createArticle: 'Create Article',
     editArticle: 'Edit Article',
     articleList: 'Articles',

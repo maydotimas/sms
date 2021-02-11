@@ -107,6 +107,10 @@ Route::apiResource('studentpayment', 'StudentPaymentController')->middleware('pe
 Route::get('studentpayment', 'StudentPaymentController@index')->name('studentpayment.index')->middleware('permission:view studentpayment|manage studentpayment');
 Route::post('studentpayment/upload-receipt', 'StudentPaymentController@receipt')->name('studentpayment.receipt')->middleware('permission:view studentpayment|permission:manage studentpayment');
 
+Route::apiResource('studentpaymentdetails', 'StudentPaymentDetailController')->middleware('permission:manage studentpaymentdetails');
+Route::get('studentpaymentdetails', 'StudentPaymentDetailController@index')->name('studentpaymentdetails.index')->middleware('permission:view studentpaymentdetails|manage studentpaymentdetails');
+Route::post('studentpaymentdetails/upload-receipt', 'StudentPaymentDetailController@receipt')->name('studentpaymentdetails.receipt')->middleware('permission:view studentpaymentdetails|permission:manage studentpaymentdetails');
+
 // Fake APIs
 Route::get('/table/list', function () {
     $rowsNumber = mt_rand(20, 30);

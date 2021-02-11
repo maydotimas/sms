@@ -30,6 +30,54 @@ class EnrollmentController extends Controller
                 ->with('gradeLevel')
                 ->with('section')
                 ->paginate($request->limit);
+        } else if (($request->has('id') && $request->input('id') != '')) {
+            $data = Enrollment::search($request->id)
+                ->with('student')
+                ->with('schoolYear')
+                ->with('gradeLevel')
+                ->with('section')
+                ->with('paymentModeType')
+                ->get();
+            $student_id = $data[0]->student_id;
+            $enrollment_id = $data[0]->id;
+            $payments = StudentPayment::where('student_id','=',$student_id)
+                ->where('enrollment_id','=',$enrollment_id)
+                ->where('status','=',0)
+                ->get();
+            $balance = 0;
+//            $balance = $data[0]->enrollment_amount;
+            foreach($payments as $payment)
+            {
+                $date1 = $payment->payment_due;
+                $date2 = date('Y-m-d');
+
+                $ts1 = strtotime($date1);
+                $ts2 = strtotime($date2);
+
+                $year1 = date('Y', $ts1);
+                $year2 = date('Y', $ts2);
+
+                $month1 = date('m', $ts1);
+                $month2 = date('m', $ts2);
+
+                $diff = (($year2 - $year1) * 12) + ($month2 - $month1);
+
+                $penalty = 0;
+                if($diff > 0){
+                    $penalty = $payment->payment_amount_due + ($payment->payment_amount_due * ($diff * 0.03));
+                }else{
+                    $penalty =  $payment->payment_amount_due;
+                }
+
+                $balance += $penalty;
+            }
+//            $balance = $data[0]->enrollment_amount - $total_paid;
+            $data[0]->balance = $balance;
+        } else if (($request->has('student_no') && $request->input('student_no') != '') &&
+            ($request->has('school_year_id') && $request->input('school_year_id') != '')) {
+            $student = Student::where('student_no','=',$request->student_no)->get();
+            $student_id = $student[0]->id;
+            $data = Enrollment::enrollmentSearch($student_id, $request->school_year_id)->get();
         } else if (($request->has('title') && $request->input('title') != '') ||
             ($request->has('school_year_id') && $request->input('school_year_id') != '')) {
             $data = Enrollment::filterSearch($request->title, $request->school_year_id)
@@ -38,7 +86,7 @@ class EnrollmentController extends Controller
                 ->with('gradeLevel')
                 ->with('section')
                 ->paginate($request->limit);
-        } else {
+        }  else {
             $data = Enrollment::with('gradeLevel')
                 ->with('student')
                 ->with('schoolYear')
@@ -66,6 +114,7 @@ class EnrollmentController extends Controller
      */
     public function store(Request $request)
     {
+
 
         $validator = Validator::make(
             $request->all(),
@@ -256,6 +305,5 @@ class EnrollmentController extends Controller
         $file->move($destinationPath, $avatar_name);
         $payment_receipt = 'uploads\\enrollment\\' . date('Ymd') . '\\' . $avatar_name;
         return $payment_receipt;
-
     }
 }

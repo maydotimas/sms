@@ -449,7 +449,7 @@ export default {
     async getSchoolYearList() {
       this.loading = true;
       const { data } = await schoolYearResource.list({ active: 'true' });
-      this.schoolYearList = data.data;
+      this.schoolYearList = data;
       this.loading = false;
     },
     async getStudentDetails() {

@@ -26,7 +26,9 @@ class SchoolYearController extends Controller
         } else if ($request->has('active') && $request->input('active') == 'true') {
             $data = SchoolYear::active()
                 ->with('schoolYearConfig')
-                ->paginate($request->limit);
+                ->get();
+        } else if ($request->has('all')) {
+            $data = SchoolYear::all();
         } else {
             $data = SchoolYear::with('schoolYearConfig')
                 ->paginate($request->limit);

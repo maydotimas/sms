@@ -15,14 +15,13 @@
         icon="el-icon-search"
         @click="getList"
       >{{ $t('table.search') }}</el-button>
-      <router-link :to="'new/'">
-        <el-button
-          v-permission="['manage students']"
-          class="filter-item"
-          type="primary"
-          icon="el-icon-plus"
-        >{{ $t('table.add') }}</el-button>
-      </router-link>
+      <el-button
+        v-permission="['manage studentpayment']"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-plus"
+        @click="searchStudentPayment();"
+      >{{ $t('table.add') }}</el-button>
       <el-button
         v-waves
         :loading="downloading"
@@ -49,49 +48,40 @@
 
       <el-table-column align="center" label="Student No">
         <template slot-scope="scope">
-          <span>{{ scope.row.student_no }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="LRN">
-        <template slot-scope="scope">
-          <span>{{ scope.row.lrn }}</span>
+          <span>{{ scope.row.student.student_no }}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="Name">
         <template slot-scope="scope">
-          <span>{{ scope.row.last_name }},{{ scope.row.first_name }}</span>
+          <span>{{ scope.row.student.last_name }},{{ scope.row.student.first_name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="Mobile No">
+      <el-table-column align="center" label="School Year">
         <template slot-scope="scope">
-          <span>{{ scope.row.mobile }}</span>
+          <span>{{ scope.row.school_year.name }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="Month">
+        <template slot-scope="scope">
+          <span>{{ scope.row.school_year.name }}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="Actions" width="200">
         <template slot-scope="scope">
           <el-button
-            v-permission="['manage students']"
+            v-permission="['manage studentpayment']"
             type="success"
             size="small"
             icon="el-icon-view"
             title="View"
-            @click="handledelete(scope.row.id, scope.row.name);"
+            @click="handleDelete(scope.row.id, scope.row.name);"
           />
-          <router-link :to="'edit/'+scope.row.id">
-            <el-button
-              v-permission="['manage students']"
-              type="primary"
-              size="small"
-              icon="el-icon-edit"
-              title="Edit"
-            />
-          </router-link>
           <el-button
-            v-permission="['manage students']"
+            v-permission="['manage studentpayment']"
             type="danger"
             size="small"
             icon="el-icon-delete"
@@ -109,6 +99,54 @@
       :limit.sync="listQuery.limit"
       @pagination="getList"
     />
+
+    <!--  DIALOG for Add and EDIT -->
+    <el-dialog
+      v-permission="['manage studentpayment']"
+      :title="formTitle"
+      :visible.sync="newPaymentFormVisible"
+    >
+      <div class="form-container">
+        <el-form
+          v-if="!studentValid"
+          ref="reservationSearchForm"
+          :model="searchStudentPaymentForm"
+          label-position="left"
+          label-width="150px"
+          style="max-width: 500px"
+        >
+          <el-form-item
+            label="Student No"
+            prop="student_no"
+          >
+            <el-input v-model="searchStudentPaymentForm.student_no" />
+          </el-form-item>
+          <el-form-item
+            label="School Year"
+            prop="school_year"
+          >
+            <el-select
+              v-model="searchStudentPaymentForm.school_year_id"
+              class="filter-item"
+              placeholder="Please School Year"
+            >
+              <el-option
+                v-for="item in schoolYearList"
+                :key="item.id"
+                :label="item.name | uppercaseFirst"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="onCancelSearch">Reset</el-button>
+            <el-button type="primary" @click="getStudentPaymentDetails">
+              Search Student
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -118,10 +156,12 @@ import permission from '@/directive/permission';
 import waves from '@/directive/waves';
 import Pagination from '@/components/Pagination'; // Secondary package based on el-pagination
 
-const studentResource = new Resource('students');
+const studentPaymentResource = new Resource('studentpayment');
+const schoolYearResource = new Resource('schoolYear');
+const studentEnrollment = new Resource('enrollment');
 
 export default {
-  name: 'MasterList',
+  name: 'StudentPaymentList',
   components: { Pagination },
   directives: { permission, waves },
   data() {
@@ -135,6 +175,7 @@ export default {
       total: 0,
       loading: true,
       feeFormVisible: false,
+      newPaymentFormVisible: false,
       currentStudent: {},
       submitted: false,
       formTitle: '',
@@ -142,23 +183,64 @@ export default {
       /* Dialog */
       activeActivity: 'first',
       updating: false,
+      studentValid: false,
+      searchStudentPaymentForm: {
+        student_no: '',
+        school_year: '',
+      },
+      schoolYearList: [],
     };
   },
   created() {
     this.getList();
+    this.getSchoolYearList();
   },
   methods: {
     async getList() {
       const { limit, page } = this.listQuery;
       this.loading = true;
-      const { data } = await studentResource.list(this.listQuery);
+      const { data } = await studentPaymentResource.list(this.listQuery);
       this.list = data.data;
+      console.log(this.list);
       this.list.forEach((element, index) => {
         element['index'] = (page - 1) * limit + index + 1;
       });
       this.total = data.total;
       console.log(this.total);
       this.loading = false;
+    },
+    async getSchoolYearList() {
+      this.loading = true;
+      const { data } = await schoolYearResource.list({ all: 'all' });
+      this.schoolYearList = data;
+      this.loading = false;
+    },
+    async searchStudentEnrollment(){
+      this.loading = true;
+      const { data } = await studentEnrollment.list({ student_no: this.searchStudentPaymentForm.student_no, school_year_id: this.searchStudentPaymentForm.school_year_id });
+      console.log(data);
+      if (data.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: 'Student is not enrolled',
+          duration: 5 * 1000,
+        });
+      } else {
+        this.newPaymentFormVisible = false;
+        var enrollment_id = data[0].id;
+        this.$router.push(`new/${enrollment_id}`);
+      }
+    },
+    onCancelSearch(){
+      this.newPaymentFormVisible = false;
+    },
+
+    searchStudentPayment(){
+      this.newPaymentFormVisible = true;
+      this.formTitle = 'Search Student Payment';
+    },
+    getStudentPaymentDetails(){
+      this.searchStudentEnrollment();
     },
     handleCreate() {
       this.feeFormVisible = true;
@@ -168,7 +250,7 @@ export default {
     handleSubmit() {
       this.submitted = true;
       if (this.currentStudent.id !== undefined) {
-        studentResource
+        studentPaymentResource
           .update(this.currentStudent.id, this.currentStudent)
           .then((response) => {
             this.$message({
@@ -187,7 +269,7 @@ export default {
             this.submitted = false;
           });
       } else {
-        studentResource
+        studentPaymentResource
           .store(this.currentStudent)
           .then((response) => {
             this.$message({
@@ -219,7 +301,7 @@ export default {
         }
       )
         .then(() => {
-          studentResource.destroy(id).then((response) => {
+          studentPaymentResource.destroy(id).then((response) => {
             this.$message({
               type: 'success',
               message: 'Delete completed',

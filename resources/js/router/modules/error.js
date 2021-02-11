@@ -2,6 +2,7 @@
 import Layout from '@/layout';
 
 const errorRoutes = {
+  hidden: true,
   path: '/error',
   component: Layout,
   redirect: 'noredirect',

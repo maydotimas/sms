@@ -20,14 +20,21 @@ class StudentPayment extends Model
         'status',
     ];
 
+    public function scopePaid($query)
+    {
+        return $query->where('status', '=', '1');
+    }
+
     public function student()
     {
         return $this->belongsTo('App\Laravue\Models\Student');
     }
+
     public function enrollment()
     {
         return $this->belongsTo('App\Laravue\Models\Enrollment');
     }
+
     public function schoolYear()
     {
         return $this->belongsTo('App\Laravue\Models\SchoolYear');

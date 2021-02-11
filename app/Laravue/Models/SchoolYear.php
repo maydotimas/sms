@@ -18,6 +18,10 @@ class SchoolYear extends Model
     public function scopeSearch($query,$keyword){
         return $query->where('name','like','%'.$keyword.'%');
     }
+    public function scopeAll($query,$keyword){
+        return $query->orderBy('status','DESC')
+            ->orderBy('name','ASC');
+    }
     public function scopeActive($query){
         return $query->where('status','=',1);
     }
